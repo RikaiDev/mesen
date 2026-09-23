@@ -4,6 +4,7 @@ Export VlmJevModel to ONNX graph and perform INT8 quantization.
 
 import argparse
 import os
+from typing import Optional
 import torch
 import numpy as np
 
@@ -26,6 +27,7 @@ def export_vlm_jev_to_onnx(
     """
     Exports VlmJevModel (or its decision head wrapper) to ONNX format.
     """
+    model = model.float().cpu()
     model.eval()
     dummy_input = torch.randn(1, hidden_dim, dtype=torch.float32)
 
@@ -96,9 +98,23 @@ def export_vlm_jev_to_onnx(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--base-model", type=str, default="/mnt/model-cache/vlm-jev/Qwen3.5-2B-Base", help="Path to base model")
     parser.add_argument("--checkpoint", type=str, required=True, help="Path to checkpoint safetensors")
     parser.add_argument("--output", type=str, default="vlm_jev.onnx", help="Output ONNX filename")
     parser.add_argument("--quantize", action="store_true", help="Perform dynamic INT8 quantization")
     args = parser.parse_args()
 
-    # Standalone export invocation logic
+    from mesen.model.vlm_jev import VlmJevModel
+    from safetensors.torch import load_file
+
+    print(f"Loading model checkpoint from {args.checkpoint}...")
+    model = VlmJevModel(base_model_name_or_path=args.base_model)
+    state_dict = load_file(args.checkpoint)
+    model.load_state_dict(state_dict)
+
+    export_vlm_jev_to_onnx(
+        model=model,
+        output_onnx_path=args.output,
+        hidden_dim=2048,
+        quantize=args.quantize,
+    )
