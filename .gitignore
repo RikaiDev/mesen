@@ -36,8 +36,8 @@ logs/
 model_cache/
 
 # Datasets & local caches
-data/
-datasets/
+/data/
+/datasets/
 cache/
 .cache/
 .hf/
