@@ -3,7 +3,7 @@ Strongly-typed decision schemas matching Hygieia UI Evidence contract.
 """
 
 from enum import Enum
-from typing import Dict, List, Literal, Optional
+from typing import Dict, List, Literal, Optional, Union
 from pydantic import BaseModel, Field
 
 
@@ -42,7 +42,7 @@ class WitnessState(BaseModel):
     imageOrder: List[str] = Field(default_factory=list)
     product: Optional[str] = None
     route: Optional[str] = None
-    contract: Optional[dict] = None
+    contract: Optional[Union[Dict[str, Any], List[Any]]] = None
     accessibilityViolations: Optional[List[dict]] = None
     geometryAnomalies: Optional[List[dict]] = None
     consoleErrors: Optional[List[str]] = None
