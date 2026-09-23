@@ -16,10 +16,16 @@ class FocalLoss(nn.Module):
     def __init__(self, alpha: Optional[torch.Tensor] = None, gamma: float = 2.0):
         super().__init__()
         self.gamma = gamma
-        self.alpha = alpha
+        if alpha is not None:
+            self.register_buffer("alpha", alpha)
+        else:
+            self.alpha = None
 
     def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
-        ce_loss = F.cross_entropy(logits, targets, reduction="none", weight=self.alpha)
+        alpha = self.alpha
+        if alpha is not None and alpha.device != logits.device:
+            alpha = alpha.to(logits.device)
+        ce_loss = F.cross_entropy(logits, targets, reduction="none", weight=alpha)
         pt = torch.exp(-ce_loss)
         focal_loss = ((1.0 - pt) ** self.gamma) * ce_loss
         return focal_loss.mean()
