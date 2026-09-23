@@ -1,5 +1,5 @@
 """
-Strongly-typed decision schemas matching Hygieia UI Evidence contract.
+Strongly-typed decision schemas matching UI Evidence contract.
 """
 
 from enum import Enum

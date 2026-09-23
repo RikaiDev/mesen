@@ -12,7 +12,7 @@
 
 ## 1. What is the new mesen (vlm-jev)?
 
-The original `mesen` explored dual-agent VLM simulations (Naive User + UX Expert) calling cloud LLM APIs. While expressive, cloud LLMs are slow (10–30s), expensive ($0.14–$0.42 per run), non-deterministic, and cannot run in private/air-gapped healthcare environments (like Hygieia).
+The original `mesen` explored dual-agent VLM simulations (Naive User + UX Expert) calling cloud LLM APIs. While expressive, cloud LLMs are slow (10–30s), expensive ($0.14–$0.42 per run), non-deterministic, and cannot run in private, air-gapped or HIPAA/GDPR-regulated environments.
 
 **The new mesen completely replaces that architecture with `vlm-jev`**:
 - **Non-Generative & Typed**: Uses Open-Jev typed decision heads (`Choice`, `Score`, `Noul`) directly predicting probabilities rather than generating long token streams.
