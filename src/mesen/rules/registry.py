@@ -105,6 +105,15 @@ RULE_DEFINITIONS: List[UXRule] = [
         description="Explanatory text exceeds reading capacity for rapid or ambient interactions (>30 words).",
         prescriptive_template="Condense copy to under 15 words; offload secondary instructions to localized audio prompt.",
     ),
+    UXRule(
+        id="cognitive/interaction-affordance-deficit",
+        dimension="cognitive",
+        name="Interactive Affordance Deficit",
+        standard="Norman Design Principles / Direct Manipulation",
+        default_severity="critical",
+        description="An actionable object or target lacks visual signifiers (such as button boundaries, pulsing highlight, or touch affordance) indicating it can be touched/held.",
+        prescriptive_template="Add explicit visual affordances (e.g. outline, breathing pulse, or touch ripple) to make interaction entrypoint unambiguous.",
+    ),
 
     # 4. Physical & Ambient Environment (Smart Mirror / IoT / the-mirror)
     UXRule(
@@ -142,6 +151,35 @@ RULE_DEFINITIONS: List[UXRule] = [
         default_severity="critical",
         description="Left and right air-gesture selection targets overlap in physical space, preventing clear hand disambiguation.",
         prescriptive_template="Separate gesture targets to outer lateral flanks (left flank vs right flank) with at least 300px separation.",
+    ),
+
+    # 5. Layout & Spatial Composition (ISO 9241-110 / Responsive Ergonomics)
+    UXRule(
+        id="layout/horizontal-space-desert",
+        dimension="layout",
+        name="Horizontal Space Abandonment",
+        standard="Responsive Screen Real-Estate Utilization",
+        default_severity="critical",
+        description="On landscape viewports (ratio >= 1.8), content is packed in a narrow center column (<35% width), wasting >65% horizontal canvas.",
+        prescriptive_template="Convert single narrow column into a two-column split layout (e.g. Hero subject on left, content & CTA on right).",
+    ),
+    UXRule(
+        id="layout/aspect-ratio-mismatch",
+        dimension="layout",
+        name="Viewport Orientation Mismatch",
+        standard="Adaptive Multi-Platform Layout",
+        default_severity="warning",
+        description="A vertical portrait stack design is applied directly to an ultra-wide landscape viewport, causing vertical crowding and edge clipping.",
+        prescriptive_template="Refactor vertical stack into lateral horizontal card flow or split layout adapted to ultra-wide aspect ratios.",
+    ),
+    UXRule(
+        id="ergonomics/thumb-zone-unreachable",
+        dimension="ergonomics",
+        name="Landscape Thumb Reachability Zone Violation",
+        standard="Steven Hoober Mobile Thumb Zone Ergonomics",
+        default_severity="warning",
+        description="Primary touch target is placed in the dead center of an ultra-wide landscape screen, outside the natural two-handed thumb reach zone.",
+        prescriptive_template="Place primary interactive targets within lateral reach zones (left/right 25% margins) for effortless thumb actuation.",
     ),
 ]
 

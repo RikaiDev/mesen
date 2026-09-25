@@ -92,9 +92,16 @@ class MesenConsultantModel(nn.Module):
         if atomic_labels is not None and rule_targets is not None:
             total_loss = torch.tensor(0.0, device=feats.device)
 
-            # Atomic cross-entropy losses
+            # Atomic cross-entropy losses with class-balancing
             for head_name, targets in atomic_labels.items():
-                loss = F.cross_entropy(atomic_logits[head_name], targets)
+                if head_name == "responsive_consistency":
+                    rc_weight = torch.tensor([1.0, 3.5, 1.0], device=feats.device)
+                    loss = F.cross_entropy(atomic_logits[head_name], targets, weight=rc_weight)
+                elif head_name == "overall_quality":
+                    oq_weight = torch.tensor([3.0, 1.0, 1.5, 1.5], device=feats.device)
+                    loss = F.cross_entropy(atomic_logits[head_name], targets, weight=oq_weight)
+                else:
+                    loss = F.cross_entropy(atomic_logits[head_name], targets)
                 total_loss = total_loss + loss
 
             # Multi-label BCE loss with positive weighting

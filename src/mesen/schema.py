@@ -17,12 +17,16 @@ class ChoiceValue(str, Enum):
 class ChoiceAnswer(BaseModel):
     type: Literal["choice"] = "choice"
     choice: ChoiceValue
+    confidence: Optional[float] = None
+    reasoning: Optional[str] = None
     probabilities: Optional[Dict[str, float]] = None
 
 
 class ScoreAnswer(BaseModel):
     type: Literal["score"] = "score"
     score: int = Field(ge=0, le=3, description="0=Blocked/Unsafe, 1=Confusing, 2=Usable, 3=Excellent")
+    confidence: Optional[float] = None
+    reasoning: Optional[str] = None
     probabilities: Optional[List[float]] = None
 
 
