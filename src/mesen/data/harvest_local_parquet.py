@@ -10,12 +10,12 @@ import io
 import json
 import os
 import time
-from typing import Dict, List
+
 import pyarrow.parquet as pq
 from PIL import Image
 
 from mesen.engine.evidence import EvidenceEngine
-from mesen.rules.registry import RULE_DEFINITIONS, RULE_ID_LIST, RULE_TO_INDEX
+from mesen.rules.registry import RULE_ID_LIST, RULE_TO_INDEX
 
 
 def extract_real_mobile_dataset(
@@ -36,7 +36,7 @@ def extract_real_mobile_dataset(
     print(f"Total available rows in table: {total_in_table}")
 
     evidence_engine = EvidenceEngine(default_dpi=440)
-    manifest: List[Dict] = []
+    manifest: list[dict] = []
     num_to_process = min(max_samples, total_in_table)
 
     print(f"Processing {num_to_process} real screenshots...")
@@ -60,7 +60,7 @@ def extract_real_mobile_dataset(
             elements = evidence_engine.extract_and_measure_elements(img_path, dpi=440)
 
             rule_vec = [0.0] * len(RULE_ID_LIST)
-            active_rules: List[str] = []
+            active_rules: list[str] = []
             target_bbox = [0.0, 0.0, 1.0, 1.0]
 
             has_contrast_fail = False
@@ -93,25 +93,27 @@ def extract_real_mobile_dataset(
             evidence_consistency = "yes"
             overall_quality = 1 if (has_contrast_fail or has_font_fail) else 3
 
-            manifest.append({
-                "image_path": img_path,
-                "width": w,
-                "height": h,
-                "aspect_ratio": aspect_ratio,
-                "description": desc,
-                "labels": {
-                    "primary_action_reachable": primary_action_reachable,
-                    "visual_integrity": visual_integrity,
-                    "responsive_consistency": responsive_consistency,
-                    "evidence_consistency": evidence_consistency,
-                    "operator_clarity": operator_clarity,
-                    "overall_quality": overall_quality,
-                },
-                "rule_targets": rule_vec,
-                "active_rules": active_rules,
-                "bbox_targets": target_bbox,
-                "num_detected_elements": len(elements),
-            })
+            manifest.append(
+                {
+                    "image_path": img_path,
+                    "width": w,
+                    "height": h,
+                    "aspect_ratio": aspect_ratio,
+                    "description": desc,
+                    "labels": {
+                        "primary_action_reachable": primary_action_reachable,
+                        "visual_integrity": visual_integrity,
+                        "responsive_consistency": responsive_consistency,
+                        "evidence_consistency": evidence_consistency,
+                        "operator_clarity": operator_clarity,
+                        "overall_quality": overall_quality,
+                    },
+                    "rule_targets": rule_vec,
+                    "active_rules": active_rules,
+                    "bbox_targets": target_bbox,
+                    "num_detected_elements": len(elements),
+                }
+            )
 
             # Create unadapted 21:9 landscape variant every 3 samples
             if i % 3 == 0:
@@ -138,29 +140,33 @@ def extract_real_mobile_dataset(
                 min_x = round(offset_x / float(lw), 3)
                 max_x = round((offset_x + scaled_w) / float(lw), 3)
 
-                manifest.append({
-                    "image_path": l_path,
-                    "width": lw,
-                    "height": lh,
-                    "aspect_ratio": 2.24,
-                    "description": f"{desc} (unadapted on 21:9 landscape)",
-                    "labels": {
-                        "primary_action_reachable": "yes",
-                        "visual_integrity": "no",
-                        "responsive_consistency": "no",
-                        "evidence_consistency": "yes",
-                        "operator_clarity": "yes",
-                        "overall_quality": 1,
-                    },
-                    "rule_targets": l_rule_vec,
-                    "active_rules": l_active_rules,
-                    "bbox_targets": [0.0, min_x, 1.0, max_x],
-                    "num_detected_elements": len(elements),
-                })
+                manifest.append(
+                    {
+                        "image_path": l_path,
+                        "width": lw,
+                        "height": lh,
+                        "aspect_ratio": 2.24,
+                        "description": f"{desc} (unadapted on 21:9 landscape)",
+                        "labels": {
+                            "primary_action_reachable": "yes",
+                            "visual_integrity": "no",
+                            "responsive_consistency": "no",
+                            "evidence_consistency": "yes",
+                            "operator_clarity": "yes",
+                            "overall_quality": 1,
+                        },
+                        "rule_targets": l_rule_vec,
+                        "active_rules": l_active_rules,
+                        "bbox_targets": [0.0, min_x, 1.0, max_x],
+                        "num_detected_elements": len(elements),
+                    }
+                )
 
             if (i + 1) % 50 == 0:
                 elapsed = time.time() - start_time
-                print(f"[{i+1}/{num_to_process}] processed ({elapsed:.1f}s, {elapsed/(i+1):.2f}s/sample)")
+                print(
+                    f"[{i + 1}/{num_to_process}] processed ({elapsed:.1f}s, {elapsed / (i + 1):.2f}s/sample)"
+                )
 
         except Exception as e:
             print(f"Error on sample {i}: {e}")

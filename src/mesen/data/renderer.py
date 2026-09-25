@@ -7,10 +7,8 @@ import os
 import shutil
 import subprocess
 import tempfile
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
-VIEWPORTS: Dict[str, Tuple[int, int]] = {
+VIEWPORTS: dict[str, tuple[int, int]] = {
     "mobile": (375, 812),
     "tablet": (768, 1024),
     "laptop": (1024, 768),
@@ -18,7 +16,7 @@ VIEWPORTS: Dict[str, Tuple[int, int]] = {
 }
 
 
-def find_chrome_binary() -> Optional[str]:
+def find_chrome_binary() -> str | None:
     """Finds available Chrome or Chromium binary across macOS and Linux."""
     candidates = [
         "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
@@ -38,7 +36,7 @@ def render_html_viewports(
     html_content: str,
     output_dir: str,
     prefix: str = "sample",
-) -> List[str]:
+) -> list[str]:
     """
     Renders HTML string into 4 viewport screenshot PNGs.
     Returns:
@@ -54,12 +52,12 @@ def render_html_viewports(
         f.write(html_content)
         temp_html_path = f.name
 
-    captured_paths: List[str] = []
+    captured_paths: list[str] = []
     try:
         for vp_name in ["mobile", "tablet", "laptop", "desktop"]:
             width, height = VIEWPORTS[vp_name]
             out_png = os.path.join(output_dir, f"{prefix}_{vp_name}_{width}x{height}.png")
-            
+
             cmd = [
                 chrome_bin,
                 "--headless",

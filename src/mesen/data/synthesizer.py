@@ -11,7 +11,6 @@ import argparse
 import json
 import os
 import random
-from typing import Dict, List
 
 from mesen.data.mutator import MutationType, mutate_html
 from mesen.data.renderer import render_html_viewports
@@ -24,7 +23,7 @@ def generate_synthetic_dataset(
     render_screenshots: bool = True,
     val_ratio: float = 0.2,
     seed: int = 42,
-) -> Dict[str, str]:
+) -> dict[str, str]:
     """
     Generates a full synthetic dataset with clean and mutated UI samples.
     """
@@ -33,7 +32,7 @@ def generate_synthetic_dataset(
     images_dir = os.path.join(output_dir, "screenshots")
     os.makedirs(images_dir, exist_ok=True)
 
-    samples: List[Dict] = []
+    samples: list[dict] = []
     sample_idx = 0
 
     mutation_types = list(MutationType)
@@ -57,7 +56,7 @@ def generate_synthetic_dataset(
                             output_dir=images_dir,
                             prefix=sample_id,
                         )
-                    except Exception as e:
+                    except Exception:
                         # Fallback if rendering tool fails in headless environment
                         screenshot_paths = []
 
@@ -98,13 +97,15 @@ def generate_synthetic_dataset(
                     "overall_quality": score,
                 }
 
-                samples.append({
-                    "id": sample_id,
-                    "state": witness_state,
-                    "image_paths": screenshot_paths,
-                    "labels": all_labels,
-                    "mutation_type": mut_type.value,
-                })
+                samples.append(
+                    {
+                        "id": sample_id,
+                        "state": witness_state,
+                        "image_paths": screenshot_paths,
+                        "labels": all_labels,
+                        "mutation_type": mut_type.value,
+                    }
+                )
                 sample_idx += 1
 
     print(f"Generated {len(samples)} synthetic UI/UX samples across {len(TEMPLATES)} templates.")
@@ -122,13 +123,15 @@ def generate_synthetic_dataset(
     with open(val_path, "w", encoding="utf-8") as f:
         json.dump(val_samples, f, indent=2, ensure_ascii=False)
 
-    print(f"Dataset saved:")
+    print("Dataset saved:")
     print(f"  - Train: {len(train_samples)} samples -> {train_path}")
     print(f"  - Val:   {len(val_samples)} samples -> {val_path}")
 
     # Calculate summary defect ratio
     defects_count = sum(1 for s in samples if s["mutation_type"] != "clean")
-    print(f"Balance: {defects_count} defects ({defects_count/len(samples)*100:.1f}%), {len(samples)-defects_count} clean samples.")
+    print(
+        f"Balance: {defects_count} defects ({defects_count / len(samples) * 100:.1f}%), {len(samples) - defects_count} clean samples."
+    )
 
     return {"train_path": train_path, "val_path": val_path}
 

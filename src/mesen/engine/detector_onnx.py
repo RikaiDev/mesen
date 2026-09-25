@@ -5,7 +5,7 @@ Zero external server / GPU requirements. Runs completely offline in ~30ms on CPU
 
 import os
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+
 import cv2
 import numpy as np
 import onnxruntime as ort
@@ -15,12 +15,12 @@ import onnxruntime as ort
 class DetectedTextItem:
     text: str
     confidence: float
-    bbox: List[float]  # [ymin, xmin, ymax, xmax] normalized 0..1
-    pixel_bbox: Tuple[int, int, int, int]  # (x, y, w, h)
+    bbox: list[float]  # [ymin, xmin, ymax, xmax] normalized 0..1
+    pixel_bbox: tuple[int, int, int, int]  # (x, y, w, h)
 
 
 class OnnxTextDetector:
-    def __init__(self, models_dir: Optional[str] = None):
+    def __init__(self, models_dir: str | None = None):
         if models_dir is None:
             # Default to repo models/onnx directory
             base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -43,15 +43,19 @@ class OnnxTextDetector:
         opts.intra_op_num_threads = 2
         opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
 
-        self.det_session = ort.InferenceSession(self.det_model_path, opts, providers=["CPUExecutionProvider"])
-        self.rec_session = ort.InferenceSession(self.rec_model_path, opts, providers=["CPUExecutionProvider"])
+        self.det_session = ort.InferenceSession(
+            self.det_model_path, opts, providers=["CPUExecutionProvider"]
+        )
+        self.rec_session = ort.InferenceSession(
+            self.rec_model_path, opts, providers=["CPUExecutionProvider"]
+        )
 
         # Load dictionary
-        with open(self.keys_path, "r", encoding="utf-8") as f:
+        with open(self.keys_path, encoding="utf-8") as f:
             keys = [line.strip("\r\n") for line in f.readlines()]
         self.char_list = ["blank"] + keys + [" "]
 
-    def detect_and_recognize(self, img_bgr: np.ndarray) -> List[DetectedTextItem]:
+    def detect_and_recognize(self, img_bgr: np.ndarray) -> list[DetectedTextItem]:
         h, w, _ = img_bgr.shape
 
         # 1. Preprocess for DBNet Det
@@ -75,7 +79,7 @@ class OnnxTextDetector:
         scale_x = w / float(target_w)
         scale_y = h / float(target_h)
 
-        boxes: List[Tuple[int, int, int, int]] = []
+        boxes: list[tuple[int, int, int, int]] = []
         for c in contours:
             x, y, bw, bh = cv2.boundingRect(c)
             orig_x = int(x * scale_x)
@@ -88,10 +92,12 @@ class OnnxTextDetector:
         # Sort top-to-bottom
         boxes = sorted(boxes, key=lambda b: (b[1], b[0]))
 
-        items: List[DetectedTextItem] = []
+        items: list[DetectedTextItem] = []
         for bx, by, bw, bh in boxes:
             pad = 2
-            crop = img_bgr[max(0, by - pad) : min(h, by + bh + pad), max(0, bx - pad) : min(w, bx + bw + pad)]
+            crop = img_bgr[
+                max(0, by - pad) : min(h, by + bh + pad), max(0, bx - pad) : min(w, bx + bw + pad)
+            ]
             ch, cw, _ = crop.shape
             if ch < 4 or cw < 4:
                 continue

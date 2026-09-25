@@ -7,13 +7,12 @@ Equipped with:
 """
 
 import os
-from typing import List, Optional
-import numpy as np
-import torch
-import torch.nn.functional as F
-from fastapi import FastAPI, HTTPException
-import uvicorn
 
+import numpy as np
+import uvicorn
+from fastapi import FastAPI, HTTPException
+
+from mesen.rules.registry import RULE_ID_LIST, RULE_REGISTRY
 from mesen.schema import (
     ChoiceAnswer,
     ChoiceValue,
@@ -25,7 +24,6 @@ from mesen.schema import (
     ScoreAnswer,
     ViolationItem,
 )
-from mesen.rules.registry import RULE_DEFINITIONS, RULE_ID_LIST, RULE_REGISTRY
 
 app = FastAPI(title="Mesen UX Consultant & Decision Daemon", version="0.3.0")
 
@@ -38,6 +36,7 @@ def load_model(checkpoint_path: str = "models/mesen_consultant.onnx"):
     global _ort_session, _ort_hidden_size
     if os.path.exists(checkpoint_path):
         import onnxruntime as ort
+
         print(f"Loading Mesen Consultant ONNX session from {checkpoint_path}...")
         _ort_session = ort.InferenceSession(checkpoint_path)
         # Inspect input shape
@@ -101,7 +100,7 @@ def judge_ui(request: JudgeRequest):
         # Convert logits to sigmoid probabilities
         rule_probs = 1.0 / (1.0 + np.exp(-rule_logits))
 
-        violations: List[ViolationItem] = []
+        violations: list[ViolationItem] = []
         for idx, prob in enumerate(rule_probs):
             if prob > 0.4 and idx < len(RULE_ID_LIST):
                 rule = RULE_REGISTRY.get(RULE_ID_LIST[idx])
@@ -112,7 +111,7 @@ def judge_ui(request: JudgeRequest):
                             rule_id=rule.id,
                             severity=rule.default_severity,
                             bounding_box=bbox_coords,
-                            measured=f"Confidence: {prob*100:.1f}%",
+                            measured=f"Confidence: {prob * 100:.1f}%",
                             threshold=rule.description,
                             prescriptive_action=rule.prescriptive_template,
                         )
@@ -150,7 +149,9 @@ def judge_ui(request: JudgeRequest):
     raise HTTPException(status_code=503, detail="ONNX model not loaded")
 
 
-def run_server(host: str = "0.0.0.0", port: int = 8089, checkpoint: str = "models/mesen_consultant.onnx"):
+def run_server(
+    host: str = "0.0.0.0", port: int = 8089, checkpoint: str = "models/mesen_consultant.onnx"
+):
     load_model(checkpoint)
     uvicorn.run(app, host=host, port=port)
 

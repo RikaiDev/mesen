@@ -5,9 +5,8 @@ Produces clean mirror states, center-intrusion defects, low-optical-luminance de
 
 import json
 import os
-from typing import Dict, List
-from mesen.data.renderer import render_html_viewports
 
+from mesen.data.renderer import render_html_viewports
 
 MIRROR_CLEAN_HTML = """
 <!DOCTYPE html>
@@ -41,7 +40,7 @@ MIRROR_CLEAN_HTML = """
   .flower-tr { top: 24px; right: 24px; }
   .flower-bl { bottom: 24px; left: 24px; }
   .flower-br { bottom: 24px; right: 24px; }
-  
+
   /* Ambient Side Orbs */
   .ambient-orb {
     position: absolute; top: 50%; width: 64px; height: 64px; border-radius: 50%;
@@ -147,37 +146,77 @@ MIRROR_LOW_LUMINANCE_HTML = """
 """
 
 
-def render_all_mirror_samples(output_dir: str = "data/synthetic/screenshots") -> List[Dict]:
+def render_all_mirror_samples(output_dir: str = "data/synthetic/screenshots") -> list[dict]:
     os.makedirs(output_dir, exist_ok=True)
-    generated: List[Dict] = []
+    generated: list[dict] = []
 
     configs = [
-        ("mirror_clean", MIRROR_CLEAN_HTML, "clean", {"primary_action_reachable": "yes", "visual_integrity": "yes", "responsive_consistency": "yes", "evidence_consistency": "yes", "operator_clarity": "yes", "overall_quality": 3}),
-        ("mirror_center_intrusion", MIRROR_CENTER_INTRUSION_HTML, "mirror_center_obstruction", {"primary_action_reachable": "yes", "visual_integrity": "no", "responsive_consistency": "yes", "evidence_consistency": "yes", "operator_clarity": "no", "overall_quality": 0}),
-        ("mirror_low_luminance", MIRROR_LOW_LUMINANCE_HTML, "low_contrast", {"primary_action_reachable": "yes", "visual_integrity": "yes", "responsive_consistency": "yes", "evidence_consistency": "yes", "operator_clarity": "no", "overall_quality": 1}),
+        (
+            "mirror_clean",
+            MIRROR_CLEAN_HTML,
+            "clean",
+            {
+                "primary_action_reachable": "yes",
+                "visual_integrity": "yes",
+                "responsive_consistency": "yes",
+                "evidence_consistency": "yes",
+                "operator_clarity": "yes",
+                "overall_quality": 3,
+            },
+        ),
+        (
+            "mirror_center_intrusion",
+            MIRROR_CENTER_INTRUSION_HTML,
+            "mirror_center_obstruction",
+            {
+                "primary_action_reachable": "yes",
+                "visual_integrity": "no",
+                "responsive_consistency": "yes",
+                "evidence_consistency": "yes",
+                "operator_clarity": "no",
+                "overall_quality": 0,
+            },
+        ),
+        (
+            "mirror_low_luminance",
+            MIRROR_LOW_LUMINANCE_HTML,
+            "low_contrast",
+            {
+                "primary_action_reachable": "yes",
+                "visual_integrity": "yes",
+                "responsive_consistency": "yes",
+                "evidence_consistency": "yes",
+                "operator_clarity": "no",
+                "overall_quality": 1,
+            },
+        ),
     ]
 
     for name, html, mutation, labels in configs:
         for var_idx in range(5):
             sample_id = f"{name}_var{var_idx}"
             paths = render_html_viewports(html, output_dir, prefix=sample_id)
-            generated.append({
-                "id": sample_id,
-                "screenshots": paths,
-                "mutation_type": mutation,
-                "labels": labels,
-                "state": {
-                    "product": "the-mirror",
-                    "route": "/mirror-kiosk",
-                    "context": {
-                        "cohort": "older_adult_65plus",
-                        "modality": "ambient_mirror",
-                        "interaction_mode": "zero_touch_vision_voice"
-                    }
+            generated.append(
+                {
+                    "id": sample_id,
+                    "screenshots": paths,
+                    "mutation_type": mutation,
+                    "labels": labels,
+                    "state": {
+                        "product": "the-mirror",
+                        "route": "/mirror-kiosk",
+                        "context": {
+                            "cohort": "older_adult_65plus",
+                            "modality": "ambient_mirror",
+                            "interaction_mode": "zero_touch_vision_voice",
+                        },
+                    },
                 }
-            })
+            )
 
-    print(f"Rendered {len(generated) * 4} mirror screenshots across all viewports into {output_dir}")
+    print(
+        f"Rendered {len(generated) * 4} mirror screenshots across all viewports into {output_dir}"
+    )
     return generated
 
 

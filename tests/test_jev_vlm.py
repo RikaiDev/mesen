@@ -7,12 +7,13 @@ Run with: python3 -m unittest tests/test_jev_vlm.py
 import os
 import time
 import unittest
+
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
 import onnxruntime as ort
+from PIL import Image, ImageDraw
 
 from mesen.engine.jev_vlm_engine import JevVlmEngine
-from mesen.schema import ContextSpec, ConsultantReport, JudgeAnswers
+from mesen.schema import ConsultantReport, ContextSpec, JudgeAnswers
 
 
 class TestJevVlmEngine(unittest.TestCase):
@@ -24,7 +25,9 @@ class TestJevVlmEngine(unittest.TestCase):
 
         # Fallback path if running in remote dev environment
         if not os.path.exists(cls.vlm_model_path):
-            cls.vlm_model_path = "/home/gloomcheng/Workspace/RikaiDev/mesen/models/onnx/mesen_jev_vlm.onnx"
+            cls.vlm_model_path = (
+                "/home/gloomcheng/Workspace/RikaiDev/mesen/models/onnx/mesen_jev_vlm.onnx"
+            )
             cls.models_dir = "/home/gloomcheng/Workspace/RikaiDev/mesen/models/onnx"
 
         cls.engine = JevVlmEngine(models_dir=cls.models_dir, default_dpi=440)
@@ -41,7 +44,9 @@ class TestJevVlmEngine(unittest.TestCase):
 
     def test_01_onnx_graph_contract(self):
         """Verify the ONNX model inputs, outputs, and tensor shapes."""
-        self.assertTrue(os.path.exists(self.vlm_model_path), f"Missing ONNX model: {self.vlm_model_path}")
+        self.assertTrue(
+            os.path.exists(self.vlm_model_path), f"Missing ONNX model: {self.vlm_model_path}"
+        )
         sess = ort.InferenceSession(self.vlm_model_path, providers=["CPUExecutionProvider"])
 
         # Inputs
@@ -85,18 +90,25 @@ class TestJevVlmEngine(unittest.TestCase):
 
         # Verify pred_bboxes are in [0, 1]
         bboxes = outputs[7]
-        self.assertTrue((bboxes >= 0.0).all() and (bboxes <= 1.0).all(), f"BBox out of [0, 1]: {bboxes}")
+        self.assertTrue(
+            (bboxes >= 0.0).all() and (bboxes <= 1.0).all(), f"BBox out of [0, 1]: {bboxes}"
+        )
 
     def test_03_real_pixel10_inspection(self):
         """Verify real Pixel 10 mobile screenshot evaluation."""
         if not os.path.exists(self.real_pixel_image):
             self.skipTest(f"Real screenshot {self.real_pixel_image} not present")
 
-        context = ContextSpec(cohort="general_mobile", modality="mobile_app", interaction_mode="touch")
+        context = ContextSpec(
+            cohort="general_mobile", modality="mobile_app", interaction_mode="touch"
+        )
 
         start = time.perf_counter()
         report, judge = self.engine.evaluate(self.real_pixel_image, context=context, dpi=440)
         total_time = (time.perf_counter() - start) * 1000
+
+        # Latency budget: single forward pass must stay interactive on CPU.
+        self.assertLess(total_time, 10000, f"evaluate took {total_time:.0f}ms")
 
         # Assert structured types
         self.assertIsInstance(report, ConsultantReport)
@@ -124,12 +136,20 @@ class TestJevVlmEngine(unittest.TestCase):
 
     def test_04_synthetic_clean_ui_no_false_contrast_alarms(self):
         """Verify that on clean high-contrast text, contrast violation is not triggered."""
-        context = ContextSpec(cohort="general_mobile", modality="mobile_app", interaction_mode="touch")
+        context = ContextSpec(
+            cohort="general_mobile", modality="mobile_app", interaction_mode="touch"
+        )
         report, judge = self.engine.evaluate(self.clean_test_image, context=context, dpi=440)
 
         # High contrast white on black should not have contrast violation
-        contrast_violations = [v for v in report.violations if v.rule_id == "accessibility/contrast-ratio-insufficient"]
-        self.assertEqual(len(contrast_violations), 0, "Clean high contrast text incorrectly triggered contrast violation")
+        contrast_violations = [
+            v for v in report.violations if v.rule_id == "accessibility/contrast-ratio-insufficient"
+        ]
+        self.assertEqual(
+            len(contrast_violations),
+            0,
+            "Clean high contrast text incorrectly triggered contrast violation",
+        )
 
 
 if __name__ == "__main__":

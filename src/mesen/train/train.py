@@ -7,10 +7,11 @@ import json
 import os
 import random
 import time
+
 import numpy as np
 import torch
-from torch.utils.data import DataLoader
 from safetensors.torch import save_file
+from torch.utils.data import DataLoader
 
 from mesen.model.vlm_jev import VlmJevModel
 from mesen.pipeline.dataset import UiEvidenceDataset
@@ -42,9 +43,9 @@ def train_vlm_jev(
 
     # 1. Load Datasets
     print(f"Loading training data from {train_data_path}...")
-    with open(train_data_path, "r", encoding="utf-8") as f:
+    with open(train_data_path, encoding="utf-8") as f:
         train_samples = json.load(f)
-    with open(val_data_path, "r", encoding="utf-8") as f:
+    with open(val_data_path, encoding="utf-8") as f:
         val_samples = json.load(f)
 
     train_dataset = UiEvidenceDataset(train_samples)
@@ -94,7 +95,9 @@ def train_vlm_jev(
 
             epoch_loss += loss.item()
             if step % 10 == 0:
-                print(f"Epoch {epoch+1}/{epochs} | Step {step}/{len(train_loader)} | Loss: {loss.item():.4f}")
+                print(
+                    f"Epoch {epoch + 1}/{epochs} | Step {step}/{len(train_loader)} | Loss: {loss.item():.4f}"
+                )
 
         # Validation Step
         model.eval()
@@ -109,7 +112,7 @@ def train_vlm_jev(
                 val_loss += loss_dict["loss"].item()
 
         avg_val_loss = val_loss / max(1, len(val_loader))
-        print(f"--- Epoch {epoch+1} Validation Loss: {avg_val_loss:.4f} ---")
+        print(f"--- Epoch {epoch + 1} Validation Loss: {avg_val_loss:.4f} ---")
 
         # Save checkpoint if best
         if avg_val_loss < best_val_loss:

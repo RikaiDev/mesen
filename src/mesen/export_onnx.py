@@ -4,7 +4,9 @@ Exports the trained multi-task consultant model to ONNX for 0.2ms edge inference
 """
 
 import os
+
 import torch
+
 from mesen.model.consultant_model import MesenConsultantModel
 from mesen.rules.registry import RULE_DEFINITIONS
 
@@ -22,7 +24,9 @@ def export_consultant_onnx(
         model.load_state_dict(ckpt["model_state_dict"])
         print("Model weights successfully loaded.")
     else:
-        print(f"Warning: Checkpoint {checkpoint_path} not found. Exporting randomly initialized model.")
+        print(
+            f"Warning: Checkpoint {checkpoint_path} not found. Exporting randomly initialized model."
+        )
 
     model.eval()
 

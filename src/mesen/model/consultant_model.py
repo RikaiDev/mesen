@@ -6,12 +6,11 @@ Equipped with:
 3. Bounding Box Spatial Grounding Head (locating violation coordinates)
 """
 
-from typing import Dict, List, Optional, Tuple
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+import torch.nn.functional as F  # noqa: N812
 
-from mesen.rules.registry import RULE_DEFINITIONS, RULE_ID_LIST
+from mesen.rules.registry import RULE_DEFINITIONS
 
 
 class MesenConsultantModel(nn.Module):
@@ -34,14 +33,16 @@ class MesenConsultantModel(nn.Module):
         )
 
         # 1. Atomic CI/CD Gate Heads (3-way: yes=0, no=1, unknown=2)
-        self.atomic_heads = nn.ModuleDict({
-            "primary_action_reachable": nn.Linear(hidden_size, 3),
-            "visual_integrity": nn.Linear(hidden_size, 3),
-            "responsive_consistency": nn.Linear(hidden_size, 3),
-            "evidence_consistency": nn.Linear(hidden_size, 3),
-            "operator_clarity": nn.Linear(hidden_size, 3),
-            "overall_quality": nn.Linear(hidden_size, 4),  # 4 scores: 0, 1, 2, 3
-        })
+        self.atomic_heads = nn.ModuleDict(
+            {
+                "primary_action_reachable": nn.Linear(hidden_size, 3),
+                "visual_integrity": nn.Linear(hidden_size, 3),
+                "responsive_consistency": nn.Linear(hidden_size, 3),
+                "evidence_consistency": nn.Linear(hidden_size, 3),
+                "operator_clarity": nn.Linear(hidden_size, 3),
+                "overall_quality": nn.Linear(hidden_size, 4),  # 4 scores: 0, 1, 2, 3
+            }
+        )
 
         # 2. Rule Violation Multi-label Head (13 standard rules)
         self.rule_classifier = nn.Sequential(
@@ -62,19 +63,17 @@ class MesenConsultantModel(nn.Module):
     def forward(
         self,
         hidden_states: torch.Tensor,
-        atomic_labels: Optional[Dict[str, torch.Tensor]] = None,
-        rule_targets: Optional[torch.Tensor] = None,
-        bbox_targets: Optional[torch.Tensor] = None,
-    ) -> Dict[str, torch.Tensor]:
+        atomic_labels: dict[str, torch.Tensor] | None = None,
+        rule_targets: torch.Tensor | None = None,
+        bbox_targets: torch.Tensor | None = None,
+    ) -> dict[str, torch.Tensor]:
         """
         hidden_states: (batch_size, hidden_size) pooled embedding of multimodal state
         """
         feats = self.feature_proj(hidden_states)
 
         # Forward atomic heads
-        atomic_logits = {
-            name: head(feats) for name, head in self.atomic_heads.items()
-        }
+        atomic_logits = {name: head(feats) for name, head in self.atomic_heads.items()}
 
         # Forward rule multi-label head
         rule_logits = self.rule_classifier(feats)
@@ -116,9 +115,7 @@ class MesenConsultantModel(nn.Module):
                 has_violation = (rule_targets.sum(dim=-1) > 0).unsqueeze(-1)
                 if has_violation.any():
                     bbox_loss = F.smooth_l1_loss(
-                        pred_bboxes * has_violation,
-                        bbox_targets * has_violation,
-                        reduction="sum"
+                        pred_bboxes * has_violation, bbox_targets * has_violation, reduction="sum"
                     ) / (has_violation.sum() * 4 + 1e-6)
                     total_loss = total_loss + 1.5 * bbox_loss
 

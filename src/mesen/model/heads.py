@@ -4,7 +4,6 @@ Open-Jev inspired typed decision heads for multimodal UI reasoning.
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class ChoiceHead(nn.Module):

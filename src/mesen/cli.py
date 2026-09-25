@@ -3,6 +3,7 @@ Mesen command-line interface.
 """
 
 import json
+
 import click
 
 
@@ -61,13 +62,14 @@ def export(checkpoint, output, quantize):
 def judge(state, images, model, remote):
     """Judge a captured UI state using local ONNX vlm-jev or remote daemon."""
     import os
-    from mesen.schema import ContextSpec, JudgeAnswers, ChoiceAnswer, ScoreAnswer
+
     from mesen.engine.jev_vlm_engine import JevVlmEngine
+    from mesen.schema import ChoiceAnswer, ContextSpec, JudgeAnswers, ScoreAnswer
 
     state_obj = {}
     if os.path.exists(state):
         try:
-            with open(state, "r", encoding="utf-8") as f:
+            with open(state, encoding="utf-8") as f:
                 state_obj = json.load(f)
         except Exception:
             pass
@@ -77,11 +79,12 @@ def judge(state, images, model, remote):
     title = state_obj.get("title", "")
     cohort = "general_mobile"
     is_portal = (
-        product in ("portal", "employee-health") or
-        surface in ("portal", "employee-health") or
-        "portal" in product or
-        state_obj.get("modality") == "public_portal" or
-        "入口" in title or "Portal" in title
+        product in ("portal", "employee-health")
+        or surface in ("portal", "employee-health")
+        or "portal" in product
+        or state_obj.get("modality") == "public_portal"
+        or "入口" in title
+        or "Portal" in title
     )
     modality = "public_portal" if is_portal else "kiosk"
     context = ContextSpec(cohort=cohort, modality=modality, interaction_mode="touch")
@@ -98,11 +101,21 @@ def judge(state, images, model, remote):
         report, answers = engine.evaluate(image_path, context=context)
     else:
         answers = JudgeAnswers(
-            primary_action_reachable=ChoiceAnswer(choice="yes", confidence=1.0, reasoning="Primary action visible and reachable."),
-            visual_integrity=ChoiceAnswer(choice="yes", confidence=1.0, reasoning="Layout integrity confirmed."),
-            responsive_consistency=ChoiceAnswer(choice="yes", confidence=1.0, reasoning="Consistent across viewports."),
-            evidence_consistency=ChoiceAnswer(choice="yes", confidence=1.0, reasoning="Agrees with contract state."),
-            operator_clarity=ChoiceAnswer(choice="yes", confidence=1.0, reasoning="Clear user affordance."),
+            primary_action_reachable=ChoiceAnswer(
+                choice="yes", confidence=1.0, reasoning="Primary action visible and reachable."
+            ),
+            visual_integrity=ChoiceAnswer(
+                choice="yes", confidence=1.0, reasoning="Layout integrity confirmed."
+            ),
+            responsive_consistency=ChoiceAnswer(
+                choice="yes", confidence=1.0, reasoning="Consistent across viewports."
+            ),
+            evidence_consistency=ChoiceAnswer(
+                choice="yes", confidence=1.0, reasoning="Agrees with contract state."
+            ),
+            operator_clarity=ChoiceAnswer(
+                choice="yes", confidence=1.0, reasoning="Clear user affordance."
+            ),
             overall_quality=ScoreAnswer(score=2, confidence=1.0, reasoning="Good quality."),
         )
 
@@ -111,9 +124,9 @@ def judge(state, images, model, remote):
     # actions or station worker installation controls (e.g. data-offline-install-action).
     state_serialized = json.dumps(state_obj)
     has_offline_action = (
-        "offline-install-action" in state_serialized or
-        "安裝離線版" in state_serialized or
-        "data-offline-install-action" in state_serialized
+        "offline-install-action" in state_serialized
+        or "安裝離線版" in state_serialized
+        or "data-offline-install-action" in state_serialized
     )
 
     if (product == "portal" or modality == "public_portal") and has_offline_action:

@@ -5,23 +5,22 @@ Zero hallucinations, 100% empirical measurement.
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+
 import cv2
 import numpy as np
-from PIL import Image
 
-from mesen.engine.detector_onnx import OnnxTextDetector, DetectedTextItem
+from mesen.engine.detector_onnx import OnnxTextDetector
 
 
 @dataclass
 class MeasuredElement:
     text: str
-    text_bbox: List[float]  # [ymin, xmin, ymax, xmax] normalized
-    pixel_bbox: Tuple[int, int, int, int]  # (x, y, w, h)
+    text_bbox: list[float]  # [ymin, xmin, ymax, xmax] normalized
+    pixel_bbox: tuple[int, int, int, int]  # (x, y, w, h)
     pixel_height: int
     estimated_sp: float
-    fg_rgb: List[int]
-    bg_rgb: List[int]
+    fg_rgb: list[int]
+    bg_rgb: list[int]
     contrast_ratio: float
     wcag_aa_pass: bool
     wcag_aaa_pass: bool
@@ -49,11 +48,13 @@ def calculate_contrast_ratio(rgb1: np.ndarray, rgb2: np.ndarray) -> float:
 
 
 class EvidenceEngine:
-    def __init__(self, default_dpi: int = 440, models_dir: Optional[str] = None):
+    def __init__(self, default_dpi: int = 440, models_dir: str | None = None):
         self.default_dpi = default_dpi
         self.detector = OnnxTextDetector(models_dir=models_dir)
 
-    def analyze_roi_contrast(self, img_bgr: np.ndarray, x: int, y: int, w: int, h: int) -> Tuple[np.ndarray, np.ndarray, float]:
+    def analyze_roi_contrast(
+        self, img_bgr: np.ndarray, x: int, y: int, w: int, h: int
+    ) -> tuple[np.ndarray, np.ndarray, float]:
         """
         Samples foreground text pixels and background ring pixels to compute contrast.
         """
@@ -75,8 +76,14 @@ class EvidenceEngine:
             text_mask = gray > mean_val
             bg_mask = gray <= mean_val
 
-        fg_color = np.median(roi_rgb[text_mask], axis=0) if np.any(text_mask) else np.median(roi_rgb, axis=(0, 1))
-        bg_color = np.median(roi_rgb[bg_mask], axis=0) if np.any(bg_mask) else np.median(border_pixels)
+        fg_color = (
+            np.median(roi_rgb[text_mask], axis=0)
+            if np.any(text_mask)
+            else np.median(roi_rgb, axis=(0, 1))
+        )
+        bg_color = (
+            np.median(roi_rgb[bg_mask], axis=0) if np.any(bg_mask) else np.median(border_pixels)
+        )
 
         fg_rgb = np.clip(np.array(fg_color[:3]), 0, 255)
         bg_rgb = np.clip(np.array(bg_color[:3]), 0, 255)
@@ -84,7 +91,9 @@ class EvidenceEngine:
 
         return fg_rgb, bg_rgb, cr
 
-    def extract_and_measure_elements(self, image_path: str, dpi: Optional[int] = None) -> List[MeasuredElement]:
+    def extract_and_measure_elements(
+        self, image_path: str, dpi: int | None = None
+    ) -> list[MeasuredElement]:
         img_bgr = cv2.imread(image_path)
         img_h, img_w, _ = img_bgr.shape
 
@@ -94,7 +103,7 @@ class EvidenceEngine:
         # Step 1: Detect text lines and decode strings via local ONNX
         detected_items = self.detector.detect_and_recognize(img_bgr)
 
-        results: List[MeasuredElement] = []
+        results: list[MeasuredElement] = []
         for item in detected_items:
             x, y, bw, bh = item.pixel_bbox
             fg_rgb, bg_rgb, cr = self.analyze_roi_contrast(img_bgr, x, y, bw, bh)

@@ -3,11 +3,9 @@ Dataset loading and preprocessing for multi-viewport screenshots and witness sta
 """
 
 import json
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+
 import torch
 from torch.utils.data import Dataset
-from PIL import Image
 
 CHOICE_TO_IDX = {"yes": 0, "no": 1, "unknown": 2}
 IDX_TO_CHOICE = {0: "yes", 1: "no", 2: "unknown"}
@@ -23,7 +21,7 @@ class UiEvidenceDataset(Dataset):
 
     def __init__(
         self,
-        samples: List[Dict],
+        samples: list[dict],
         tokenizer=None,
         processor=None,
         max_seq_length: int = 1024,
@@ -36,12 +34,11 @@ class UiEvidenceDataset(Dataset):
     def __len__(self) -> int:
         return len(self.samples)
 
-    def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
+    def __getitem__(self, idx: int) -> dict[str, torch.Tensor]:
         sample = self.samples[idx]
 
         # 1. Format text prompt / witness state representation
         state = sample.get("state", {})
-        state_str = json.dumps(state, ensure_ascii=False)
         text_prompt = (
             f"Judge UI Evidence for route {state.get('route', 'unknown')}.\n"
             f"Contract: {json.dumps(state.get('contract', {}))}\n"
@@ -49,7 +46,6 @@ class UiEvidenceDataset(Dataset):
             f"Geometry: {json.dumps(state.get('geometryAnomalies', []))}\n"
         )
 
-        tokens = None
         if self.tokenizer is not None:
             enc = self.tokenizer(
                 text_prompt,

@@ -8,20 +8,16 @@ import argparse
 import json
 import os
 import urllib.request
-from typing import Dict, List
 
 from mesen.data.mutator import MutationType, mutate_html
 
 WEBSIGHT_API = "https://datasets-server.huggingface.co/rows?dataset=HuggingFaceM4%2FWebSight&config=v0.2&split=train"
 
 
-def fetch_websight_batch(offset: int = 0, limit: int = 100) -> List[Dict]:
+def fetch_websight_batch(offset: int = 0, limit: int = 100) -> list[dict]:
     """Fetches a batch of HTML/CSS web designs from HuggingFace WebSight."""
     url = f"{WEBSIGHT_API}&offset={offset}&limit={limit}"
-    req = urllib.request.Request(
-        url,
-        headers={"User-Agent": "Mesen-UI-DataCollector/1.0"}
-    )
+    req = urllib.request.Request(url, headers={"User-Agent": "Mesen-UI-DataCollector/1.0"})
     with urllib.request.urlopen(req, timeout=30) as resp:
         data = json.loads(resp.read().decode("utf-8"))
         return [row["row"] for row in data.get("rows", [])]
@@ -37,7 +33,7 @@ def harvest_websight_mutations(
     and saves to output JSONL.
     """
     os.makedirs(os.path.dirname(os.path.abspath(output_file)), exist_ok=True)
-    
+
     total_written = 0
     current_offset = offset_start
     batch_size = 50

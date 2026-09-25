@@ -8,19 +8,18 @@ import argparse
 import json
 import os
 import random
-from typing import Dict, List, Tuple
+
 import torch
-import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
 
 from mesen.model.consultant_model import MesenConsultantModel
-from mesen.rules.registry import RULE_DEFINITIONS, RULE_ID_LIST, RULE_TO_INDEX
+from mesen.rules.registry import RULE_ID_LIST, RULE_TO_INDEX
 
 CHOICE_MAP = {"yes": 0, "no": 1, "unknown": 2}
 
 
 class ConsultantDataset(Dataset):
-    def __init__(self, samples: List[Dict], hidden_size: int = 1536):
+    def __init__(self, samples: list[dict], hidden_size: int = 1536):
         self.samples = samples
         self.hidden_size = hidden_size
         self.num_rules = len(RULE_ID_LIST)
@@ -28,12 +27,10 @@ class ConsultantDataset(Dataset):
     def __len__(self) -> int:
         return len(self.samples)
 
-    def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
+    def __getitem__(self, idx: int) -> dict[str, torch.Tensor]:
         item = self.samples[idx]
         labels = item.get("labels", {})
         mutation = item.get("mutation_type", "clean")
-        context = item.get("state", {}).get("context", {})
-        modality = context.get("modality", "desktop_web") if isinstance(context, dict) else "desktop_web"
 
         # Generate deterministic synthetic feature embedding representing multimodal state
         # (In real deployment, this is the pooled output from the vision backbone)
@@ -42,11 +39,21 @@ class ConsultantDataset(Dataset):
 
         # Atomic target indices
         atomic_targets = {
-            "primary_action_reachable": torch.tensor(CHOICE_MAP.get(labels.get("primary_action_reachable", "yes"), 0)),
-            "visual_integrity": torch.tensor(CHOICE_MAP.get(labels.get("visual_integrity", "yes"), 0)),
-            "responsive_consistency": torch.tensor(CHOICE_MAP.get(labels.get("responsive_consistency", "yes"), 0)),
-            "evidence_consistency": torch.tensor(CHOICE_MAP.get(labels.get("evidence_consistency", "yes"), 0)),
-            "operator_clarity": torch.tensor(CHOICE_MAP.get(labels.get("operator_clarity", "yes"), 0)),
+            "primary_action_reachable": torch.tensor(
+                CHOICE_MAP.get(labels.get("primary_action_reachable", "yes"), 0)
+            ),
+            "visual_integrity": torch.tensor(
+                CHOICE_MAP.get(labels.get("visual_integrity", "yes"), 0)
+            ),
+            "responsive_consistency": torch.tensor(
+                CHOICE_MAP.get(labels.get("responsive_consistency", "yes"), 0)
+            ),
+            "evidence_consistency": torch.tensor(
+                CHOICE_MAP.get(labels.get("evidence_consistency", "yes"), 0)
+            ),
+            "operator_clarity": torch.tensor(
+                CHOICE_MAP.get(labels.get("operator_clarity", "yes"), 0)
+            ),
             "overall_quality": torch.tensor(int(labels.get("overall_quality", 2))),
         }
 
@@ -91,87 +98,94 @@ class ConsultantDataset(Dataset):
         }
 
 
-def build_augmented_training_corpus(websight_path: str, synthetic_path: str) -> Tuple[List[Dict], List[Dict]]:
+def build_augmented_training_corpus(
+    websight_path: str, synthetic_path: str
+) -> tuple[list[dict], list[dict]]:
     """Loads all collected samples and synthesizes Ambient Mirror domain samples."""
-    samples: List[Dict] = []
-    
+    samples: list[dict] = []
+
     if os.path.exists(websight_path):
-        with open(websight_path, "r", encoding="utf-8") as f:
+        with open(websight_path, encoding="utf-8") as f:
             samples.extend(json.load(f))
-            
+
     if os.path.exists(synthetic_path):
-        with open(synthetic_path, "r", encoding="utf-8") as f:
+        with open(synthetic_path, encoding="utf-8") as f:
             samples.extend(json.load(f))
 
     # Synthesize Ambient Mirror domain samples (the-mirror)
-    mirror_templates = ["presence_stage", "rppg_measuring", "vitality_summary"]
     for i in range(150):
         # Positive clean mirror sample
-        samples.append({
-            "id": f"mirror_clean_{i}",
-            "state": {
-                "product": "the-mirror",
-                "route": "/mirror",
-                "context": {
-                    "cohort": "older_adult_65plus",
-                    "modality": "ambient_mirror",
-                    "interaction_mode": "zero_touch_vision_voice"
-                }
-            },
-            "labels": {
-                "primary_action_reachable": "yes",
-                "visual_integrity": "yes",
-                "responsive_consistency": "yes",
-                "evidence_consistency": "yes",
-                "operator_clarity": "yes",
-                "overall_quality": 3
-            },
-            "mutation_type": "clean"
-        })
+        samples.append(
+            {
+                "id": f"mirror_clean_{i}",
+                "state": {
+                    "product": "the-mirror",
+                    "route": "/mirror",
+                    "context": {
+                        "cohort": "older_adult_65plus",
+                        "modality": "ambient_mirror",
+                        "interaction_mode": "zero_touch_vision_voice",
+                    },
+                },
+                "labels": {
+                    "primary_action_reachable": "yes",
+                    "visual_integrity": "yes",
+                    "responsive_consistency": "yes",
+                    "evidence_consistency": "yes",
+                    "operator_clarity": "yes",
+                    "overall_quality": 3,
+                },
+                "mutation_type": "clean",
+            }
+        )
         # Negative mirror center obstruction
-        samples.append({
-            "id": f"mirror_center_obstruction_{i}",
-            "state": {
-                "product": "the-mirror",
-                "route": "/mirror",
-                "context": {
-                    "cohort": "older_adult_65plus",
-                    "modality": "ambient_mirror",
-                    "interaction_mode": "zero_touch_vision_voice"
-                }
-            },
-            "labels": {
-                "primary_action_reachable": "yes",
-                "visual_integrity": "no",
-                "responsive_consistency": "yes",
-                "evidence_consistency": "yes",
-                "operator_clarity": "no",
-                "overall_quality": 0
-            },
-            "mutation_type": "mirror_center_obstruction"
-        })
+        samples.append(
+            {
+                "id": f"mirror_center_obstruction_{i}",
+                "state": {
+                    "product": "the-mirror",
+                    "route": "/mirror",
+                    "context": {
+                        "cohort": "older_adult_65plus",
+                        "modality": "ambient_mirror",
+                        "interaction_mode": "zero_touch_vision_voice",
+                    },
+                },
+                "labels": {
+                    "primary_action_reachable": "yes",
+                    "visual_integrity": "no",
+                    "responsive_consistency": "yes",
+                    "evidence_consistency": "yes",
+                    "operator_clarity": "no",
+                    "overall_quality": 0,
+                },
+                "mutation_type": "mirror_center_obstruction",
+            }
+        )
         # Negative mirror touch violation
-        samples.append({
-            "id": f"mirror_touch_violation_{i}",
-            "state": {
-                "product": "the-mirror",
-                "route": "/mirror",
-                "context": {
-                    "cohort": "older_adult_65plus",
-                    "modality": "ambient_mirror",
-                    "interaction_mode": "touch"  # WRONG modality for mirror
-                }
-            },
-            "labels": {
-                "primary_action_reachable": "no",
-                "visual_integrity": "yes",
-                "responsive_consistency": "yes",
-                "evidence_consistency": "yes",
-                "operator_clarity": "no",
-                "overall_quality": 1
-            },
-            "mutation_type": "mirror_zero_touch_violation"
-        })
+        samples.append(
+            {
+                "id": f"mirror_touch_violation_{i}",
+                "state": {
+                    "product": "the-mirror",
+                    "route": "/mirror",
+                    "context": {
+                        "cohort": "older_adult_65plus",
+                        "modality": "ambient_mirror",
+                        "interaction_mode": "touch",  # WRONG modality for mirror
+                    },
+                },
+                "labels": {
+                    "primary_action_reachable": "no",
+                    "visual_integrity": "yes",
+                    "responsive_consistency": "yes",
+                    "evidence_consistency": "yes",
+                    "operator_clarity": "no",
+                    "overall_quality": 1,
+                },
+                "mutation_type": "mirror_zero_touch_violation",
+            }
+        )
 
     random.seed(42)
     random.shuffle(samples)
@@ -181,13 +195,15 @@ def build_augmented_training_corpus(websight_path: str, synthetic_path: str) -> 
 
 
 def train(epochs: int = 10, batch_size: int = 32, lr: float = 1e-3, device: str = "cuda"):
-    print(f"=== Mesen Consultant Model Training Pipeline ===")
+    print("=== Mesen Consultant Model Training Pipeline ===")
     print(f"Device: {device}, Epochs: {epochs}, Batch Size: {batch_size}, LR: {lr}")
 
     train_samples, val_samples = build_augmented_training_corpus(
         "data/websight_train.json", "data/synthetic/train.json"
     )
-    print(f"Dataset assembled: {len(train_samples)} training samples, {len(val_samples)} validation samples.")
+    print(
+        f"Dataset assembled: {len(train_samples)} training samples, {len(val_samples)} validation samples."
+    )
 
     train_ds = ConsultantDataset(train_samples)
     val_ds = ConsultantDataset(val_samples)
@@ -263,21 +279,24 @@ def train(epochs: int = 10, batch_size: int = 32, lr: float = 1e-3, device: str 
             f"Epoch {epoch:02d}/{epochs:02d} | "
             f"Train Loss: {avg_train_loss:.4f} | "
             f"Val Loss: {avg_val_loss:.4f} | "
-            f"Rule Precision: {prec*100:.1f}% | "
-            f"Rule Recall: {rec*100:.1f}% | "
-            f"Rule F1: {f1*100:.1f}%"
+            f"Rule Precision: {prec * 100:.1f}% | "
+            f"Rule Recall: {rec * 100:.1f}% | "
+            f"Rule F1: {f1 * 100:.1f}%"
         )
 
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss
             ckpt_path = "checkpoints/best_consultant_model.pt"
-            torch.save({
-                "epoch": epoch,
-                "model_state_dict": model.state_dict(),
-                "val_loss": avg_val_loss,
-                "rule_f1": f1,
-                "rule_ids": RULE_ID_LIST,
-            }, ckpt_path)
+            torch.save(
+                {
+                    "epoch": epoch,
+                    "model_state_dict": model.state_dict(),
+                    "val_loss": avg_val_loss,
+                    "rule_f1": f1,
+                    "rule_ids": RULE_ID_LIST,
+                },
+                ckpt_path,
+            )
             print(f"  -> Saved best model checkpoint to {ckpt_path}")
 
     print("=== Training Complete ===")

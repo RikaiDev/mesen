@@ -15,14 +15,12 @@ End-to-End Multimodal Architecture:
    - Spatial BBox Regressor
 """
 
-from typing import Dict, List, Optional, Tuple
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torchvision.models as models
 
 from mesen.model.consultant_model import MesenConsultantModel
-from mesen.rules.registry import RULE_DEFINITIONS, RULE_ID_LIST
+from mesen.rules.registry import RULE_DEFINITIONS
 
 
 class MesenViTConsultantModel(nn.Module):
@@ -107,10 +105,10 @@ class MesenViTConsultantModel(nn.Module):
     def forward(
         self,
         images: torch.Tensor,
-        atomic_labels: Optional[Dict[str, torch.Tensor]] = None,
-        rule_targets: Optional[torch.Tensor] = None,
-        bbox_targets: Optional[torch.Tensor] = None,
-    ) -> Dict[str, torch.Tensor]:
+        atomic_labels: dict[str, torch.Tensor] | None = None,
+        rule_targets: torch.Tensor | None = None,
+        bbox_targets: torch.Tensor | None = None,
+    ) -> dict[str, torch.Tensor]:
         """
         images: (B, 3, 224, 224) normalized input screenshots
         """

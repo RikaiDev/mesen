@@ -16,8 +16,8 @@ The original `mesen` explored dual-agent VLM simulations (Naive User + UX Expert
 
 **The new mesen completely replaces that architecture with `vlm-jev`**:
 - **Non-Generative & Typed**: Uses Open-Jev typed decision heads (`Choice`, `Score`, `Noul`) directly predicting probabilities rather than generating long token streams.
-- **Multimodal UI Reasoning**: Fuses multi-viewport screenshot images (375, 768, 1024, 1440px) with structured DOM / accessibility / contract witness state.
-- **Single Forward Pass**: Execution takes **< 200ms** on GPU, or **< 500ms** via ONNX Runtime on local CPU/Apple Silicon.
+- **Multimodal UI Reasoning**: One screenshot per forward pass, fused with structured DOM / accessibility / contract witness state. Run once per breakpoint (375, 768, 1024, 1440px) and compare verdicts.
+- **Single Forward Pass**: Measured **~1.6s per screenshot** via ONNX Runtime on Apple Silicon CPU (2 threads). GPU serving targets < 200ms (unverified on this machine).
 - **Zero Cloud API Dependencies**: 100% on-premises / edge, zero API fees, privacy-safe (zero PHI leak).
 - **Zero Schema Failures**: Outputs fixed-shape probability tensors that map directly to strong types without JSON parsing errors.
 
@@ -50,7 +50,7 @@ The original `mesen` explored dual-agent VLM simulations (Naive User + UX Expert
                 ▼                                     ▼
      【 GPU Server Serving 】                  【 Local ONNX Runtime 】
      • RTX 4080 (WSL2 / Linux)                • INT8 / FP16 .onnx
-     • FastAPI / gRPC Endpoint                • Embedded in Node.js CLI
+     • FastAPI / gRPC Endpoint                • Python click CLI
      • Shared across dev team & CI            • Fully offline on laptops
 ```
 
@@ -85,19 +85,32 @@ To achieve high defect diagnosis accuracy without running huge models in product
 ### Option A: Centralized GPU Server (RTX 4080)
 Run the fast HTTP daemon on the internal GPU server:
 ```bash
-mesen serve --host 0.0.0.0 --port 8088 --model-path /mnt/model-cache/vlm-jev/latest.safetensors
+mesen serve --host 0.0.0.0 --port 8088 --checkpoint /mnt/model-cache/vlm-jev/latest.safetensors
 ```
 Team members and CI runners call:
 ```bash
-mesen judge --remote http://gpu-server:8088 --images v1.jpg v2.jpg v3.jpg v4.jpg --state state.json
+mesen judge --remote http://gpu-server:8088 --images v1.jpg --state state.json
 ```
+(`judge` evaluates the first existing `--images` entry; pass one screenshot per invocation.)
 
 ### Option B: Local ONNX Runtime (CPU / CoreML)
 Export to ONNX and run without any GPU:
 ```bash
-mesen export-onnx --checkpoint /path/to/checkpoint --output mesen.onnx --quantize int8
-mesen judge --model mesen.onnx --images v1.jpg v2.jpg v3.jpg v4.jpg --state state.json
+mesen export --checkpoint /path/to/checkpoint --output mesen.onnx --quantize
+mesen judge --model mesen.onnx --images v1.jpg --state state.json
 ```
+
+---
+
+## Development / QC
+
+```bash
+uv sync --extra dev   # install ruff + pytest
+bash scripts/qc.sh    # ruff check + format check + pytest (CI runs the same)
+```
+
+Ruff config lives in `pyproject.toml` (`[tool.ruff]`); pytest in `[tool.pytest.ini_options]`.
+Pydantic models stay snake_case — camelCase wire names survive only as field aliases.
 
 ---
 

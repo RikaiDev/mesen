@@ -2,10 +2,9 @@
 Distillation loss objectives combining teacher predictions, human ground truth, and calibration penalties.
 """
 
-from typing import Dict, Optional
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+import torch.nn.functional as F  # noqa: N812
 
 
 class FocalLoss(nn.Module):
@@ -13,7 +12,7 @@ class FocalLoss(nn.Module):
     Focal Loss to heavily penalize confident false approvals on defect classes.
     """
 
-    def __init__(self, alpha: Optional[torch.Tensor] = None, gamma: float = 2.0):
+    def __init__(self, alpha: torch.Tensor | None = None, gamma: float = 2.0):
         super().__init__()
         self.gamma = gamma
         if alpha is not None:
@@ -58,10 +57,10 @@ class MultiTaskDistillLoss(nn.Module):
 
     def forward(
         self,
-        student_logits: Dict[str, torch.Tensor],
-        targets: Dict[str, torch.Tensor],
-        teacher_logits: Optional[Dict[str, torch.Tensor]] = None,
-    ) -> Dict[str, torch.Tensor]:
+        student_logits: dict[str, torch.Tensor],
+        targets: dict[str, torch.Tensor],
+        teacher_logits: dict[str, torch.Tensor] | None = None,
+    ) -> dict[str, torch.Tensor]:
         total_supervised = torch.tensor(0.0, device=next(iter(student_logits.values())).device)
         total_distill = torch.tensor(0.0, device=next(iter(student_logits.values())).device)
 
@@ -83,7 +82,7 @@ class MultiTaskDistillLoss(nn.Module):
                     t_logits = teacher_logits[key]
                     p_s = F.log_softmax(s_logits / self.temperature, dim=-1)
                     p_t = F.softmax(t_logits / self.temperature, dim=-1)
-                    total_distill += (self.temperature ** 2) * self.kl_div(p_s, p_t)
+                    total_distill += (self.temperature**2) * self.kl_div(p_s, p_t)
 
         # 2. Overall Quality Score loss
         if "overall_quality" in targets:

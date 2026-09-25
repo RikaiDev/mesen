@@ -9,15 +9,12 @@ Generates multi-task training samples for Mesen Jev-VLM.
 import argparse
 import json
 import os
-import time
-from typing import Dict, List, Optional
-import numpy as np
-from PIL import Image
-from tqdm import tqdm
+
 from datasets import load_dataset
+from PIL import Image
 
 from mesen.engine.evidence import EvidenceEngine
-from mesen.rules.registry import RULE_DEFINITIONS, RULE_ID_LIST, RULE_TO_INDEX
+from mesen.rules.registry import RULE_ID_LIST, RULE_TO_INDEX
 
 CHOICE_MAP = {"yes": 0, "no": 1, "unknown": 2}
 
@@ -27,7 +24,7 @@ def analyze_real_screenshot(
     evidence_engine: EvidenceEngine,
     description: str = "",
     is_landscape: bool = False,
-) -> Dict:
+) -> dict:
     """
     Analyzes a real mobile screenshot and generates grounded JEV labels and rule violations.
     """
@@ -40,7 +37,7 @@ def analyze_real_screenshot(
 
     # 2. Rule Violations Detection
     rule_vec = [0.0] * len(RULE_ID_LIST)
-    active_rules: List[str] = []
+    active_rules: list[str] = []
     target_bbox = [0.0, 0.0, 1.0, 1.0]
 
     # Contrast check (< 3.0:1 is critical fail)
@@ -133,11 +130,11 @@ def harvest_real_rico_dataset(
     images_dir = os.path.join(output_dir, "images")
     os.makedirs(images_dir, exist_ok=True)
 
-    print(f"Loading RICO dataset stream from HuggingFace...")
+    print("Loading RICO dataset stream from HuggingFace...")
     ds = load_dataset("pinkmooncake/rico-screen2words", split="train", streaming=True)
     evidence_engine = EvidenceEngine(default_dpi=440)
 
-    manifest: List[Dict] = []
+    manifest: list[dict] = []
     count = 0
 
     print(f"Collecting and analyzing {max_samples} real mobile app screenshots...")

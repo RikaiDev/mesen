@@ -4,7 +4,6 @@ Grounds all diagnoses in standardized HCI, WCAG, ISO ergonomics, and physical am
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional
 
 
 @dataclass(frozen=True)
@@ -18,7 +17,7 @@ class UXRule:
     prescriptive_template: str
 
 
-RULE_DEFINITIONS: List[UXRule] = [
+RULE_DEFINITIONS: list[UXRule] = [
     # 1. Accessibility (WCAG 2.1 / 2.2)
     UXRule(
         id="accessibility/contrast-ratio-insufficient",
@@ -47,7 +46,6 @@ RULE_DEFINITIONS: List[UXRule] = [
         description="Interactive element bounding box is smaller than minimum 24x24px (WCAG) or 44x44px (AAA).",
         prescriptive_template="Expand target bounding box to minimum 44x44px with touch-target padding.",
     ),
-
     # 2. Ergonomics & Natural Interaction (ISO 9241, Fitts's Law)
     UXRule(
         id="ergonomics/primary-action-occluded",
@@ -76,7 +74,6 @@ RULE_DEFINITIONS: List[UXRule] = [
         description="Air gesture dwell time is too brief (<1200ms) triggering accidental activations, or too long (>2500ms) causing fatigue.",
         prescriptive_template="Calibrate air gesture dwell timer between 1200ms and 1600ms with circular progress indicator.",
     ),
-
     # 3. Cognitive Load & Heuristics (Nielsen's 10 Heuristics, Hick's Law)
     UXRule(
         id="cognitive/choice-overload",
@@ -114,7 +111,6 @@ RULE_DEFINITIONS: List[UXRule] = [
         description="An actionable object or target lacks visual signifiers (such as button boundaries, pulsing highlight, or touch affordance) indicating it can be touched/held.",
         prescriptive_template="Add explicit visual affordances (e.g. outline, breathing pulse, or touch ripple) to make interaction entrypoint unambiguous.",
     ),
-
     # 4. Physical & Ambient Environment (Smart Mirror / IoT / the-mirror)
     UXRule(
         id="physical/optical-center-obstruction",
@@ -152,7 +148,6 @@ RULE_DEFINITIONS: List[UXRule] = [
         description="Left and right air-gesture selection targets overlap in physical space, preventing clear hand disambiguation.",
         prescriptive_template="Separate gesture targets to outer lateral flanks (left flank vs right flank) with at least 300px separation.",
     ),
-
     # 5. Layout & Spatial Composition (ISO 9241-110 / Responsive Ergonomics)
     UXRule(
         id="layout/horizontal-space-desert",
@@ -183,6 +178,6 @@ RULE_DEFINITIONS: List[UXRule] = [
     ),
 ]
 
-RULE_REGISTRY: Dict[str, UXRule] = {rule.id: rule for rule in RULE_DEFINITIONS}
-RULE_ID_LIST: List[str] = [rule.id for rule in RULE_DEFINITIONS]
-RULE_TO_INDEX: Dict[str, int] = {rule.id: i for i, rule in enumerate(RULE_DEFINITIONS)}
+RULE_REGISTRY: dict[str, UXRule] = {rule.id: rule for rule in RULE_DEFINITIONS}
+RULE_ID_LIST: list[str] = [rule.id for rule in RULE_DEFINITIONS]
+RULE_TO_INDEX: dict[str, int] = {rule.id: i for i, rule in enumerate(RULE_DEFINITIONS)}

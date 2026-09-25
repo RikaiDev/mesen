@@ -3,9 +3,7 @@ HTML/CSS UI templates for diverse web applications and components.
 Used as foundational baselines for automated UI/UX data synthesis and mutation.
 """
 
-from typing import Dict, List
-
-TEMPLATES: Dict[str, Dict] = {
+TEMPLATES: dict[str, dict] = {
     "dashboard_analytics": {
         "title": "Analytics Dashboard",
         "category": "dashboard",
@@ -59,7 +57,7 @@ TEMPLATES: Dict[str, Dict] = {
     </table>
   </div>
 </body>
-</html>"""
+</html>""",
     },
     "auth_login": {
         "title": "Account Sign In",
@@ -98,7 +96,7 @@ TEMPLATES: Dict[str, Dict] = {
     <button class="btn-submit" id="primary-cta">Sign In to Account</button>
   </div>
 </body>
-</html>"""
+</html>""",
     },
     "order_checkout": {
         "title": "Order Checkout",
@@ -130,7 +128,7 @@ TEMPLATES: Dict[str, Dict] = {
     <button class="btn-pay" id="primary-cta">Confirm and Pay</button>
   </div>
 </body>
-</html>"""
+</html>""",
     },
     "patient_records": {
         "title": "Clinical Patient Records",
@@ -172,7 +170,7 @@ TEMPLATES: Dict[str, Dict] = {
     </div>
   </div>
 </body>
-</html>"""
+</html>""",
     },
     "modal_confirmation": {
         "title": "Action Confirmation Dialog",
@@ -205,6 +203,6 @@ TEMPLATES: Dict[str, Dict] = {
     </div>
   </div>
 </body>
-</html>"""
-    }
+</html>""",
+    },
 }

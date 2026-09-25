@@ -2,7 +2,6 @@
 VlmJevModel: Unified multimodal backbone + Open-Jev typed decision heads.
 """
 
-from typing import Dict, Optional, Tuple
 import torch
 import torch.nn as nn
 from transformers import AutoConfig, AutoModel
@@ -56,9 +55,9 @@ class VlmJevModel(nn.Module):
 
     def extract_features(
         self,
-        input_ids: Optional[torch.Tensor] = None,
-        attention_mask: Optional[torch.Tensor] = None,
-        pixel_values: Optional[torch.Tensor] = None,
+        input_ids: torch.Tensor | None = None,
+        attention_mask: torch.Tensor | None = None,
+        pixel_values: torch.Tensor | None = None,
     ) -> torch.Tensor:
         """
         Extracts pooled latent representation across vision and text inputs.
@@ -83,11 +82,11 @@ class VlmJevModel(nn.Module):
 
     def forward(
         self,
-        input_ids: Optional[torch.Tensor] = None,
-        attention_mask: Optional[torch.Tensor] = None,
-        pixel_values: Optional[torch.Tensor] = None,
-        latent_features: Optional[torch.Tensor] = None,
-    ) -> Dict[str, torch.Tensor]:
+        input_ids: torch.Tensor | None = None,
+        attention_mask: torch.Tensor | None = None,
+        pixel_values: torch.Tensor | None = None,
+        latent_features: torch.Tensor | None = None,
+    ) -> dict[str, torch.Tensor]:
         """
         Single forward pass returning logits for all 6 dimensions.
         """

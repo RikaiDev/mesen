@@ -8,27 +8,29 @@ import argparse
 import json
 import os
 import random
-from typing import Dict, List, Tuple
-from PIL import Image
+
 import torch
 import torch.nn as nn
+import torchvision.transforms as T  # noqa: N812
+from PIL import Image
 from torch.utils.data import DataLoader, Dataset
-import torchvision.transforms as T
 
 from mesen.model.vit_consultant import MesenViTConsultantModel
-from mesen.rules.registry import RULE_DEFINITIONS, RULE_ID_LIST, RULE_TO_INDEX
+from mesen.rules.registry import RULE_ID_LIST
 
 CHOICE_MAP = {"yes": 0, "no": 1, "unknown": 2}
 
-IMAGE_TRANSFORM = T.Compose([
-    T.Resize((224, 224)),
-    T.ToTensor(),
-    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+IMAGE_TRANSFORM = T.Compose(
+    [
+        T.Resize((224, 224)),
+        T.ToTensor(),
+        T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ]
+)
 
 
 class RealMobileUIDataset(Dataset):
-    def __init__(self, samples: List[Dict], transform=IMAGE_TRANSFORM):
+    def __init__(self, samples: list[dict], transform=IMAGE_TRANSFORM):
         self.samples = samples
         self.transform = transform
         self.num_rules = len(RULE_ID_LIST)
@@ -36,7 +38,7 @@ class RealMobileUIDataset(Dataset):
     def __len__(self) -> int:
         return len(self.samples)
 
-    def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
+    def __getitem__(self, idx: int) -> dict[str, torch.Tensor]:
         item = self.samples[idx]
         image_path = item["image_path"]
 
@@ -48,16 +50,28 @@ class RealMobileUIDataset(Dataset):
 
         labels = item.get("labels", {})
         atomic_targets = {
-            "primary_action_reachable": torch.tensor(CHOICE_MAP.get(labels.get("primary_action_reachable", "yes"), 0)),
-            "visual_integrity": torch.tensor(CHOICE_MAP.get(labels.get("visual_integrity", "yes"), 0)),
-            "responsive_consistency": torch.tensor(CHOICE_MAP.get(labels.get("responsive_consistency", "yes"), 0)),
-            "evidence_consistency": torch.tensor(CHOICE_MAP.get(labels.get("evidence_consistency", "yes"), 0)),
-            "operator_clarity": torch.tensor(CHOICE_MAP.get(labels.get("operator_clarity", "yes"), 0)),
+            "primary_action_reachable": torch.tensor(
+                CHOICE_MAP.get(labels.get("primary_action_reachable", "yes"), 0)
+            ),
+            "visual_integrity": torch.tensor(
+                CHOICE_MAP.get(labels.get("visual_integrity", "yes"), 0)
+            ),
+            "responsive_consistency": torch.tensor(
+                CHOICE_MAP.get(labels.get("responsive_consistency", "yes"), 0)
+            ),
+            "evidence_consistency": torch.tensor(
+                CHOICE_MAP.get(labels.get("evidence_consistency", "yes"), 0)
+            ),
+            "operator_clarity": torch.tensor(
+                CHOICE_MAP.get(labels.get("operator_clarity", "yes"), 0)
+            ),
             "overall_quality": torch.tensor(int(labels.get("overall_quality", 2))),
         }
 
         # 17-dimensional rule target vector
-        rule_targets = torch.tensor(item.get("rule_targets", [0.0] * self.num_rules), dtype=torch.float32)
+        rule_targets = torch.tensor(
+            item.get("rule_targets", [0.0] * self.num_rules), dtype=torch.float32
+        )
 
         # 4-dimensional bounding box [ymin, xmin, ymax, xmax]
         bbox_raw = item.get("bbox_targets", [0.0, 0.0, 1.0, 1.0])
@@ -71,8 +85,8 @@ class RealMobileUIDataset(Dataset):
         }
 
 
-def load_real_dataset(manifest_path: str) -> Tuple[List[Dict], List[Dict]]:
-    with open(manifest_path, "r", encoding="utf-8") as f:
+def load_real_dataset(manifest_path: str) -> tuple[list[dict], list[dict]]:
+    with open(manifest_path, encoding="utf-8") as f:
         records = json.load(f)
 
     # Filter only existing files
@@ -93,10 +107,14 @@ def train_real_vit(
     output_onnx: str = "models/onnx/mesen_jev_vlm.onnx",
 ):
     print("=== Training Mesen Jev-VLM on Real-World Mobile UI Dataset ===")
-    print(f"Manifest: {manifest_path}, Device: {device}, Epochs: {epochs}, Batch Size: {batch_size}")
+    print(
+        f"Manifest: {manifest_path}, Device: {device}, Epochs: {epochs}, Batch Size: {batch_size}"
+    )
 
     train_samples, val_samples = load_real_dataset(manifest_path)
-    print(f"Loaded {len(train_samples)} real training images, {len(val_samples)} real validation images.")
+    print(
+        f"Loaded {len(train_samples)} real training images, {len(val_samples)} real validation images."
+    )
 
     train_ds = RealMobileUIDataset(train_samples)
     val_ds = RealMobileUIDataset(val_samples)
@@ -111,8 +129,12 @@ def train_real_vit(
         bboxes = torch.stack([b["bbox_targets"] for b in batch])
         return images, atomic, rules, bboxes
 
-    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, collate_fn=collate_fn, num_workers=2)
-    val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, collate_fn=collate_fn, num_workers=2)
+    train_loader = DataLoader(
+        train_ds, batch_size=batch_size, shuffle=True, collate_fn=collate_fn, num_workers=2
+    )
+    val_loader = DataLoader(
+        val_ds, batch_size=batch_size, shuffle=False, collate_fn=collate_fn, num_workers=2
+    )
 
     model = MesenViTConsultantModel(pretrained=True).to(device)
 
@@ -122,7 +144,9 @@ def train_real_vit(
     for param in model.vit.encoder.layers[:6].parameters():
         param.requires_grad = False
 
-    optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=lr, weight_decay=1e-4)
+    optimizer = torch.optim.AdamW(
+        filter(lambda p: p.requires_grad, model.parameters()), lr=lr, weight_decay=1e-4
+    )
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
     scaler = torch.cuda.amp.GradScaler(enabled=(device == "cuda"))
 
@@ -174,7 +198,9 @@ def train_real_vit(
                 bboxes = bboxes.to(device)
 
                 with torch.cuda.amp.autocast(enabled=(device == "cuda")):
-                    out = model(images, atomic_labels=atomic, rule_targets=rules, bbox_targets=bboxes)
+                    out = model(
+                        images, atomic_labels=atomic, rule_targets=rules, bbox_targets=bboxes
+                    )
                     total_val_loss += out["loss"].item()
 
                 preds = (torch.sigmoid(out["rule_logits"]) > 0.5).float()
@@ -202,20 +228,23 @@ def train_real_vit(
             f"Epoch {epoch:02d}/{epochs:02d} | "
             f"Train Loss: {avg_train_loss:.4f} | "
             f"Val Loss: {avg_val_loss:.4f} | "
-            f"Resp Acc: {resp_acc*100:.1f}% | "
-            f"Clarity Acc: {clarity_acc*100:.1f}% | "
-            f"Rule F1: {f1*100:.1f}%"
+            f"Resp Acc: {resp_acc * 100:.1f}% | "
+            f"Clarity Acc: {clarity_acc * 100:.1f}% | "
+            f"Rule F1: {f1 * 100:.1f}%"
         )
 
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss
-            torch.save({
-                "epoch": epoch,
-                "model_state_dict": model.state_dict(),
-                "val_loss": avg_val_loss,
-                "rule_f1": f1,
-                "resp_acc": resp_acc,
-            }, best_ckpt_path)
+            torch.save(
+                {
+                    "epoch": epoch,
+                    "model_state_dict": model.state_dict(),
+                    "val_loss": avg_val_loss,
+                    "rule_f1": f1,
+                    "resp_acc": resp_acc,
+                },
+                best_ckpt_path,
+            )
             print(f"  -> Saved best real model checkpoint to {best_ckpt_path}")
 
     print("\n=== Real-World Training Complete! Exporting to Standalone ONNX ===")

@@ -3,23 +3,22 @@ Jev-VLM Evaluator: Ties empirical EvidenceEngine measurements to Rule Registry &
 Produces verifiable, zero-fluff ConsultantReports with text recognition and affordance reasoning.
 """
 
-from typing import Dict, List, Optional
 import cv2
-import numpy as np
-from mesen.engine.evidence import EvidenceEngine, MeasuredElement
+
+from mesen.engine.evidence import EvidenceEngine
 from mesen.rules.registry import RULE_REGISTRY
-from mesen.schema import ContextSpec, ConsultantReport, ViolationItem
+from mesen.schema import ConsultantReport, ContextSpec, ViolationItem
 
 
 class JevEvaluator:
-    def __init__(self, default_dpi: int = 440, models_dir: Optional[str] = None):
+    def __init__(self, default_dpi: int = 440, models_dir: str | None = None):
         self.evidence_engine = EvidenceEngine(default_dpi=default_dpi, models_dir=models_dir)
 
     def evaluate_screenshot(
         self,
         image_path: str,
-        context: Optional[ContextSpec] = None,
-        dpi: Optional[int] = None,
+        context: ContextSpec | None = None,
+        dpi: int | None = None,
     ) -> ConsultantReport:
         if context is None:
             context = ContextSpec(
@@ -29,10 +28,10 @@ class JevEvaluator:
             )
 
         measured_elements = self.evidence_engine.extract_and_measure_elements(image_path, dpi=dpi)
-        violations: List[ViolationItem] = []
+        violations: list[ViolationItem] = []
 
         # Thresholds based on context
-        is_older_adult = (context.cohort == "older_adult_65plus")
+        is_older_adult = context.cohort == "older_adult_65plus"
         min_contrast = 7.0 if is_older_adult else 4.5
         min_font_sp = 16.0 if is_older_adult else 14.0
 
@@ -40,7 +39,9 @@ class JevEvaluator:
 
         for el in measured_elements:
             # Check for action trigger keywords in Chinese / English
-            if any(kw in el.text for kw in ["按住", "點擊", "点击", "按一下", "hold", "tap", "press"]):
+            if any(
+                kw in el.text for kw in ["按住", "點擊", "点击", "按一下", "hold", "tap", "press"]
+            ):
                 has_action_prompt = True
 
             # Check 1: Contrast Ratio Insufficient
@@ -59,7 +60,7 @@ class JevEvaluator:
                         measured=f"{el.contrast_ratio}:1",
                         threshold=f"{min_contrast}:1",
                         prescriptive_action=(
-                            f'文字「{el.text}」對比度 ({el.contrast_ratio}:1) 低於安全門檻 ({min_contrast}:1)。'
+                            f"文字「{el.text}」對比度 ({el.contrast_ratio}:1) 低於安全門檻 ({min_contrast}:1)。"
                             f"前景色 {fg_hex} 與底色 {bg_hex} 過度接近，請調深前景色或提高底色亮度。"
                         ),
                     )
@@ -67,7 +68,11 @@ class JevEvaluator:
 
             # Check 2: Font Size Insufficient (Skip title text > 18sp)
             if el.estimated_sp < min_font_sp:
-                rule_id = "accessibility/font-size-insufficient" if "accessibility/font-size-insufficient" in RULE_REGISTRY else "accessibility/text-reflow-overflow"
+                rule_id = (
+                    "accessibility/font-size-insufficient"
+                    if "accessibility/font-size-insufficient" in RULE_REGISTRY
+                    else "accessibility/text-reflow-overflow"
+                )
                 severity = "warning" if el.estimated_sp < 10.0 else "info"
                 violations.append(
                     ViolationItem(
@@ -78,7 +83,7 @@ class JevEvaluator:
                         measured=f"{el.estimated_sp}sp",
                         threshold=f"{min_font_sp}sp",
                         prescriptive_action=(
-                            f'文字「{el.text}」實體高度 ({el.estimated_sp}sp) 低於行動端可讀下限 ({min_font_sp}sp)。'
+                            f"文字「{el.text}」實體高度 ({el.estimated_sp}sp) 低於行動端可讀下限 ({min_font_sp}sp)。"
                             f"在行動裝置高密度螢幕上易造成閱讀困難，請在佈局中調升該文字級別。"
                         ),
                     )
@@ -90,7 +95,6 @@ class JevEvaluator:
             # Inspect image center for non-button illustration entity
             img_bgr = cv2.imread(image_path)
             h, w, _ = img_bgr.shape
-            center_roi = img_bgr[int(h * 0.25) : int(h * 0.75), int(w * 0.25) : int(w * 0.75)]
             # If center contains high variance entity without bounding button cues
             rule_id = "cognitive/interaction-affordance-deficit"
             if rule_id in RULE_REGISTRY:
@@ -154,11 +158,11 @@ class JevEvaluator:
                             severity="critical",
                             target_selector="viewport_layout",
                             bounding_box=[0.0, wasted_left, 1.0, 1.0 - wasted_right],
-                            measured=f"內容僅佔橫向 {round(h_span*100, 1)}% 寬度（兩側荒廢 {round(total_wasted*100, 1)}%）",
+                            measured=f"內容僅佔橫向 {round(h_span * 100, 1)}% 寬度（兩側荒廢 {round(total_wasted * 100, 1)}%）",
                             threshold="橫螢幕寬度有效利用率 >= 65%",
                             prescriptive_action=(
-                                f"當前螢幕為 {aspect_ratio}:1 超寬橫螢幕，但所有內容被死板擠在中央 {round(h_span*100, 1)}% 的單一垂直細柱中，"
-                                f"左右兩側各有 {round(wasted_left*100, 1)}% 與 {round(wasted_right*100, 1)}% 大面積空間完全被浪費。"
+                                f"當前螢幕為 {aspect_ratio}:1 超寬橫螢幕，但所有內容被死板擠在中央 {round(h_span * 100, 1)}% 的單一垂直細柱中，"
+                                f"左右兩側各有 {round(wasted_left * 100, 1)}% 與 {round(wasted_right * 100, 1)}% 大面積空間完全被浪費。"
                                 "強烈建議改採左右「雙欄式排版（Split Layout）」：左欄放置角色視覺主體，右欄佈局標題、指引與操作按鈕。"
                             ),
                         )
@@ -179,7 +183,10 @@ class JevEvaluator:
                     )
 
             # Mobile touch thumb reachability in landscape
-            if context.interaction_mode == "touch" and context.modality in ["mobile_app", "mobile_touch"]:
+            if context.interaction_mode == "touch" and context.modality in [
+                "mobile_app",
+                "mobile_touch",
+            ]:
                 violations.append(
                     ViolationItem(
                         rule_id="ergonomics/thumb-zone-unreachable",

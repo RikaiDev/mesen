@@ -6,26 +6,40 @@ Runs 100% offline, single-machine ONNX CPU inference. Zero external server / GPU
 """
 
 import os
-from typing import Dict, List, Optional, Tuple
+
 import cv2
 import numpy as np
-from PIL import Image
 import onnxruntime as ort
+from PIL import Image
 
-from mesen.engine.evidence import EvidenceEngine, MeasuredElement
-from mesen.rules.registry import RULE_DEFINITIONS, RULE_ID_LIST, UXRule
-from mesen.schema import ChoiceAnswer, ConsultantReport, ContextSpec, JudgeAnswers, ScoreAnswer, ViolationItem
+from mesen.engine.evidence import EvidenceEngine
+from mesen.schema import (
+    ChoiceAnswer,
+    ConsultantReport,
+    ContextSpec,
+    JudgeAnswers,
+    ScoreAnswer,
+    ViolationItem,
+)
 
 CHOICE_LABELS = ["yes", "no", "unknown"]
 
 
 class JevVlmEngine:
-    def __init__(self, models_dir: Optional[str] = None, default_dpi: int = 440):
+    def __init__(
+        self,
+        models_dir: str | None = None,
+        default_dpi: int = 440,
+        onnx_model_path: str | None = None,
+    ):
         if models_dir is None:
             base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
             models_dir = os.path.join(base_dir, "models", "onnx")
 
-        self.vlm_model_path = os.path.join(models_dir, "mesen_jev_vlm.onnx")
+        # An explicit model file always wins; otherwise resolve the bundled default.
+        self.vlm_model_path = (
+            onnx_model_path if onnx_model_path else os.path.join(models_dir, "mesen_jev_vlm.onnx")
+        )
         if not os.path.exists(self.vlm_model_path):
             alt_path = "/home/gloomcheng/Workspace/RikaiDev/mesen/models/onnx/mesen_jev_vlm.onnx"
             if os.path.exists(alt_path):
@@ -36,7 +50,9 @@ class JevVlmEngine:
         opts.intra_op_num_threads = 2
         opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
 
-        self.session = ort.InferenceSession(self.vlm_model_path, opts, providers=["CPUExecutionProvider"])
+        self.session = ort.InferenceSession(
+            self.vlm_model_path, opts, providers=["CPUExecutionProvider"]
+        )
         self.evidence_engine = EvidenceEngine(default_dpi=default_dpi, models_dir=models_dir)
 
     def _preprocess_screenshot(self, image_path: str) -> np.ndarray:
@@ -51,11 +67,13 @@ class JevVlmEngine:
     def evaluate(
         self,
         image_path: str,
-        context: Optional[ContextSpec] = None,
-        dpi: Optional[int] = None,
-    ) -> Tuple[ConsultantReport, JudgeAnswers]:
+        context: ContextSpec | None = None,
+        dpi: int | None = None,
+    ) -> tuple[ConsultantReport, JudgeAnswers]:
         if context is None:
-            context = ContextSpec(cohort="general_mobile", modality="mobile_app", interaction_mode="touch")
+            context = ContextSpec(
+                cohort="general_mobile", modality="mobile_app", interaction_mode="touch"
+            )
 
         # -------------------------------------------------------------
         # Track 1: True Jev-VLM Multimodal Neural Network Forward Pass
@@ -66,10 +84,12 @@ class JevVlmEngine:
         out_map = {o.name: raw_outputs[idx] for idx, o in enumerate(self.session.get_outputs())}
 
         # Parse 6 Atomic JEV Decision Heads
-        def parse_choice(logits: np.ndarray) -> Tuple[str, float, Dict[str, float]]:
+        def parse_choice(logits: np.ndarray) -> tuple[str, float, dict[str, float]]:
             probs = np.exp(logits) / np.sum(np.exp(logits), axis=-1, keepdims=True)
             pred_idx = int(np.argmax(logits))
-            prob_dict = {CHOICE_LABELS[i]: round(float(probs[0, i]), 4) for i in range(len(CHOICE_LABELS))}
+            prob_dict = {
+                CHOICE_LABELS[i]: round(float(probs[0, i]), 4) for i in range(len(CHOICE_LABELS))
+            }
             return CHOICE_LABELS[pred_idx], float(probs[0, pred_idx]), prob_dict
 
         pa_choice, pa_conf, pa_probs = parse_choice(out_map["logits_primary_action"])
@@ -136,7 +156,7 @@ class JevVlmEngine:
         # Track 2: Grounded Evidence Extraction
         # -------------------------------------------------------------
         measured_elements = self.evidence_engine.extract_and_measure_elements(image_path, dpi=dpi)
-        violations: List[ViolationItem] = []
+        violations: list[ViolationItem] = []
 
         # Correlate Neural Rule Head Activations with Physical Evidence
         # If model's rule probability is high or physical measurement fails
@@ -156,7 +176,7 @@ class JevVlmEngine:
                         measured=f"{el.contrast_ratio}:1",
                         threshold=f"{min_contrast}:1",
                         prescriptive_action=(
-                            f'文字「{el.text}」對比度 ({el.contrast_ratio}:1) 低於標準 ({min_contrast}:1)。'
+                            f"文字「{el.text}」對比度 ({el.contrast_ratio}:1) 低於標準 ({min_contrast}:1)。"
                             f"前景色 #{el.fg_rgb[0]:02X}{el.fg_rgb[1]:02X}{el.fg_rgb[2]:02X} 與底色過近，請提高明度階差。"
                         ),
                     )
@@ -173,7 +193,7 @@ class JevVlmEngine:
                         measured=f"{el.estimated_sp}sp",
                         threshold=f"{min_font_sp}sp",
                         prescriptive_action=(
-                            f'文字「{el.text}」實體尺寸 ({el.estimated_sp}sp) 低於行動端可讀下限 ({min_font_sp}sp)。'
+                            f"文字「{el.text}」實體尺寸 ({el.estimated_sp}sp) 低於行動端可讀下限 ({min_font_sp}sp)。"
                             "請在版面佈局中調升該文字級別。"
                         ),
                     )
@@ -185,7 +205,6 @@ class JevVlmEngine:
         aspect_ratio = round(img_w / float(img_h), 2)
 
         # If layout rule activation is high in neural heads or aspect ratio is extreme
-        rule_14_idx = 14 if len(RULE_DEFINITIONS) > 14 else -1
         if aspect_ratio >= 1.8:
             all_xmins = [el.text_bbox[1] for el in measured_elements]
             all_xmaxs = [el.text_bbox[3] for el in measured_elements]
@@ -197,11 +216,16 @@ class JevVlmEngine:
                             rule_id="layout/horizontal-space-desert",
                             severity="critical",
                             target_selector="viewport_layout",
-                            bounding_box=[0.0, round(min(all_xmins), 3), 1.0, round(max(all_xmaxs), 3)],
-                            measured=f"內容橫向佔比僅 {round(h_span*100, 1)}%",
+                            bounding_box=[
+                                0.0,
+                                round(min(all_xmins), 3),
+                                1.0,
+                                round(max(all_xmaxs), 3),
+                            ],
+                            measured=f"內容橫向佔比僅 {round(h_span * 100, 1)}%",
                             threshold="橫向有效利用率 >= 65%",
                             prescriptive_action=(
-                                f"模型檢測到 {aspect_ratio}:1 超寬橫螢幕上發生嚴重橫向空間荒廢（佔比 {round(h_span*100, 1)}%）。"
+                                f"模型檢測到 {aspect_ratio}:1 超寬橫螢幕上發生嚴重橫向空間荒廢（佔比 {round(h_span * 100, 1)}%）。"
                                 "建議改採左右雙欄式排版（Split Layout），將角色與操作資訊分欄陳列。"
                             ),
                         )

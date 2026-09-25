@@ -11,27 +11,28 @@ import argparse
 import json
 import os
 import random
-from typing import Dict, List, Tuple
-from PIL import Image
+
 import torch
-import torch.nn as nn
+import torchvision.transforms as T  # noqa: N812
+from PIL import Image
 from torch.utils.data import DataLoader, Dataset
-import torchvision.transforms as T
 
 from mesen.model.vit_consultant import MesenViTConsultantModel
-from mesen.rules.registry import RULE_DEFINITIONS, RULE_ID_LIST, RULE_TO_INDEX
+from mesen.rules.registry import RULE_ID_LIST, RULE_TO_INDEX
 
 CHOICE_MAP = {"yes": 0, "no": 1, "unknown": 2}
 
-IMAGE_TRANSFORM = T.Compose([
-    T.Resize((224, 224)),
-    T.ToTensor(),
-    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+IMAGE_TRANSFORM = T.Compose(
+    [
+        T.Resize((224, 224)),
+        T.ToTensor(),
+        T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ]
+)
 
 
 class RealScreenshotDataset(Dataset):
-    def __init__(self, samples: List[Tuple[str, str, Dict]], transform=IMAGE_TRANSFORM):
+    def __init__(self, samples: list[tuple[str, str, dict]], transform=IMAGE_TRANSFORM):
         """
         samples: list of (png_path, mutation_type, labels_dict)
         """
@@ -42,22 +43,32 @@ class RealScreenshotDataset(Dataset):
     def __len__(self) -> int:
         return len(self.samples)
 
-    def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
+    def __getitem__(self, idx: int) -> dict[str, torch.Tensor]:
         png_path, mutation, labels = self.samples[idx]
 
         try:
             image = Image.open(png_path).convert("RGB")
             img_tensor = self.transform(image)
-        except Exception as e:
+        except Exception:
             # Fallback black image if missing
             img_tensor = torch.zeros(3, 224, 224)
 
         atomic_targets = {
-            "primary_action_reachable": torch.tensor(CHOICE_MAP.get(labels.get("primary_action_reachable", "yes"), 0)),
-            "visual_integrity": torch.tensor(CHOICE_MAP.get(labels.get("visual_integrity", "yes"), 0)),
-            "responsive_consistency": torch.tensor(CHOICE_MAP.get(labels.get("responsive_consistency", "yes"), 0)),
-            "evidence_consistency": torch.tensor(CHOICE_MAP.get(labels.get("evidence_consistency", "yes"), 0)),
-            "operator_clarity": torch.tensor(CHOICE_MAP.get(labels.get("operator_clarity", "yes"), 0)),
+            "primary_action_reachable": torch.tensor(
+                CHOICE_MAP.get(labels.get("primary_action_reachable", "yes"), 0)
+            ),
+            "visual_integrity": torch.tensor(
+                CHOICE_MAP.get(labels.get("visual_integrity", "yes"), 0)
+            ),
+            "responsive_consistency": torch.tensor(
+                CHOICE_MAP.get(labels.get("responsive_consistency", "yes"), 0)
+            ),
+            "evidence_consistency": torch.tensor(
+                CHOICE_MAP.get(labels.get("evidence_consistency", "yes"), 0)
+            ),
+            "operator_clarity": torch.tensor(
+                CHOICE_MAP.get(labels.get("operator_clarity", "yes"), 0)
+            ),
             "overall_quality": torch.tensor(int(labels.get("overall_quality", 2))),
         }
 
@@ -93,13 +104,17 @@ class RealScreenshotDataset(Dataset):
         }
 
 
-def load_all_screenshot_pairs() -> Tuple[List[Tuple[str, str, Dict]], List[Tuple[str, str, Dict]]]:
-    pairs: List[Tuple[str, str, Dict]] = []
+def load_all_screenshot_pairs() -> tuple[list[tuple[str, str, dict]], list[tuple[str, str, dict]]]:
+    pairs: list[tuple[str, str, dict]] = []
 
     # 1. Load synthetic web screenshots
-    for split_file in ["data/synthetic/train.json", "data/synthetic/val.json", "data/synthetic/mirror_samples.json"]:
+    for split_file in [
+        "data/synthetic/train.json",
+        "data/synthetic/val.json",
+        "data/synthetic/mirror_samples.json",
+    ]:
         if os.path.exists(split_file):
-            with open(split_file, "r", encoding="utf-8") as f:
+            with open(split_file, encoding="utf-8") as f:
                 records = json.load(f)
                 for r in records:
                     mutation = r.get("mutation_type", "clean")
@@ -137,8 +152,12 @@ def train_vit(epochs: int = 15, batch_size: int = 16, lr: float = 3e-4, device: 
         bboxes = torch.stack([b["bbox_targets"] for b in batch])
         return images, atomic, rules, bboxes
 
-    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, collate_fn=collate_fn, num_workers=2)
-    val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, collate_fn=collate_fn, num_workers=2)
+    train_loader = DataLoader(
+        train_ds, batch_size=batch_size, shuffle=True, collate_fn=collate_fn, num_workers=2
+    )
+    val_loader = DataLoader(
+        val_ds, batch_size=batch_size, shuffle=False, collate_fn=collate_fn, num_workers=2
+    )
 
     model = MesenViTConsultantModel(pretrained=True).to(device)
 
@@ -148,7 +167,9 @@ def train_vit(epochs: int = 15, batch_size: int = 16, lr: float = 3e-4, device: 
     for param in model.vit.encoder.layers[:6].parameters():
         param.requires_grad = False
 
-    optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=lr, weight_decay=1e-4)
+    optimizer = torch.optim.AdamW(
+        filter(lambda p: p.requires_grad, model.parameters()), lr=lr, weight_decay=1e-4
+    )
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
     scaler = torch.cuda.amp.GradScaler(enabled=(device == "cuda"))
 
@@ -194,7 +215,9 @@ def train_vit(epochs: int = 15, batch_size: int = 16, lr: float = 3e-4, device: 
                 bboxes = bboxes.to(device)
 
                 with torch.cuda.amp.autocast(enabled=(device == "cuda")):
-                    out = model(images, atomic_labels=atomic, rule_targets=rules, bbox_targets=bboxes)
+                    out = model(
+                        images, atomic_labels=atomic, rule_targets=rules, bbox_targets=bboxes
+                    )
                     total_val_loss += out["loss"].item()
 
                 preds = (torch.sigmoid(out["rule_logits"]) > 0.5).float()
@@ -211,20 +234,23 @@ def train_vit(epochs: int = 15, batch_size: int = 16, lr: float = 3e-4, device: 
             f"Epoch {epoch:02d}/{epochs:02d} | "
             f"Train Loss: {avg_train_loss:.4f} | "
             f"Val Loss: {avg_val_loss:.4f} | "
-            f"Rule Prec: {prec*100:.1f}% | "
-            f"Rule Rec: {rec*100:.1f}% | "
-            f"Rule F1: {f1*100:.1f}%"
+            f"Rule Prec: {prec * 100:.1f}% | "
+            f"Rule Rec: {rec * 100:.1f}% | "
+            f"Rule F1: {f1 * 100:.1f}%"
         )
 
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss
             ckpt_path = "checkpoints/best_vit_consultant.pt"
-            torch.save({
-                "epoch": epoch,
-                "model_state_dict": model.state_dict(),
-                "val_loss": avg_val_loss,
-                "rule_f1": f1,
-            }, ckpt_path)
+            torch.save(
+                {
+                    "epoch": epoch,
+                    "model_state_dict": model.state_dict(),
+                    "val_loss": avg_val_loss,
+                    "rule_f1": f1,
+                },
+                ckpt_path,
+            )
             print(f"  -> Saved best ViT Consultant checkpoint to {ckpt_path}")
 
     print("=== Joint Vision Fine-Tuning Complete ===")
