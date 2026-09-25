@@ -73,8 +73,17 @@ def judge(state, images, model, remote):
             pass
 
     product = state_obj.get("product", "")
+    surface = state_obj.get("surface", "")
+    title = state_obj.get("title", "")
     cohort = "general_mobile"
-    modality = "public_portal" if product == "portal" else "kiosk"
+    is_portal = (
+        product in ("portal", "employee-health") or
+        surface in ("portal", "employee-health") or
+        "portal" in product or
+        state_obj.get("modality") == "public_portal" or
+        "入口" in title or "Portal" in title
+    )
+    modality = "public_portal" if is_portal else "kiosk"
     context = ContextSpec(cohort=cohort, modality=modality, interaction_mode="touch")
 
     image_path = None
