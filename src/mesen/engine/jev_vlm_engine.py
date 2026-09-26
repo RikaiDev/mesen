@@ -7,12 +7,18 @@ Runs 100% offline, single-machine ONNX CPU inference. Zero external server / GPU
 
 import os
 
-import cv2
 import numpy as np
 import onnxruntime as ort
 from PIL import Image
 
+from mesen.engine.dual_judge import (
+    adjudicate_evidence_consistency,
+    adjudicate_violation_verdict,
+    compute_agreement,
+    derive_system_two,
+)
 from mesen.engine.evidence import EvidenceEngine
+from mesen.engine.jev_evaluator import JevEvaluator
 from mesen.schema import (
     ChoiceAnswer,
     ConsultantReport,
@@ -20,6 +26,7 @@ from mesen.schema import (
     JudgeAnswers,
     ScoreAnswer,
     ViolationItem,
+    WitnessState,
 )
 
 CHOICE_LABELS = ["yes", "no", "unknown"]
@@ -54,6 +61,11 @@ class JevVlmEngine:
             self.vlm_model_path, opts, providers=["CPUExecutionProvider"]
         )
         self.evidence_engine = EvidenceEngine(default_dpi=default_dpi, models_dir=models_dir)
+        self.system_two = JevEvaluator(
+            default_dpi=default_dpi,
+            models_dir=models_dir,
+            evidence_engine=self.evidence_engine,
+        )
 
     def _preprocess_screenshot(self, image_path: str) -> np.ndarray:
         """Preprocesses screenshot for the Vision Transformer backbone."""
@@ -64,12 +76,12 @@ class JevVlmEngine:
         blob = arr.transpose(2, 0, 1)[np.newaxis, ...].astype(np.float32)
         return blob
 
-    def evaluate(
+    def judge_system1(
         self,
         image_path: str,
         context: ContextSpec | None = None,
-        dpi: int | None = None,
-    ) -> tuple[ConsultantReport, JudgeAnswers]:
+    ) -> tuple[JudgeAnswers, list[float], list[float], int]:
+        """System 1: single neural forward pass only. No OCR, no rules."""
         if context is None:
             context = ContextSpec(
                 cohort="general_mobile", modality="mobile_app", interaction_mode="touch"
@@ -151,117 +163,84 @@ class JevVlmEngine:
                 reasoning=f"Neural JEV Score Head outputted quality score {pred_score}/3 (confidence {score_conf:.3f}).",
             ),
         )
+        return judge_answers, list(rule_probs), pred_bbox, pred_score
 
-        # -------------------------------------------------------------
-        # Track 2: Grounded Evidence Extraction
-        # -------------------------------------------------------------
-        measured_elements = self.evidence_engine.extract_and_measure_elements(image_path, dpi=dpi)
-        violations: list[ViolationItem] = []
-
-        # Correlate Neural Rule Head Activations with Physical Evidence
-        # If model's rule probability is high or physical measurement fails
-        is_older_adult = context.cohort == "older_adult_65plus"
-        min_contrast = 7.0 if is_older_adult else 4.5
-        min_font_sp = 16.0 if is_older_adult else 14.0
-
-        for el in measured_elements:
-            # Contrast Check
-            if el.contrast_ratio < min_contrast:
-                violations.append(
-                    ViolationItem(
-                        rule_id="accessibility/contrast-ratio-insufficient",
-                        severity="critical" if el.contrast_ratio < 3.0 else "warning",
-                        target_selector=f'text("{el.text}")' if el.text else None,
-                        bounding_box=el.text_bbox,
-                        measured=f"{el.contrast_ratio}:1",
-                        threshold=f"{min_contrast}:1",
-                        prescriptive_action=(
-                            f"文字「{el.text}」對比度 ({el.contrast_ratio}:1) 低於標準 ({min_contrast}:1)。"
-                            f"前景色 #{el.fg_rgb[0]:02X}{el.fg_rgb[1]:02X}{el.fg_rgb[2]:02X} 與底色過近，請提高明度階差。"
-                        ),
-                    )
-                )
-
-            # Font Size Check
-            if el.estimated_sp < min_font_sp:
-                violations.append(
-                    ViolationItem(
-                        rule_id="accessibility/font-size-insufficient",
-                        severity="warning" if el.estimated_sp < 10.0 else "info",
-                        target_selector=f'text("{el.text}")' if el.text else None,
-                        bounding_box=el.text_bbox,
-                        measured=f"{el.estimated_sp}sp",
-                        threshold=f"{min_font_sp}sp",
-                        prescriptive_action=(
-                            f"文字「{el.text}」實體尺寸 ({el.estimated_sp}sp) 低於行動端可讀下限 ({min_font_sp}sp)。"
-                            "請在版面佈局中調升該文字級別。"
-                        ),
-                    )
-                )
-
-        # Layout & Affordance violations flagged by Jev-VLM
-        img_bgr = cv2.imread(image_path)
-        img_h, img_w, _ = img_bgr.shape
-        aspect_ratio = round(img_w / float(img_h), 2)
-
-        # If layout rule activation is high in neural heads or aspect ratio is extreme
-        if aspect_ratio >= 1.8:
-            all_xmins = [el.text_bbox[1] for el in measured_elements]
-            all_xmaxs = [el.text_bbox[3] for el in measured_elements]
-            if all_xmins and all_xmaxs:
-                h_span = max(all_xmaxs) - min(all_xmins)
-                if h_span < 0.40:
-                    violations.append(
-                        ViolationItem(
-                            rule_id="layout/horizontal-space-desert",
-                            severity="critical",
-                            target_selector="viewport_layout",
-                            bounding_box=[
-                                0.0,
-                                round(min(all_xmins), 3),
-                                1.0,
-                                round(max(all_xmaxs), 3),
-                            ],
-                            measured=f"內容橫向佔比僅 {round(h_span * 100, 1)}%",
-                            threshold="橫向有效利用率 >= 65%",
-                            prescriptive_action=(
-                                f"模型檢測到 {aspect_ratio}:1 超寬橫螢幕上發生嚴重橫向空間荒廢（佔比 {round(h_span * 100, 1)}%）。"
-                                "建議改採左右雙欄式排版（Split Layout），將角色與操作資訊分欄陳列。"
-                            ),
-                        )
-                    )
-
-        # Affordance violation from neural head (rule index 9)
-        rule_9_prob = rule_probs[9] if len(rule_probs) > 9 else 0.0
-        if rule_9_prob > 0.4:
-            violations.append(
-                ViolationItem(
-                    rule_id="cognitive/interaction-affordance-deficit",
-                    severity="critical",
-                    target_selector="center_interactive_subject",
-                    bounding_box=pred_bbox,
-                    measured=f"Affordance Deficit (Model Prob: {rule_9_prob:.2f})",
-                    threshold="明確可見之互動施力點",
-                    prescriptive_action=(
-                        "神經網路判定畫面中央核心長按目標缺乏明確按鈕特徵（可信度 "
-                        f"{rule_9_prob:.2f}）。建議添加同心圓呼吸光暈或觸控漣漪反饋。"
-                    ),
-                )
+    def evaluate(
+        self,
+        image_path: str,
+        context: ContextSpec | None = None,
+        dpi: int | None = None,
+        mode: str = "dual",
+        witness: WitnessState | None = None,
+    ) -> tuple[ConsultantReport, JudgeAnswers]:
+        """Judge in fast (System 1), deep (System 2), or dual mode (default)."""
+        if context is None:
+            context = ContextSpec(
+                cohort="general_mobile", modality="mobile_app", interaction_mode="touch"
             )
+        if mode not in ("fast", "deep", "dual"):
+            raise ValueError(f"Unknown judge mode: {mode}")
 
-        # Verdict derived directly from Model's overall_quality score
-        if pred_score == 0:
-            verdict = "rejected"
-        elif pred_score in (1, 2):
-            verdict = "conditional_pass"
-        else:
-            verdict = "pass"
+        if mode == "deep":
+            report = self.system_two.evaluate_screenshot(image_path, context, dpi, witness=witness)
+            return report, derive_system_two(report)
 
+        answers, rule_probs, pred_bbox, pred_score = self.judge_system1(image_path, context)
+        violations = self._neural_rule_violations(rule_probs, pred_bbox)
+
+        if mode == "fast":
+            report = ConsultantReport(
+                context=context,
+                violations=violations,
+                verdict=self._score_verdict(pred_score),
+                summary_score=pred_score,
+            )
+            return report, answers
+
+        deep_report = self.system_two.evaluate_screenshot(image_path, context, dpi, witness=witness)
+        all_violations = deep_report.violations + violations
+        verdict, score = adjudicate_violation_verdict(all_violations)
         report = ConsultantReport(
             context=context,
-            violations=violations,
+            violations=all_violations,
             verdict=verdict,
-            summary_score=pred_score,
+            summary_score=score,
         )
+        system_two_answers = derive_system_two(report)
+        agreement = compute_agreement(answers, system_two_answers)
+        answers.evidence_consistency = adjudicate_evidence_consistency(
+            answers, system_two_answers, agreement
+        )
+        return report, answers
 
-        return report, judge_answers
+    @staticmethod
+    def _score_verdict(pred_score: int) -> str:
+        if pred_score == 0:
+            return "rejected"
+        if pred_score in (1, 2):
+            return "conditional_pass"
+        return "pass"
+
+    @staticmethod
+    def _neural_rule_violations(
+        rule_probs: list[float], pred_bbox: list[float]
+    ) -> list[ViolationItem]:
+        # Affordance violation from neural head (rule index 9)
+        rule_9_prob = rule_probs[9] if len(rule_probs) > 9 else 0.0
+        if rule_9_prob <= 0.4:
+            return []
+        return [
+            ViolationItem(
+                rule_id="cognitive/interaction-affordance-deficit",
+                severity="critical",
+                target_selector="center_interactive_subject",
+                bounding_box=pred_bbox,
+                measured=f"Affordance Deficit (Model Prob: {rule_9_prob:.2f})",
+                threshold="明確可見之互動施力點",
+                prescriptive_action=(
+                    "神經網路判定畫面中央核心目標缺乏可感知的操作暗示（可信度 "
+                    f"{rule_9_prob:.2f}）。請加上持續可見的按壓目標：明確邊界＋文字或通用圖示，"
+                    "尺寸不小於 24x24 CSS px（WCAG 2.5.8），並提供 reduced-motion 安全版本（WCAG 2.3.3）。"
+                ),
+            )
+        ]

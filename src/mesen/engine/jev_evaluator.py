@@ -5,20 +5,31 @@ Produces verifiable, zero-fluff ConsultantReports with text recognition and affo
 
 import cv2
 
+from mesen.engine.dual_judge import adjudicate_violation_verdict, witness_violations
 from mesen.engine.evidence import EvidenceEngine
 from mesen.rules.registry import RULE_REGISTRY
-from mesen.schema import ConsultantReport, ContextSpec, ViolationItem
+from mesen.schema import ConsultantReport, ContextSpec, ViolationItem, WitnessState
 
 
 class JevEvaluator:
-    def __init__(self, default_dpi: int = 440, models_dir: str | None = None):
-        self.evidence_engine = EvidenceEngine(default_dpi=default_dpi, models_dir=models_dir)
+    def __init__(
+        self,
+        default_dpi: int = 440,
+        models_dir: str | None = None,
+        evidence_engine: EvidenceEngine | None = None,
+    ):
+        self.evidence_engine = (
+            evidence_engine
+            if evidence_engine is not None
+            else EvidenceEngine(default_dpi=default_dpi, models_dir=models_dir)
+        )
 
     def evaluate_screenshot(
         self,
         image_path: str,
         context: ContextSpec | None = None,
         dpi: int | None = None,
+        witness: WitnessState | None = None,
     ) -> ConsultantReport:
         if context is None:
             context = ContextSpec(
@@ -107,8 +118,8 @@ class JevEvaluator:
                         measured="flat_illustration_without_affordance",
                         threshold="explicit_visual_signifiers",
                         prescriptive_action=(
-                            "畫面提示使用者執行按住/互動操作，但中央角色呈現為純靜態插畫，缺乏按鈕邊框、呼吸微動光圈或觸控按壓反饋。"
-                            "建議在角色外圍加上同心圓微動脈衝（Pulsing Halo）或觸控漣漪效果，明確引導互動施力點。"
+                            "畫面提示使用者執行按住/互動操作，但中央角色呈現為純靜態插畫，缺乏可感知的操作暗示（Norman signifiers）。"
+                            "請加上持續可見的按壓目標：明確邊界＋文字或通用圖示，尺寸不小於 24x24 CSS px（WCAG 2.5.8），並提供 reduced-motion 安全版本（WCAG 2.3.3）。"
                         ),
                     )
                 )
@@ -182,44 +193,14 @@ class JevEvaluator:
                         )
                     )
 
-            # Mobile touch thumb reachability in landscape
-            if context.interaction_mode == "touch" and context.modality in [
-                "mobile_app",
-                "mobile_touch",
-            ]:
-                violations.append(
-                    ViolationItem(
-                        rule_id="ergonomics/thumb-zone-unreachable",
-                        severity="warning",
-                        target_selector="center_interactive_subject",
-                        bounding_box=[0.31, 0.38, 0.76, 0.62],
-                        measured="核心互動目標位於正中央 (x=0.50)",
-                        threshold="兩手握持拇指自然熱區 (x <= 0.25 或 x >= 0.75)",
-                        prescriptive_action=(
-                            "橫向雙手握持手機時，中央區域屬於拇指最難觸及的拉伸死角（Stretch Zone）。"
-                            "強迫使用者長按螢幕正中央會破壞手持握持穩定性，建議將按住操作或核心 CTA 移至靠近右側拇指自然操作熱區。"
-                        ),
-                    )
-                )
+            # Thumb-zone geometry checks are retired: Hoober 2017 superseded
+            # fixed zones, and this evaluator holds no grip/miss measurements.
+            # See registry ergonomics/thumb-zone-unreachable (info only).
 
-        # Verdict calculation
-        has_fatal = any(v.severity == "fatal" for v in violations)
-        has_critical = any(v.severity == "critical" for v in violations)
-        has_warning = any(v.severity == "warning" for v in violations)
+        if witness is not None:
+            violations.extend(witness_violations(witness))
 
-        if has_fatal or (has_critical and len(violations) >= 2):
-            verdict = "rejected"
-            score = 0
-        elif has_critical or has_warning:
-            verdict = "conditional_pass"
-            score = 1
-        elif len(violations) > 0:
-            verdict = "conditional_pass"
-            score = 2
-        else:
-            verdict = "pass"
-            score = 3
-
+        verdict, score = adjudicate_violation_verdict(violations)
         return ConsultantReport(
             context=context,
             violations=violations,

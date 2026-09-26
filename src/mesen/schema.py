@@ -46,6 +46,10 @@ class ContextSpec(BaseModel):
         default="pointer",
         description="Interaction style: pointer, touch, zero_touch_vision_voice, air_gesture",
     )
+    locale: str = Field(
+        default="en",
+        description="BCP-47 locale for rendered messages: en, zh-TW, ja",
+    )
     hardware_constraints: dict[str, Any] | None = None
 
 
@@ -86,6 +90,8 @@ class JudgeAnswers(BaseModel):
 class JudgeResponse(BaseModel):
     answers: JudgeAnswers
     consultation: ConsultantReport | None = None
+    system_two: JudgeAnswers | None = None
+    agreement: dict[str, bool] | None = None
 
 
 class WitnessState(BaseModel):

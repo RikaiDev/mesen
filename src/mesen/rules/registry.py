@@ -106,10 +106,10 @@ RULE_DEFINITIONS: list[UXRule] = [
         id="cognitive/interaction-affordance-deficit",
         dimension="cognitive",
         name="Interactive Affordance Deficit",
-        standard="Norman Design Principles / Direct Manipulation",
+        standard="MIG-C2/MIG-C3 (derived) / WCAG 2.5.8",
         default_severity="critical",
-        description="An actionable object or target lacks visual signifiers (such as button boundaries, pulsing highlight, or touch affordance) indicating it can be touched/held.",
-        prescriptive_template="Add explicit visual affordances (e.g. outline, breathing pulse, or touch ripple) to make interaction entrypoint unambiguous.",
+        description="An actionable object or target lacks visual signifiers (bounded shape, label, or universally understood icon) indicating it can be touched/held.",
+        prescriptive_template="Add a persistently visible press target per MIG-C1: bounded shape with label or standard icon, >=24x24 CSS px, immediate press feedback, reduced-motion-safe variant. Re-run mesen: this violation must clear.",
     ),
     # 4. Physical & Ambient Environment (Smart Mirror / IoT / the-mirror)
     UXRule(
@@ -170,11 +170,30 @@ RULE_DEFINITIONS: list[UXRule] = [
     UXRule(
         id="ergonomics/thumb-zone-unreachable",
         dimension="ergonomics",
-        name="Landscape Thumb Reachability Zone Violation",
-        standard="Steven Hoober Mobile Thumb Zone Ergonomics",
+        name="Unreachable Primary Target",
+        standard="Hoober Touch Design (corrected 2017 findings) / MIG methods",
+        default_severity="info",
+        description="Primary touch target sits where the user's grip cannot comfortably reach. Fixed x-fraction zones are retired: Hoober's later field work superseded the 2013 charts — grips shift and people favor center. Flag only with measured miss evidence, never by zone geometry alone.",
+        prescriptive_template="Observe real grips on the target hardware; prefer center placement per Hoober 2017; record miss rates instead of asserting zones.",
+    ),
+    # 6. Witness-reported platform facts (fed by external collectors, not OCR)
+    UXRule(
+        id="asset/broken-image",
+        dimension="asset",
+        name="Broken Image Asset",
+        standard="WCAG 2.1 - 1.1.1",
+        default_severity="critical",
+        description="An image element finished loading but decoded zero pixels.",
+        prescriptive_template="Restore the asset at the reported URL or remove the element; verify CDN/CSP allowlists.",
+    ),
+    UXRule(
+        id="platform/console-error",
+        dimension="platform",
+        name="Console Error During Capture",
+        standard="Robust Operation",
         default_severity="warning",
-        description="Primary touch target is placed in the dead center of an ultra-wide landscape screen, outside the natural two-handed thumb reach zone.",
-        prescriptive_template="Place primary interactive targets within lateral reach zones (left/right 25% margins) for effortless thumb actuation.",
+        description="JavaScript console or page errors were recorded while capturing the page.",
+        prescriptive_template="Reproduce with devtools open and fix the throwing code path; re-run the witness.",
     ),
 ]
 
