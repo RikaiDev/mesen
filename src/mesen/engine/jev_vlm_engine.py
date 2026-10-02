@@ -16,6 +16,7 @@ from mesen.engine.dual_judge import (
     adjudicate_violation_verdict,
     compute_agreement,
     derive_system_two,
+    document_overflow_measurements,
 )
 from mesen.engine.evidence import EvidenceEngine
 from mesen.engine.jev_evaluator import JevEvaluator
@@ -183,7 +184,7 @@ class JevVlmEngine:
 
         if mode == "deep":
             report = self.system_two.evaluate_screenshot(image_path, context, dpi, witness=witness)
-            return report, derive_system_two(report)
+            return report, derive_system_two(report, witness=witness)
 
         answers, rule_probs, pred_bbox, pred_score = self.judge_system1(image_path, context)
         violations = self._neural_rule_violations(rule_probs, pred_bbox)
@@ -206,11 +207,30 @@ class JevVlmEngine:
             verdict=verdict,
             summary_score=score,
         )
-        system_two_answers = derive_system_two(report)
+        system_two_answers = derive_system_two(report, witness=witness)
         agreement = compute_agreement(answers, system_two_answers)
         answers.evidence_consistency = adjudicate_evidence_consistency(
             answers, system_two_answers, agreement
         )
+        if system_two_answers.responsive_consistency.choice == "no":
+            measured = "; ".join(document_overflow_measurements(witness))
+            answers.responsive_consistency = ChoiceAnswer(
+                choice="no", confidence=1.0, reasoning=measured
+            )
+            answers.visual_integrity = ChoiceAnswer(
+                choice="no", confidence=1.0, reasoning=measured
+            )
+            answers.overall_quality = ScoreAnswer(
+                score=min(answers.overall_quality.score, report.summary_score),
+                confidence=1.0,
+                reasoning=f"Measured responsive defect: {measured}",
+            )
+        elif witness is not None:
+            answers.responsive_consistency = ChoiceAnswer(
+                choice="unknown",
+                confidence=1.0,
+                reasoning="A single screenshot cannot establish semantic consistency across viewports.",
+            )
         return report, answers
 
     @staticmethod

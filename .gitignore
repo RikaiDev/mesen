@@ -41,6 +41,10 @@ model_cache/
 cache/
 .cache/
 .hf/
+/research/models/
+/research/artifacts/
+/research/cache/
+/research/logs/
 
 # Node / JS / TS
 node_modules/

@@ -15,6 +15,10 @@ from mesen.engine.detector_onnx import OnnxTextDetector
 @dataclass
 class MeasuredElement:
     text: str
+    # Mean per-character recognition confidence from the OCR head.
+    # Low values mean the pixels were measured but the string itself is
+    # unreliable — downstream rules must not quote it or escalate on it.
+    confidence: float
     text_bbox: list[float]  # [ymin, xmin, ymax, xmax] normalized
     pixel_bbox: tuple[int, int, int, int]  # (x, y, w, h)
     pixel_height: int
@@ -112,6 +116,7 @@ class EvidenceEngine:
             results.append(
                 MeasuredElement(
                     text=item.text,
+                    confidence=item.confidence,
                     text_bbox=item.bbox,
                     pixel_bbox=item.pixel_bbox,
                     pixel_height=bh,

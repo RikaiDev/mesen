@@ -43,22 +43,34 @@ class JevEvaluator:
 
         # Thresholds based on context
         is_older_adult = context.cohort == "older_adult_65plus"
+        is_mobile = context.modality == "mobile_touch"
         min_contrast = 7.0 if is_older_adult else 4.5
         min_font_sp = 16.0 if is_older_adult else 14.0
 
         has_action_prompt = False
 
         for el in measured_elements:
+            # The pixels were measured, but the string is only as good as the
+            # recognizer. Below this line nothing may quote the text or
+            # escalate on it: decorative Traditional Chinese routinely decodes
+            # as lookalike garbage (e.g. 乖乖 as 乖汞), and a violation citing
+            # a string that never existed is worse than no violation.
+            text_reliable = el.confidence >= 0.85
+            quoted = el.text if text_reliable and el.text else "unrecognized text"
+
             # Check for action trigger keywords in Chinese / English
-            if any(
+            if text_reliable and any(
                 kw in el.text for kw in ["按住", "點擊", "点击", "按一下", "hold", "tap", "press"]
             ):
                 has_action_prompt = True
 
-            # Check 1: Contrast Ratio Insufficient
+            # Check 1: Contrast Ratio Insufficient (real pixels, every modality)
             if el.contrast_ratio < min_contrast:
                 rule_id = "accessibility/contrast-ratio-insufficient"
-                severity = "critical" if el.contrast_ratio < 3.0 else "warning"
+                if not text_reliable:
+                    severity = "info"
+                else:
+                    severity = "critical" if el.contrast_ratio < 3.0 else "warning"
                 fg_hex = f"#{el.fg_rgb[0]:02x}{el.fg_rgb[1]:02x}{el.fg_rgb[2]:02x}".upper()
                 bg_hex = f"#{el.bg_rgb[0]:02x}{el.bg_rgb[1]:02x}{el.bg_rgb[2]:02x}".upper()
 
@@ -66,35 +78,41 @@ class JevEvaluator:
                     ViolationItem(
                         rule_id=rule_id,
                         severity=severity,
-                        target_selector=f'text("{el.text}")' if el.text else None,
+                        target_selector=f'text("{quoted}")' if el.text else None,
                         bounding_box=el.text_bbox,
                         measured=f"{el.contrast_ratio}:1",
                         threshold=f"{min_contrast}:1",
                         prescriptive_action=(
-                            f"文字「{el.text}」對比度 ({el.contrast_ratio}:1) 低於安全門檻 ({min_contrast}:1)。"
+                            f"文字「{quoted}」對比度 ({el.contrast_ratio}:1) 低於安全門檻 ({min_contrast}:1)。"
                             f"前景色 {fg_hex} 與底色 {bg_hex} 過度接近，請調深前景色或提高底色亮度。"
                         ),
                     )
                 )
 
-            # Check 2: Font Size Insufficient (Skip title text > 18sp)
-            if el.estimated_sp < min_font_sp:
+            # Check 2: Font Size Insufficient.
+            # This is a mobile rule by its own description (行動端可讀下限);
+            # desktop screenshots have different viewing distances and CSS px
+            # scaling, so applying 14sp there manufactures violations.
+            if is_mobile and el.estimated_sp < min_font_sp:
                 rule_id = (
                     "accessibility/font-size-insufficient"
                     if "accessibility/font-size-insufficient" in RULE_REGISTRY
                     else "accessibility/text-reflow-overflow"
                 )
-                severity = "warning" if el.estimated_sp < 10.0 else "info"
+                if not text_reliable:
+                    severity = "info"
+                else:
+                    severity = "warning" if el.estimated_sp < 10.0 else "info"
                 violations.append(
                     ViolationItem(
                         rule_id=rule_id,
                         severity=severity,
-                        target_selector=f'text("{el.text}")' if el.text else None,
+                        target_selector=f'text("{quoted}")' if el.text else None,
                         bounding_box=el.text_bbox,
                         measured=f"{el.estimated_sp}sp",
                         threshold=f"{min_font_sp}sp",
                         prescriptive_action=(
-                            f"文字「{el.text}」實體高度 ({el.estimated_sp}sp) 低於行動端可讀下限 ({min_font_sp}sp)。"
+                            f"文字「{quoted}」實體高度 ({el.estimated_sp}sp) 低於行動端可讀下限 ({min_font_sp}sp)。"
                             f"在行動裝置高密度螢幕上易造成閱讀困難，請在佈局中調升該文字級別。"
                         ),
                     )

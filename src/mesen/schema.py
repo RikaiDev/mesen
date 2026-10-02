@@ -6,13 +6,44 @@ Supports both fast-gate CI/CD decisions and prescriptive UX Consultation reports
 from enum import Enum
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class ChoiceValue(str, Enum):
     YES = "yes"
     NO = "no"
     UNKNOWN = "unknown"
+
+
+class DesignCriterion(str, Enum):
+    DESIGN_QUALITY = "design_quality"
+    ORIGINALITY = "originality"
+    CRAFT = "craft"
+    FUNCTIONALITY = "functionality"
+
+
+class DesignCriterionLabel(BaseModel):
+    choice: ChoiceValue
+    evidence_ref: str = Field(min_length=1)
+
+
+class DesignAuditLabel(BaseModel):
+    """An independently reviewed training label, never a model-authored PASS."""
+
+    artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    brief_ref: str = Field(min_length=1)
+    maker_id: str = Field(min_length=1)
+    evaluator_id: str = Field(min_length=1)
+    evaluator_receipt_ref: str = Field(min_length=1)
+    criteria: dict[DesignCriterion, DesignCriterionLabel]
+
+    @model_validator(mode="after")
+    def require_independent_complete_review(self) -> "DesignAuditLabel":
+        if self.maker_id == self.evaluator_id:
+            raise ValueError("design audit label must come from a different evaluator")
+        if set(self.criteria) != set(DesignCriterion):
+            raise ValueError("design audit label must cover all four criteria")
+        return self
 
 
 class ChoiceAnswer(BaseModel):
@@ -94,6 +125,12 @@ class JudgeResponse(BaseModel):
     agreement: dict[str, bool] | None = None
 
 
+class ViewportFact(BaseModel):
+    width: int = Field(gt=0)
+    doc_scroll_width: int = Field(gt=0, alias="docScrollWidth")
+    screenshot: str | None = None
+
+
 class WitnessState(BaseModel):
     # Python stays snake_case; camelCase aliases keep the wire contract
     # spoken by external witness collectors.
@@ -109,6 +146,19 @@ class WitnessState(BaseModel):
     )
     geometry_anomalies: list[dict] | None = Field(default=None, alias="geometryAnomalies")
     console_errors: list[str] | None = Field(default=None, alias="consoleErrors")
+    viewport_facts: list[ViewportFact] = Field(default_factory=list, alias="viewportFacts")
+
+    @model_validator(mode="after")
+    def require_consistent_document_width(self) -> "WitnessState":
+        """Reject a document-overflow anomaly contradicted by measured viewport facts."""
+        widths = {fact.width: fact.doc_scroll_width for fact in self.viewport_facts}
+        for anomaly in self.geometry_anomalies or []:
+            if anomaly.get("kind") != "document-overflow":
+                continue
+            width = anomaly.get("viewportWidth")
+            if width in widths and widths[width] <= width:
+                raise ValueError(f"document-overflow contradicts viewportFacts at {width}px")
+        return self
 
 
 class JudgeRequest(BaseModel):

@@ -60,64 +60,50 @@ def export(checkpoint, output, quantize):
 @click.option("--model", default=None, help="Custom ONNX model path")
 @click.option("--remote", default=None, help="Remote server URL (e.g. http://localhost:8088)")
 def judge(state, images, model, remote):
-    """Judge a captured UI state using local ONNX vlm-jev or remote daemon."""
+    """Judge a captured UI state using local ONNX and validated witness evidence."""
     import os
 
+    from pydantic import ValidationError
+
     from mesen.engine.jev_vlm_engine import JevVlmEngine
-    from mesen.schema import ChoiceAnswer, ContextSpec, JudgeAnswers, ScoreAnswer
+    from mesen.schema import ChoiceAnswer, ScoreAnswer, WitnessState
 
-    state_obj = {}
-    if os.path.exists(state):
-        try:
-            with open(state, encoding="utf-8") as f:
-                state_obj = json.load(f)
-        except Exception:
-            pass
+    if remote:
+        raise click.UsageError("--remote serving is not implemented; use the local ONNX model")
+    try:
+        with open(state, encoding="utf-8") as f:
+            state_obj = json.load(f)
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise click.ClickException(f"Cannot read witness state {state}: {exc}") from exc
+    if (
+        not isinstance(state_obj, dict)
+        or not isinstance(state_obj.get("context"), dict)
+        or not state_obj["context"].get("modality")
+    ):
+        raise click.ClickException("Witness state must include a context with modality")
+    try:
+        witness = WitnessState.model_validate(state_obj)
+    except ValidationError as exc:
+        raise click.ClickException(f"Invalid witness state: {exc}") from exc
 
-    product = state_obj.get("product", "")
-    surface = state_obj.get("surface", "")
-    title = state_obj.get("title", "")
-    cohort = "general_mobile"
-    is_portal = (
-        product in ("portal", "employee-health")
-        or surface in ("portal", "employee-health")
-        or "portal" in product
-        or state_obj.get("modality") == "public_portal"
-        or "入口" in title
-        or "Portal" in title
-    )
-    modality = "public_portal" if is_portal else "kiosk"
-    context = ContextSpec(cohort=cohort, modality=modality, interaction_mode="touch")
+    image_path = next((img for img in images if os.path.isfile(img)), None)
+    if image_path is None:
+        raise click.ClickException("At least one readable --images file is required")
+    if witness.context.modality in ("desktop_web", "mobile_touch"):
+        if not witness.route or not witness.viewport_facts:
+            raise click.ClickException(
+                "Web witness requires a route and measured viewportFacts"
+            )
+        screenshots = {fact.screenshot for fact in witness.viewport_facts if fact.screenshot}
+        if screenshots and os.path.basename(image_path) not in screenshots:
+            raise click.ClickException(
+                f"Image {os.path.basename(image_path)} is absent from witness viewportFacts"
+            )
 
-    image_path = None
-    if images:
-        for img in images:
-            if os.path.exists(img):
-                image_path = img
-                break
-
-    if image_path:
-        engine = JevVlmEngine(onnx_model_path=model) if model else JevVlmEngine()
-        report, answers = engine.evaluate(image_path, context=context)
-    else:
-        answers = JudgeAnswers(
-            primary_action_reachable=ChoiceAnswer(
-                choice="yes", confidence=1.0, reasoning="Primary action visible and reachable."
-            ),
-            visual_integrity=ChoiceAnswer(
-                choice="yes", confidence=1.0, reasoning="Layout integrity confirmed."
-            ),
-            responsive_consistency=ChoiceAnswer(
-                choice="yes", confidence=1.0, reasoning="Consistent across viewports."
-            ),
-            evidence_consistency=ChoiceAnswer(
-                choice="yes", confidence=1.0, reasoning="Agrees with contract state."
-            ),
-            operator_clarity=ChoiceAnswer(
-                choice="yes", confidence=1.0, reasoning="Clear user affordance."
-            ),
-            overall_quality=ScoreAnswer(score=2, confidence=1.0, reasoning="Good quality."),
-        )
+    product = witness.product or ""
+    modality = witness.context.modality
+    engine = JevVlmEngine(onnx_model_path=model) if model else JevVlmEngine()
+    report, answers = engine.evaluate(image_path, context=witness.context, witness=witness)
 
     # UI/UX Decision Layer Invariant: Contextual Persona & Public Surface Affordance
     # A public patient portal must not be polluted with persistent floating administrative
@@ -146,7 +132,7 @@ def judge(state, images, model, remote):
             reasoning="Degraded UI/UX: public patient portal contains inappropriate administrative floating affordance.",
         )
 
-    click.echo(json.dumps({"answers": answers.model_dump()}))
+    click.echo(json.dumps({"answers": answers.model_dump(), "consultation": report.model_dump()}))
 
 
 if __name__ == "__main__":
