@@ -212,6 +212,20 @@ class JevVlmEngine:
         answers.evidence_consistency = adjudicate_evidence_consistency(
             answers, system_two_answers, agreement
         )
+        # A claimed quality score is bounded above by measured evidence.
+        # System 1 reads a 224px impression; System 2 measured real pixels.
+        # When they disagree on quality, the measurement wins: a page cannot
+        # be better than its verified defects allow, whatever the impression.
+        if report.summary_score < answers.overall_quality.score:
+            answers.overall_quality = ScoreAnswer(
+                score=report.summary_score,
+                confidence=1.0,
+                reasoning=(
+                    f"System 1 scored {pred_score}; measured evidence supports "
+                    f"at most {report.summary_score} "
+                    f"({report.verdict}, {len(all_violations)} violation(s))."
+                ),
+            )
         if system_two_answers.responsive_consistency.choice == "no":
             measured = "; ".join(document_overflow_measurements(witness))
             answers.responsive_consistency = ChoiceAnswer(
