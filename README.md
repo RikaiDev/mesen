@@ -1,64 +1,44 @@
-# mesen (目線) — On-Prem Typed VLM UI Decision Engine
+# mesen (目線) — UI Evaluation Harness
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Architecture: vlm-jev](https://img.shields.io/badge/Architecture-vlm--jev-emerald.svg)]()
-[![Model: Qwen3.5-2B](https://img.shields.io/badge/Backbone-Qwen3.5--2B-orange.svg)]()
-[![Export: ONNX](https://img.shields.io/badge/Export-ONNX%20INT8-purple.svg)]()
+[![Architecture: evidence harness](https://img.shields.io/badge/Architecture-evidence%20harness-emerald.svg)]()
+[![Local model: ViT-B/16](https://img.shields.io/badge/Local%20model-ViT--B%2F16-orange.svg)]()
+[![Export: ONNX](https://img.shields.io/badge/Export-ONNX-purple.svg)]()
 
-> **Deterministic, typed, sub-second UX decisions powered by on-prem multimodal backbones.**  
-> Moving away from slow, expensive, generative cloud VLM agent prompts to a lean, single-forward-pass typed decision engine.
+> Capture UI evidence, check measurable defects, and compare model judgments with the evidence. The bundled local judge is a ViT-B/16 ONNX classifier; Qwen and specialist UI/UX teacher paths are research code, not the default CLI inference path.
 
 ---
 
-## 1. What is the new mesen (vlm-jev)?
+## 1. What does mesen run today?
 
-The original `mesen` explored dual-agent VLM simulations (Naive User + UX Expert) calling cloud LLM APIs. While expressive, cloud LLMs are slow (10–30s), expensive ($0.14–$0.42 per run), non-deterministic, and cannot run in private, air-gapped or HIPAA/GDPR-regulated environments.
+The local `mesen judge` command loads `models/onnx/mesen_jev_vlm.onnx`. Its neural input is one screenshot resized to 224×224. A separate evidence evaluator consumes validated witness state and can reject a measured defect even when image logits disagree. Document-level horizontal overflow is a hard responsive defect; child containers that scroll horizontally remain informational. One screenshot cannot establish semantic consistency across breakpoints; without a measured document defect, the responsive answer abstains.
 
-**The new mesen completely replaces that architecture with `vlm-jev`**:
-- **Non-Generative & Typed**: Uses Open-Jev typed decision heads (`Choice`, `Score`, `Noul`) directly predicting probabilities rather than generating long token streams.
-- **Multimodal UI Reasoning**: One screenshot per forward pass, fused with structured DOM / accessibility / contract witness state. Run once per breakpoint (375, 768, 1024, 1440px) and compare verdicts.
-- **Single Forward Pass**: Measured **~1.6s per screenshot** via ONNX Runtime on Apple Silicon CPU (2 threads). GPU serving targets < 200ms (unverified on this machine).
-- **Zero Cloud API Dependencies**: 100% on-premises / edge, zero API fees, privacy-safe (zero PHI leak).
-- **Zero Schema Failures**: Outputs fixed-shape probability tensors that map directly to strong types without JSON parsing errors.
+The harness contract is: capture screenshots and browser facts, validate the witness, apply measurable checks, then record the model answer and any disagreement. Its usefulness depends on real-browser holdouts and human review of false negatives and confidence, not on the backbone name.
 
 ---
 
 ## 2. Core Architecture
 
 ```
-[ Multi-Viewport Screenshots (375, 768, 1024, 1440) + Structured DOM State ]
-                                   │
-                                   ▼
-        ┌───────────────────────────────────────────────────────┐
-        │                 Qwen3.5-2B-Base                      │
-        │        (Native Vision Encoder + Multimodal Fusion)     │
-        └──────────────────────────┬────────────────────────────┘
-                                   │ (Latent Representation)
-                                   ▼
-        ┌───────────────────────────────────────────────────────┐
-        │            Open-Jev Typed Decision Heads             │
-        ├───────────────────────────────────────────────────────┤
-        │ • Choice Head: primary_action_reachable (yes/no/unk)  │
-        │ • Choice Head: visual_integrity         (yes/no/unk)  │
-        │ • Choice Head: responsive_consistency   (yes/no/unk)  │
-        │ • Choice Head: evidence_consistency     (yes/no/unk)  │
-        │ • Choice Head: operator_clarity         (yes/no/unk)  │
-        │ • Score Head:  overall_quality          (0 .. 3)      │
-        └──────────────────────────┬────────────────────────────┘
-                                   │
-                ┌──────────────────┴──────────────────┐
-                ▼                                     ▼
-     【 GPU Server Serving 】                  【 Local ONNX Runtime 】
-     • RTX 4080 (WSL2 / Linux)                • INT8 / FP16 .onnx
-     • FastAPI / gRPC Endpoint                • Python click CLI
-     • Shared across dev team & CI            • Fully offline on laptops
+[ Browser screenshots + measured viewport/DOM facts ]
+                         │
+                         ▼
+             [ Validated witness state ]
+                         │
+              ┌──────────┴──────────┐
+              ▼                     ▼
+      [ ViT-B/16 ONNX ]      [ Evidence evaluator ]
+      one 224px image       geometry and rule registry
+              └──────────┬──────────┘
+                         ▼
+          [ Typed answers + consultation ]
 ```
 
 ---
 
 ## 3. Decision Contract Schema
 
-The model's output strictly adheres to the atomic UI judge contract:
+The harness returns these typed answers. Measured evidence can override or abstain from an image-only prediction:
 
 | Dimension | Type | Description |
 |---|---|---|
@@ -71,33 +51,25 @@ The model's output strictly adheres to the atomic UI judge contract:
 
 ---
 
-## 4. Distillation & Training Lineage
+## 4. Research model paths
 
-To achieve high defect diagnosis accuracy without running huge models in production:
-1. **Defect-Reasoning Teacher**: `afx-team/UI-UX` (4B, SOTA 79.63% on UXBench) provides defect reasoning and attention maps on occlusion, clipping, and modal blocks.
-2. **Grounding Teacher**: `inclusionAI/UI-Venus-2-9B` provides element coordinate grounding and action-region boundaries.
-3. **Student Model**: `Qwen3.5-2B-Base` equipped with Open-Jev classification heads, trained on A100 SXM4 (40GB) with multi-task focal loss and calibration penalties.
+The repository contains Qwen3.5-2B training/export code and names `afx-team/UI-UX` and `inclusionAI/UI-Venus-2-9B` as candidate teachers. Those names do not establish which checkpoint produced a local judgment. Record the exact checkpoint, training manifest, validation receipt, and inference path before claiming teacher distillation or model performance.
 
 ---
 
 ## 5. Deployment Options
 
-### Option A: Centralized GPU Server (RTX 4080)
-Run the fast HTTP daemon on the internal GPU server:
+### Option A: Experimental GPU server
+The server code exists, but `mesen judge --remote` is not implemented. Use a separately validated server client before treating this as a release gate:
 ```bash
 mesen serve --host 0.0.0.0 --port 8088 --checkpoint /mnt/model-cache/vlm-jev/latest.safetensors
 ```
-Team members and CI runners call:
-```bash
-mesen judge --remote http://gpu-server:8088 --images v1.jpg --state state.json
-```
-(`judge` evaluates the first existing `--images` entry; pass one screenshot per invocation.)
+The local CLI rejects `--remote` explicitly.
 
-### Option B: Local ONNX Runtime (CPU / CoreML)
-Export to ONNX and run without any GPU:
+### Option B: Local ONNX Runtime (CPU)
+Use the bundled ONNX checkpoint with a captured witness and screenshot:
 ```bash
-mesen export --checkpoint /path/to/checkpoint --output mesen.onnx --quantize
-mesen judge --model mesen.onnx --images v1.jpg --state state.json
+mesen judge --images 375.png --state state.json
 ```
 
 ---

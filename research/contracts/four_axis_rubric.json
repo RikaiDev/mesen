@@ -1,0 +1,41 @@
+{
+  "schema": "mesen.design-rubric.v1",
+  "source": "https://www.anthropic.com/engineering/harness-design-long-running-apps",
+  "decision_values": ["yes", "no", "unknown"],
+  "common_rules": [
+    "Review the supplied brief, screenshots, and browser witness together; cite the specific evidence used for each axis.",
+    "A missing observation is unknown, never yes. A visible defect or contradictory witness cannot be overruled by model confidence.",
+    "Separate what appears in one frame from behavior observed across viewport or interaction states.",
+    "Record the page maker and evaluator independently; a maker's own score is not a training label."
+  ],
+  "criteria": {
+    "design_quality": {
+      "question": "Do typography, color, layout, imagery, and interaction hierarchy form a coherent identity that serves the brief?",
+      "yes": "Several visible decisions support the same intended mood and task hierarchy across the supplied states.",
+      "no": "Conflicting visual decisions, weak hierarchy, or inconsistent states disrupt the intended identity or task.",
+      "unknown": "The brief or enough representative states are missing to judge coherence."
+    },
+    "originality": {
+      "question": "Do the design choices show deliberate customization for this brief rather than an unmodified stock pattern?",
+      "yes": "Document concrete custom decisions and a relevant comparison or source context.",
+      "no": "Document identifiable stock defaults, copied patterns, or generic repeated decisions in the supplied comparison context.",
+      "unknown": "No comparison or design-source context is available; a single screenshot cannot establish originality."
+    },
+    "craft": {
+      "question": "Are typography, spacing, alignment, color relationships, contrast, and responsive details executed consistently?",
+      "yes": "Visual inspection and applicable measurements support sound execution at every supplied viewport.",
+      "no": "A specific visible or measured defect, such as clipping, unstable control position, low contrast, or inconsistent spacing, breaks execution.",
+      "unknown": "Required viewport or measurement evidence is missing for the claimed execution quality."
+    },
+    "functionality": {
+      "question": "Can the intended user find the primary action and complete the task without guessing?",
+      "yes": "Browser interaction evidence shows the task can be completed and the primary action remains reachable.",
+      "no": "An observed control, navigation, state, or task failure prevents or materially confuses completion.",
+      "unknown": "Only screenshots or static code are supplied, or the relevant task path was not exercised."
+    }
+  },
+  "output_contract": {
+    "format": "JSON object with design_quality, originality, craft, and functionality",
+    "each_axis": "choice yes/no/unknown plus a nonempty evidence_ref identifying an observed source or a specific missing source"
+  }
+}

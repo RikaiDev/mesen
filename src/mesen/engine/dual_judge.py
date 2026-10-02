@@ -24,12 +24,45 @@ CLARITY_RULE_PREFIXES = ("cognitive/",)
 OCCLUSION_RULE_ID = "ergonomics/primary-action-occluded"
 
 
+def document_overflow_measurements(state: WitnessState) -> list[str]:
+    """Describe measured document overflow, excluding scrollable child containers."""
+    measurements = []
+    covered_widths = {fact.width for fact in state.viewport_facts}
+    for fact in state.viewport_facts:
+        if fact.doc_scroll_width > fact.width:
+            measurements.append(
+                f"{state.route or 'unknown route'} viewport {fact.width}px: "
+                f"document scrollWidth={fact.doc_scroll_width}px"
+            )
+    for anomaly in state.geometry_anomalies or []:
+        width = anomaly.get("viewportWidth")
+        if anomaly.get("kind") == "document-overflow" and width not in covered_widths:
+            measurements.append(
+                f"{state.route or 'unknown route'} viewport {width}px: "
+                f"{str(anomaly.get('measured', 'document overflow'))[:200]}"
+            )
+    return measurements
+
+
 def witness_violations(state: WitnessState) -> list[ViolationItem]:
     """Map witness-reported facts to registry violations (System 2 input)."""
     violations: list[ViolationItem] = []
+    for measured in document_overflow_measurements(state):
+        rule = RULE_REGISTRY["accessibility/text-reflow-overflow"]
+        violations.append(
+            ViolationItem(
+                rule_id=rule.id,
+                severity="critical",
+                measured=measured,
+                threshold="document scrollWidth <= viewport width",
+                prescriptive_action=rule.prescriptive_template,
+            )
+        )
     for anomaly in state.geometry_anomalies or []:
         kind = anomaly.get("kind", "")
         measured = str(anomaly.get("measured", ""))[:200]
+        if kind == "document-overflow":
+            continue
         if kind == "broken-image":
             rule = RULE_REGISTRY["asset/broken-image"]
             violations.append(
@@ -68,7 +101,9 @@ def witness_violations(state: WitnessState) -> list[ViolationItem]:
     return violations
 
 
-def derive_system_two(report: ConsultantReport) -> JudgeAnswers:
+def derive_system_two(
+    report: ConsultantReport, witness: WitnessState | None = None
+) -> JudgeAnswers:
     """Derive a second verdict purely from System 2 violations."""
     rule_ids = {v.rule_id for v in report.violations}
     fatal = any(v.severity == "fatal" for v in report.violations)
@@ -82,6 +117,7 @@ def derive_system_two(report: ConsultantReport) -> JudgeAnswers:
         v.rule_id.startswith(p) for v in report.violations for p in CLARITY_RULE_PREFIXES
     )
     reachable_no = fatal or OCCLUSION_RULE_ID in rule_ids
+    responsive_no = bool(document_overflow_measurements(witness)) if witness else False
 
     def choice(no: bool, dimension: str) -> ChoiceAnswer:
         return ChoiceAnswer(
@@ -94,9 +130,13 @@ def derive_system_two(report: ConsultantReport) -> JudgeAnswers:
         primary_action_reachable=choice(reachable_no, "primary_action_reachable"),
         visual_integrity=choice(visual_no, "visual_integrity"),
         responsive_consistency=ChoiceAnswer(
-            choice="unknown",
+            choice="no" if responsive_no else "unknown",
             confidence=1.0,
-            reasoning="System 2 sees one viewport per pass; cross-breakpoint consistency is unknowable here.",
+            reasoning=(
+                "Witness reports horizontal overflow at a measured viewport."
+                if responsive_no
+                else "No measured responsive defect; cross-breakpoint consistency remains unverified."
+            ),
         ),
         evidence_consistency=ChoiceAnswer(
             choice="unknown",
@@ -117,6 +157,7 @@ def compute_agreement(system_one: JudgeAnswers, system_two: JudgeAnswers) -> dic
     fields = [
         "primary_action_reachable",
         "visual_integrity",
+        "responsive_consistency",
         "operator_clarity",
     ]
     agreement: dict[str, bool] = {}

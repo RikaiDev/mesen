@@ -1,0 +1,55 @@
+{
+  "schema": "mesen.uiux-vlm.acceptance.v1",
+  "task_ref": "mesen#4",
+  "objective": "Train an image-and-evidence Mesen UI/UX judgment model and export a small ONNX student only after independent evaluation",
+  "deadline": "2026-09-29T05:00:00+08:00",
+  "training_inputs": [
+    "real screenshot pixels",
+    "viewport and interaction witness facts",
+    "task brief and user context"
+  ],
+  "teacher_policy": {
+    "specialist": "afx-team/UI-UX@846401e482f7b6fb8d61ab9fb7bc30d4e90e1c4b",
+    "scope": "mobile UX defect diagnosis only; teacher outputs are proposals, not ground truth",
+    "four_axis_rubric": "research/contracts/four_axis_rubric.json",
+    "qualified_teacher_per_axis": "Record a pinned model, prompt, and human-reviewed accuracy receipt for every axis before using its outputs as distillation targets; UX defect expertise alone does not qualify a model to judge originality or functionality",
+    "independent_review": "Every four-axis label needs an evaluator distinct from its maker and a traceable evidence receipt"
+  },
+  "axes": [
+    "design_quality",
+    "originality",
+    "craft",
+    "functionality"
+  ],
+  "abstention": "A screenshot without interaction evidence cannot prove functionality; unsupported axes must answer unknown",
+  "split_policy": {
+    "group": "site and route family, including all viewports and mutations",
+    "blind_holdout": "sealed before optimization; never used for prompt selection, checkpoint selection, or threshold tuning",
+    "minimum_cases": 120,
+    "minimum_site_families": 3,
+    "minimum_positive_critical_cases": 40,
+    "minimum_clean_controls": 40,
+    "minimum_evidence_for_each_axis": 20
+  },
+  "training_admission": [
+    "Pinned source, license, and weight hash receipt for every teacher and base model",
+    "Data manifest has zero missing images and no route-family overlap across train, validation, or blind holdout",
+    "Each training label records maker, independent evaluator, source artifact hash, and evidence reference",
+    "Every teacher is qualified on the particular criterion it labels; unsupported teacher output remains unknown",
+    "Model forward pass consumes changed image pixels and changed witness text; no constant text-only fallback",
+    "GPU resource and storage admission pass on the selected node"
+  ],
+  "acceptance": {
+    "critical_false_negative_count": 0,
+    "confident_unsupported_accept_count": 0,
+    "four_axis_macro_f1_minimum_each": 0.80,
+    "calibration_ece_maximum_each": 0.10,
+    "student_accuracy_minus_teacher_minimum_each": 0.0,
+    "onnx_argmax_parity_minimum": 0.99,
+    "onnx_probability_mean_absolute_error_maximum": 0.02,
+    "onnx_size_megabytes_maximum": 500,
+    "onnx_cpu_p95_latency_milliseconds_maximum": 1000,
+    "reporting": "Publish per-axis confusion matrices, abstentions, calibration, route/site breakdowns, model hashes, and the full inference input contract"
+  },
+  "deployment_rule": "No ONNX replacement or completion claim if any predeclared criterion fails or is unmeasured"
+}

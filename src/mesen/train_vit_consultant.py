@@ -10,17 +10,15 @@ Learns:
 import argparse
 import json
 import os
-import random
 
 import torch
 import torchvision.transforms as T  # noqa: N812
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 
+from mesen.data.synthetic_manifest import CHOICE_MAP, load_all_screenshot_pairs
 from mesen.model.vit_consultant import MesenViTConsultantModel
 from mesen.rules.registry import RULE_ID_LIST, RULE_TO_INDEX
-
-CHOICE_MAP = {"yes": 0, "no": 1, "unknown": 2}
 
 IMAGE_TRANSFORM = T.Compose(
     [
@@ -46,30 +44,27 @@ class RealScreenshotDataset(Dataset):
     def __getitem__(self, idx: int) -> dict[str, torch.Tensor]:
         png_path, mutation, labels = self.samples[idx]
 
-        try:
-            image = Image.open(png_path).convert("RGB")
+        with Image.open(png_path) as source:
+            image = source.convert("RGB")
             img_tensor = self.transform(image)
-        except Exception:
-            # Fallback black image if missing
-            img_tensor = torch.zeros(3, 224, 224)
 
         atomic_targets = {
             "primary_action_reachable": torch.tensor(
-                CHOICE_MAP.get(labels.get("primary_action_reachable", "yes"), 0)
+                CHOICE_MAP[labels["primary_action_reachable"]]
             ),
             "visual_integrity": torch.tensor(
-                CHOICE_MAP.get(labels.get("visual_integrity", "yes"), 0)
+                CHOICE_MAP[labels["visual_integrity"]]
             ),
             "responsive_consistency": torch.tensor(
-                CHOICE_MAP.get(labels.get("responsive_consistency", "yes"), 0)
+                CHOICE_MAP[labels["responsive_consistency"]]
             ),
             "evidence_consistency": torch.tensor(
-                CHOICE_MAP.get(labels.get("evidence_consistency", "yes"), 0)
+                CHOICE_MAP[labels["evidence_consistency"]]
             ),
             "operator_clarity": torch.tensor(
-                CHOICE_MAP.get(labels.get("operator_clarity", "yes"), 0)
+                CHOICE_MAP[labels["operator_clarity"]]
             ),
-            "overall_quality": torch.tensor(int(labels.get("overall_quality", 2))),
+            "overall_quality": torch.tensor(int(labels["overall_quality"])),
         }
 
         rule_vec = torch.zeros(self.num_rules)
@@ -104,37 +99,12 @@ class RealScreenshotDataset(Dataset):
         }
 
 
-def load_all_screenshot_pairs() -> tuple[list[tuple[str, str, dict]], list[tuple[str, str, dict]]]:
-    pairs: list[tuple[str, str, dict]] = []
-
-    # 1. Load synthetic web screenshots
-    for split_file in [
-        "data/synthetic/train.json",
-        "data/synthetic/val.json",
-        "data/synthetic/mirror_samples.json",
-    ]:
-        if os.path.exists(split_file):
-            with open(split_file, encoding="utf-8") as f:
-                records = json.load(f)
-                for r in records:
-                    mutation = r.get("mutation_type", "clean")
-                    labels = r.get("labels", {})
-                    for screenshot_path in r.get("screenshots", []):
-                        if os.path.exists(screenshot_path):
-                            pairs.append((screenshot_path, mutation, labels))
-
-    random.seed(42)
-    random.shuffle(pairs)
-    val_size = max(20, int(len(pairs) * 0.15))
-    return pairs[val_size:], pairs[:val_size]
-
-
 def train_vit(epochs: int = 15, batch_size: int = 16, lr: float = 3e-4, device: str = "cuda"):
     print("=== Joint Vision Transformer (ViT-B/16) + Consultant Fine-Tuning ===")
     print(f"Device: {device}, Epochs: {epochs}, Batch Size: {batch_size}, LR: {lr}")
 
-    train_pairs, val_pairs = load_all_screenshot_pairs()
-    print(f"Loaded {len(train_pairs)} training images, {len(val_pairs)} validation images.")
+    train_pairs, val_pairs, receipt = load_all_screenshot_pairs()
+    print(f"Data receipt: {json.dumps(receipt, sort_keys=True)}")
 
     if not train_pairs:
         raise RuntimeError("No screenshot images found! Check data/synthetic/screenshots/")

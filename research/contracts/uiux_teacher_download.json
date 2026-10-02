@@ -1,0 +1,29 @@
+{
+  "schema": "buddhist.contract.v1",
+  "task_ref": "mesen#3:uiux-teacher-download",
+  "objective": "Fetch the pinned MIT-licensed UI-UX teacher for a bounded local evaluation pilot",
+  "problem": "The current ViT ONNX student confidently misses measured responsive defects and has no specialist UX teacher validation",
+  "cause": "Model lineage and task-specific teacher labels were never established for the served checkpoint",
+  "approach": "Verify source identity and license, download the fixed UI-UX model into Mesen research storage, then evaluate it separately before using any labels for distillation",
+  "model_policy": {
+    "checkpoint_sha256": "c49994563c3c4f04a99d9130203c4e526f4ae5086c84deec57698d18cb652e71",
+    "minimum_allow_probability": 0.9
+  },
+  "scope": ["../scripts/download_uiux_teacher.py"],
+  "criteria": [
+    {
+      "id": "admit-source-and-boundary",
+      "requirement": "The pinned model revision, MIT license, storage budget, synthetic/public pilot data, and no-training boundary are reviewed before download",
+      "stage": "admit",
+      "kind": "review",
+      "independent": false
+    },
+    {
+      "id": "accept-download-identity",
+      "requirement": "The downloaded model files match the pinned revision and an artifact receipt lists each weight shard and size",
+      "stage": "accept",
+      "kind": "review",
+      "independent": false
+    }
+  ]
+}

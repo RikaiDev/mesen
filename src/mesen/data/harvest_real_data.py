@@ -23,7 +23,6 @@ def analyze_real_screenshot(
     image_path: str,
     evidence_engine: EvidenceEngine,
     description: str = "",
-    is_landscape: bool = False,
 ) -> dict:
     """
     Analyzes a real mobile screenshot and generates grounded JEV labels and rule violations.
@@ -155,7 +154,6 @@ def harvest_real_rico_dataset(
                 img_path,
                 evidence_engine,
                 description=desc,
-                is_landscape=False,
             )
             manifest.append(entry)
             count += 1
@@ -182,7 +180,6 @@ def harvest_real_rico_dataset(
                     l_path,
                     evidence_engine,
                     description=f"{desc} (unadapted on 21:9 landscape)",
-                    is_landscape=True,
                 )
                 manifest.append(l_entry)
                 count += 1

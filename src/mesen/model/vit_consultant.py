@@ -27,7 +27,6 @@ class MesenViTConsultantModel(nn.Module):
     def __init__(
         self,
         pretrained: bool = True,
-        freeze_backbone_epochs: int = 0,
         num_rules: int = len(RULE_DEFINITIONS),
     ):
         super().__init__()
