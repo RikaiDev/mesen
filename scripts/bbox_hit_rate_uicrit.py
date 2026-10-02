@@ -24,7 +24,9 @@ def main():
     t0 = time.perf_counter()
     for rico_id, true_boxes in sorted(boxes.items()):
         matches = sorted(
-            [p for p in rico_dir.glob(f"{rico_id}.*") if p.suffix.lower() in (".jpg", ".png")]
+            p
+            for p in rico_dir.rglob(f"{rico_id}.*")
+            if p.suffix.lower() in (".jpg", ".png") and ".cache" not in p.parts
         )
         if not matches:
             missing += 1
