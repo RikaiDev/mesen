@@ -32,12 +32,14 @@ def test_hit_rate_counts_best_box_only(tmp_path):
 
 
 def test_parse_skips_llm_only_and_malformed(tmp_path):
+    # Real UICrit shape: the comments cell is a Python-list literal whose
+    # entries carry escaped newlines.
     csv_path = tmp_path / "mini.csv"
     csv_path.write_text(
         "rico_id,comments_source,comments\n"
-        '1001,"[' + "'human'" + ']","Comment 1\nToo small. Bounding Box: [0.1, 0.2, 0.3, 0.4]\n"\n'
-        '1002,"[' + "'llm'" + ']","Comment 1\nToo small. Bounding Box: [0.1, 0.2, 0.3, 0.4]\n"\n'
-        '1003,"[' + "'human'" + ']","Comment 1\nNo box here.\n"\n',
+        '1001,"[\'human\']","[""Comment 1\\nToo small. Bounding Box: [0.1, 0.2, 0.3, 0.4]\\n""]"\n'
+        '1002,"[\'llm\']","[""Comment 1\\nToo small. Bounding Box: [0.1, 0.2, 0.3, 0.4]\\n""]"\n'
+        '1003,"[\'human\']","[""Comment 1\\nNo box here.\\n""]"\n',
         encoding="utf-8",
     )
     boxes = parse_uicrit_boxes(str(csv_path))
