@@ -30,6 +30,20 @@ demonstrates hit rate on human-annotated boxes (IoU > 0.5). Per the agreed
 criterion (kill below 0.3), the bbox-directed proposal is rejected on
 current weights.
 
+## UICrit result (2026-10-03, RTX 4080)
+
+1000 RICO screens, 10,286 human/both defect boxes, `scripts/bbox_hit_rate_uicrit.py`:
+
+- **hit rate @0.5 = 0.001** (1/1000), 149s total.
+- Best hits: 0.55, 0.28, 0.25. The mass of predictions sits at IoU 0.
+- The regressor is effectively constant across pages, builds, aspect
+  ratios AND datasets (ecommerce + mobile RICO alike). This is not
+  domain shift; the localization output carries no signal on any
+  tested distribution.
+- `analyze_roi_contrast(img, x, y, w, h)` remains the directed interface
+  for future retrained weights; nothing may call it with model boxes
+  until the hit-rate gate passes.
+
 `analyze_roi_contrast(img, x, y, w, h)` stays available as the directed
 interface for that future; nothing calls it with model boxes today.
 
