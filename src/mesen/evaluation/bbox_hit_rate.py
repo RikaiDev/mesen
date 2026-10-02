@@ -13,16 +13,20 @@ BOX_PATTERN = re.compile(r"Bounding Box:\s*\[([^\]]+)\]")
 
 def parse_uicrit_boxes(csv_path, sources=("human", "both")):
     """Map rico_id to human defect boxes [ymin, xmin, ymax, xmax]."""
+    import ast
+
     boxes = {}
     with open(csv_path, encoding="utf-8") as f:
         for row in csv.DictReader(f):
             try:
-                comment_sources = eval(row["comments_source"])
+                comment_sources = ast.literal_eval(row["comments_source"])
+                comments = ast.literal_eval(row["comments"])
             except Exception:
                 continue
-            comments = re.findall(r"Comment \d+\n(.*?)(?=Comment \d+\n|\Z)", row["comments"], re.S)
+            if not isinstance(comments, list):
+                comments = [comments]
             for source, comment in zip(comment_sources, comments):
-                if source not in sources:
+                if source not in sources or not isinstance(comment, str):
                     continue
                 for match in BOX_PATTERN.findall(comment):
                     try:
