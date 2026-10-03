@@ -160,6 +160,7 @@ def triage_page(
     treat as "no opinion" rather than "no problem".
     """
     batch, (width, height) = tile_batch(image_path, grid)
+    regions = page_regions(width, height, grid)
     outputs = session.run(None, {"screenshot": batch})
     names = [o.name for o in session.get_outputs()]
     features_name = next((n for n in names if n == "hidden_states"), None)
@@ -167,7 +168,17 @@ def triage_page(
         return {"signal": False, "reason": "graph does not expose hidden_states", "tiles": []}
 
     out_map = dict(zip(names, outputs, strict=True))
-    features = np.asarray(out_map[features_name])[:, 0, :]
+    # The exporter may keep or drop the trailing singleton; accept either rather
+    # than pinning one shape and failing on the other.
+    features = np.asarray(out_map[features_name])
+    if features.ndim == 3:
+        features = features[:, 0, :]
+    if features.shape[0] != len(regions):
+        return {
+            "signal": False,
+            "reason": f"graph returned {features.shape[0]} features for {len(regions)} tiles",
+            "tiles": [],
+        }
     prob, contrast = head.score(features)
     if prob is None:
         return {
@@ -176,7 +187,6 @@ def triage_page(
             "tiles": [],
         }
 
-    regions = page_regions(width, height, grid)
     tiles = []
     for region, p, c in zip(regions, prob, contrast, strict=True):
         tiles.append(

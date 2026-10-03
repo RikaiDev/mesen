@@ -54,6 +54,8 @@ class JevVlmEngine:
             if os.path.exists(alt_path):
                 self.vlm_model_path = alt_path
 
+        self.models_dir = models_dir
+
         # Initialize ONNX inference session
         opts = ort.SessionOptions()
         opts.intra_op_num_threads = 2

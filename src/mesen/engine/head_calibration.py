@@ -66,6 +66,16 @@ CALIBRATION: dict[str, Calibration] = {
         metric="unavailable",
         calibrated=False,
     ),
+    # The nine-tile triage head is the one head with a receipt. Fitted against
+    # EvidenceEngine measurements on each tile's own pixels, so no human label is
+    # involved: 2397 tiles, split by page, held-out AUC 0.745. On yana's own
+    # pages, which it never saw, per-tile AUC against System 2's measurements is
+    # 0.663 at precision 0.925.
+    "triage": Calibration(
+        receipt="triage_v1/triage_receipt.json: val AUC 0.745 on 593 held-out tiles",
+        metric="per-tile AUC 0.745 in-distribution, 0.663 on yana pages",
+        calibrated=True,
+    ),
     "bbox_regressor": Calibration(
         receipt="none: hit rate 0.001 against 10,286 human boxes",
         metric="unavailable",

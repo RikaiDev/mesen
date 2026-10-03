@@ -15,6 +15,7 @@ the reason `mesen/engine/head_calibration.py` exists.
 import argparse
 import os
 
+import onnxruntime as ort
 import torch
 
 from mesen.model.vit_consultant import MesenViTConsultantModel
@@ -84,29 +85,43 @@ def main():
     ]
 
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+    # Tracing with a batch of 2 is deliberate: at batch 1 ONNX specializes the
+    # ViT's internal token reshape, and the exported graph then rejects any other
+    # batch with "input_shape_size == requested_shape_size was false".
     torch.onnx.export(
         ExportWrapper(model),
-        torch.randn(1, 3, 224, 224),
+        torch.randn(2, 3, 224, 224),
         args.out,
         export_params=True,
         opset_version=18,
         do_constant_folding=True,
         input_names=["screenshot"],
         output_names=names,
-        dynamic_axes={"screenshot": {0: "batch"}, "hidden_states": {0: "batch"}},
+        dynamic_axes={name: {0: "batch"} for name in ["screenshot", *names]},
     )
+
+    # A graph that only traces batch 1 is worse than useless here: nine tiles
+    # per page is the whole point. Verify a non-traced batch before declaring it.
+    import numpy as np
+
+    probe = ort.InferenceSession(args.out, providers=["CPUExecutionProvider"])
+    for batch in (1, 9):
+        out = probe.run(None, {"screenshot": np.zeros((batch, 3, 224, 224), dtype=np.float32)})
+        shape = {o.name: list(v.shape) for o, v in zip(probe.get_outputs(), out, strict=True)}
+        if shape["hidden_states"] != [batch, 1536]:
+            raise SystemExit(f"batch {batch} unsupported: hidden_states {shape['hidden_states']}")
+        print(f"batch {batch} ok: hidden_states {shape['hidden_states']}")
 
     import json
 
     import onnx
-    import onnxruntime as ort
 
     graph = onnx.load(args.out).graph
     receipt.update(
         onnx_path=args.out,
         outputs=[o.name for o in graph.output],
         bytes=os.path.getsize(args.out),
-        verified=bool(ort.InferenceSession(args.out, providers=["CPUExecutionProvider"])),
+        dynamic_batch=[1, 9],
     )
     print(json.dumps(receipt, indent=2, sort_keys=True))
     print(f"wrote {args.out} ({receipt['bytes'] / 1e6:.1f} MB)")

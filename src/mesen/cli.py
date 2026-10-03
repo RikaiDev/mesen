@@ -6,6 +6,8 @@ import json
 
 import click
 
+from mesen.engine.triage_wiring import triage_for_image, triage_to_payload
+
 
 @click.group()
 @click.version_option(version="0.1.0", prog_name="mesen")
@@ -101,6 +103,7 @@ def judge(state, images, model, remote):
     product = witness.product or ""
     modality = witness.context.modality
     engine = JevVlmEngine(onnx_model_path=model) if model else JevVlmEngine()
+    models_dir = getattr(engine, "models_dir", None)
     report, answers = engine.evaluate(image_path, context=witness.context, witness=witness)
 
     # UI/UX Decision Layer Invariant: Contextual Persona & Public Surface Affordance
@@ -130,7 +133,19 @@ def judge(state, images, model, remote):
             reasoning="Degraded UI/UX: public patient portal contains inappropriate administrative floating affordance.",
         )
 
-    click.echo(json.dumps({"answers": answers.model_dump(), "consultation": report.model_dump()}))
+    # System 1 triage rides alongside the measured verdict. It is added as its
+    # own field and changes nothing System 2 measured: a fast approximate head
+    # must not acquire authority that head_calibration denies it.
+    triage = triage_for_image(image_path, models_dir)
+    click.echo(
+        json.dumps(
+            {
+                "answers": answers.model_dump(),
+                "consultation": report.model_dump(),
+                "system1_triage": triage_to_payload(triage),
+            }
+        )
+    )
 
 
 if __name__ == "__main__":
