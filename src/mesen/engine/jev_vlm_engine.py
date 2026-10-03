@@ -19,6 +19,7 @@ from mesen.engine.dual_judge import (
     document_overflow_measurements,
 )
 from mesen.engine.evidence import DEFAULT_DEVICE_PIXEL_RATIO, EvidenceEngine
+from mesen.engine.head_calibration import abstention_reason, is_calibrated
 from mesen.engine.jev_evaluator import JevEvaluator
 from mesen.schema import (
     ChoiceAnswer,
@@ -125,43 +126,52 @@ class JevVlmEngine:
         # Predicted regression BBox
         pred_bbox = [round(float(c), 4) for c in out_map["pred_bboxes"][0]]
 
-        # Construct structured JudgeAnswers directly from model logits
+        # A softmax over untrained weights is confident by construction, so a
+        # head without a calibration receipt abstains rather than publishing a
+        # number indistinguishable from a real judgment. See
+        # mesen/engine/head_calibration.py.
+        def gated_choice(head: str, choice: str, confidence: float, probs) -> ChoiceAnswer:
+            if is_calibrated(head):
+                return ChoiceAnswer(
+                    choice=choice,
+                    confidence=round(confidence, 3),
+                    probabilities=probs,
+                    reasoning=f"Calibrated JEV head predicted {choice} at {confidence:.3f}.",
+                )
+            return ChoiceAnswer(
+                choice="unknown",
+                confidence=0.0,
+                reasoning=abstention_reason(head),
+            )
+
         judge_answers = JudgeAnswers(
-            primary_action_reachable=ChoiceAnswer(
-                choice=pa_choice,
-                confidence=round(pa_conf, 3),
-                probabilities=pa_probs,
-                reasoning=f"Neural JEV Head predicted {pa_choice} with confidence {pa_conf:.3f}.",
+            primary_action_reachable=gated_choice(
+                "primary_action_reachable", pa_choice, pa_conf, pa_probs
             ),
-            visual_integrity=ChoiceAnswer(
-                choice=vi_choice,
-                confidence=round(vi_conf, 3),
-                probabilities=vi_probs,
-                reasoning=f"Neural JEV Head predicted {vi_choice} with confidence {vi_conf:.3f}.",
+            visual_integrity=gated_choice("visual_integrity", vi_choice, vi_conf, vi_probs),
+            responsive_consistency=gated_choice(
+                "responsive_consistency", rc_choice, rc_conf, rc_probs
             ),
-            responsive_consistency=ChoiceAnswer(
-                choice=rc_choice,
-                confidence=round(rc_conf, 3),
-                probabilities=rc_probs,
-                reasoning=f"Neural JEV Head predicted {rc_choice} with confidence {rc_conf:.3f}.",
-            ),
-            evidence_consistency=ChoiceAnswer(
-                choice=ec_choice,
-                confidence=round(ec_conf, 3),
-                probabilities=ec_probs,
-                reasoning=f"Neural JEV Head predicted {ec_choice} with confidence {ec_conf:.3f}.",
-            ),
-            operator_clarity=ChoiceAnswer(
-                choice=oc_choice,
-                confidence=round(oc_conf, 3),
-                probabilities=oc_probs,
-                reasoning=f"Neural JEV Head predicted {oc_choice} with confidence {oc_conf:.3f}.",
-            ),
-            overall_quality=ScoreAnswer(
-                score=pred_score,
-                confidence=round(score_conf, 3),
-                probabilities=score_prob_list,
-                reasoning=f"Neural JEV Score Head outputted quality score {pred_score}/3 (confidence {score_conf:.3f}).",
+            evidence_consistency=gated_choice("evidence_consistency", ec_choice, ec_conf, ec_probs),
+            operator_clarity=gated_choice("operator_clarity", oc_choice, oc_conf, oc_probs),
+            overall_quality=(
+                ScoreAnswer(
+                    score=pred_score,
+                    confidence=round(score_conf, 3),
+                    probabilities=score_prob_list,
+                    reasoning=(
+                        f"Calibrated JEV score head outputted {pred_score}/3 at {score_conf:.3f}."
+                    ),
+                )
+                if is_calibrated("overall_quality")
+                else ScoreAnswer(
+                    score=pred_score,
+                    confidence=0.0,
+                    reasoning=(
+                        abstention_reason("overall_quality")
+                        + " System 2's measured verdict is the quality signal."
+                    ),
+                )
             ),
         )
         return judge_answers, list(rule_probs), pred_bbox, pred_score
