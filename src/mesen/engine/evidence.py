@@ -18,6 +18,14 @@ from mesen.engine.detector_onnx import OnnxTextDetector
 # ordinary body copy into 38% of a real page's violations.
 DEFAULT_DEVICE_PIXEL_RATIO = 1.0
 
+# A region decoding to this many symbols or fewer is treated as a graphic.
+# The recognizer is unreliable about which character it saw on a Traditional
+# page, but it still emits one symbol per glyph, so glyph count survives a wrong
+# decode where identity does not. Measured over 8 production viewports: every
+# graphic decoded to one symbol (confidence <= 0.66), every text region to
+# several (median confidence 0.88).
+MIN_TEXT_GLYPHS = 2
+
 
 @dataclass
 class MeasuredElement:
@@ -35,6 +43,17 @@ class MeasuredElement:
     contrast_ratio: float
     wcag_aa_pass: bool
     wcag_aaa_pass: bool
+
+    @property
+    def is_text(self) -> bool:
+        """Whether this region carries text, or is a graphic.
+
+        The detector fires on icons as readily as on copy, and the two are held
+        to different WCAG criteria (1.4.3 text vs 1.4.11 graphics). Derived
+        from the decoded glyph count so it cannot drift from `text`: a caller
+        cannot mark a one-symbol decode as copy.
+        """
+        return len(self.text.strip()) >= MIN_TEXT_GLYPHS
 
 
 def srgb_to_linear(c_norm: np.ndarray) -> np.ndarray:

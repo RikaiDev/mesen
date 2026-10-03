@@ -17,6 +17,10 @@ from mesen.schema import ConsultantReport, ContextSpec, ViolationItem, WitnessSt
 # string to an identifier. The measured box is always the locator.
 OCR_HINT_CONFIDENCE_MIN = 0.85
 
+# WCAG 1.4.11 minimum for graphics and UI components. No enhanced variant exists
+# for this criterion, so it is the same floor for every cohort.
+NON_TEXT_CONTRAST_MIN = 3.0
+
 
 def resolve_device_pixel_ratio(
     witness: WitnessState | None, screenshot: str | None, fallback: float
@@ -124,12 +128,21 @@ class JevEvaluator:
                 has_action_prompt = True
 
             # Check 1: Contrast Ratio Insufficient (real pixels, every modality)
-            if el.contrast_ratio < min_contrast:
-                rule_id = "accessibility/contrast-ratio-insufficient"
-                severity = "critical" if el.contrast_ratio < 3.0 else "warning"
+            # Text and graphics are held to different criteria: 1.4.3 sets 4.5:1
+            # (7:1 for older adults) for text, 1.4.11 sets 3:1 for the graphics
+            # and control boundaries 1.4.3 does not cover.
+            required_contrast = min_contrast if el.is_text else NON_TEXT_CONTRAST_MIN
+            if el.contrast_ratio < required_contrast:
+                rule_id = (
+                    "accessibility/contrast-ratio-insufficient"
+                    if el.is_text
+                    else "accessibility/non-text-contrast-insufficient"
+                )
+                severity = "critical" if el.contrast_ratio < required_contrast * 0.75 else "warning"
                 fg_hex = f"#{el.fg_rgb[0]:02x}{el.fg_rgb[1]:02x}{el.fg_rgb[2]:02x}".upper()
                 bg_hex = f"#{el.bg_rgb[0]:02x}{el.bg_rgb[1]:02x}{el.bg_rgb[2]:02x}".upper()
                 subject = describe_element(el, hint)
+                kind = "文字" if el.is_text else "圖形元件"
 
                 violations.append(
                     ViolationItem(
@@ -138,9 +151,10 @@ class JevEvaluator:
                         target_selector=locator,
                         bounding_box=el.text_bbox,
                         measured=f"{el.contrast_ratio}:1",
-                        threshold=f"{min_contrast}:1",
+                        threshold=f"{required_contrast}:1",
                         prescriptive_action=(
-                            f"{subject}對比度 ({el.contrast_ratio}:1) 低於安全門檻 ({min_contrast}:1)。"
+                            f"{subject}屬於{kind}，對比度 ({el.contrast_ratio}:1) 低於"
+                            f"{'文字' if el.is_text else '圖形元件'}門檻 ({required_contrast}:1)。"
                             f"前景色 {fg_hex} 與底色 {bg_hex} 過度接近，請調深前景色或提高底色亮度。"
                         ),
                     )
