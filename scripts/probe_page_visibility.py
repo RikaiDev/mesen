@@ -36,7 +36,7 @@ def parse_args():
 
 
 def squash_view(image):
-    return image.resize((TILE, TILE), Image.Resampling.LANCZOS)
+    return [image.resize((TILE, TILE), Image.Resampling.LANCZOS)]
 
 
 def grid3x3_view(image):
@@ -54,7 +54,7 @@ def fold_view(image):
     """Top 9:16 band: the part a person judges before scrolling."""
     w, h = image.size
     band = image.crop((0, 0, w, min(h, int(w * 16 / 9))))
-    return band.resize((TILE, TILE), Image.Resampling.LANCZOS)
+    return [band.resize((TILE, TILE), Image.Resampling.LANCZOS)]
 
 
 VIEWS = {"squash": (squash_view, 1), "grid3x3": (grid3x3_view, 9), "fold": (fold_view, 1)}
