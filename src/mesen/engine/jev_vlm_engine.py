@@ -226,7 +226,23 @@ class JevVlmEngine:
         # System 1 reads a 224px impression; System 2 measured real pixels.
         # When they disagree on quality, the measurement wins: a page cannot
         # be better than its verified defects allow, whatever the impression.
-        if report.summary_score < answers.overall_quality.score:
+        #
+        # That bound only means something if System 1 scored the page. An
+        # uncalibrated head carries no evidence, so it must not cap a
+        # measurement either: min(0, 3) would let a random head veto a page
+        # that System 2 found clean. When System 1 abstains, the measured
+        # verdict simply is the quality answer.
+        if not is_calibrated("overall_quality"):
+            answers.overall_quality = ScoreAnswer(
+                score=report.summary_score,
+                confidence=1.0,
+                reasoning=(
+                    f"System 1 has no calibration receipt, so this is System 2's "
+                    f"measured verdict: {report.summary_score} "
+                    f"({report.verdict}, {len(all_violations)} violation(s))."
+                ),
+            )
+        elif report.summary_score < answers.overall_quality.score:
             answers.overall_quality = ScoreAnswer(
                 score=report.summary_score,
                 confidence=1.0,
@@ -267,7 +283,13 @@ class JevVlmEngine:
     def _neural_rule_violations(
         rule_probs: list[float], pred_bbox: list[float]
     ) -> list[ViolationItem]:
-        # Affordance violation from neural head (rule index 9)
+        """Rule findings from the neural head, only once that head has a receipt."""
+        # A rule head at initialization still emits a probability, and a
+        # threshold on that probability is not evidence. Rule findings may only
+        # come from a head with a receipt.
+        if not is_calibrated("rule_classifier"):
+            return []
+
         rule_9_prob = rule_probs[9] if len(rule_probs) > 9 else 0.0
         if rule_9_prob <= 0.4:
             return []

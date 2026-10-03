@@ -19,7 +19,9 @@ from mesen.engine.head_calibration import (
     is_calibrated,
 )
 from mesen.engine.jev_vlm_engine import JevVlmEngine
-from mesen.schema import ChoiceAnswer, JudgeAnswers, ScoreAnswer
+from mesen.schema import ChoiceAnswer, ContextSpec, JudgeAnswers, ScoreAnswer
+
+DESKTOP_CONTEXT = ContextSpec(cohort="general_public", modality="desktop_web")
 
 CHOICE_HEADS = (
     "primary_action_reachable",
@@ -94,8 +96,22 @@ def test_evidence_consistency_is_registered_as_derived_not_neural():
 
 
 def test_unregistered_head_is_never_treated_as_calibrated():
-    assert not is_calibrated("rule_classifier")
-    assert "not a registered head" in abstention_reason("rule_classifier")
+    assert not is_calibrated("some_head_nobody_declared")
+    assert "not a registered head" in abstention_reason("some_head_nobody_declared")
+
+
+def test_rule_and_bbox_heads_are_registered_but_uncalibrated():
+    # Both emit findings, so silence about them must not read as consent.
+    for head in ("rule_classifier", "bbox_regressor"):
+        assert head in CALIBRATION
+        assert not is_calibrated(head)
+
+
+def test_uncalibrated_rule_head_fabricates_no_violations():
+    engine = _engine_with_random_logits()
+    # rule_probs[9] is 0.5 here, above the 0.4 gate, so without the receipt
+    # check this would emit a critical affordance finding from random weights.
+    assert engine._neural_rule_violations([0.5] * 17, [0.5] * 4) == []
 
 
 def test_every_declared_head_has_a_calibration_entry():
@@ -129,3 +145,32 @@ def test_answer_shape_survives_abstention():
         overall_quality=ScoreAnswer(score=0),
     )
     assert answers.visual_integrity.choice == "unknown"
+
+
+def test_uncalibrated_head_cannot_veto_a_clean_measurement():
+    """The dual bound is min(System1, System2) only when System 1 is calibrated.
+
+    With an untrained head that scores 0, min() would pin every page to 0 and
+    discard System 2's measurement entirely. When System 1 abstains, System 2's
+    verdict must stand on its own.
+    """
+    from mesen.schema import ConsultantReport
+
+    engine = _engine_with_random_logits()
+    engine.system_two = type(
+        "StubSystemTwo",
+        (),
+        {
+            "evaluate_screenshot": lambda _self, *_a, **_k: ConsultantReport(
+                context=DESKTOP_CONTEXT,
+                violations=[],
+                verdict="pass",
+                summary_score=3,
+            )
+        },
+    )()
+
+    report, answers = engine.evaluate("/nonexistent.png", mode="dual")
+    assert report.summary_score == 3
+    assert answers.overall_quality.score == 3, "measurement stands when System 1 abstains"
+    assert "no calibration receipt" in answers.overall_quality.reasoning

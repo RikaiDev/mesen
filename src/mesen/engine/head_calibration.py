@@ -59,6 +59,18 @@ CALIBRATION: dict[str, Calibration] = {
         metric="unavailable",
         calibrated=False,
     ),
+    # The 17-way rule classifier and the bbox regressor share the untrained head
+    # stack. Both emit findings, so both are gated on a receipt before they may.
+    "rule_classifier": Calibration(
+        receipt="none: never fit to a human-labelled rule decision",
+        metric="unavailable",
+        calibrated=False,
+    ),
+    "bbox_regressor": Calibration(
+        receipt="none: hit rate 0.001 against 10,286 human boxes",
+        metric="unavailable",
+        calibrated=False,
+    ),
 }
 
 
