@@ -32,7 +32,7 @@ def analyze_real_screenshot(
     aspect_ratio = round(w / float(h), 2)
 
     # 1. Physical Evidence Extraction
-    elements = evidence_engine.extract_and_measure_elements(image_path, dpi=440)
+    elements = evidence_engine.extract_and_measure_elements(image_path)
 
     # 2. Rule Violations Detection
     rule_vec = [0.0] * len(RULE_ID_LIST)
@@ -131,7 +131,7 @@ def harvest_real_rico_dataset(
 
     print("Loading RICO dataset stream from HuggingFace...")
     ds = load_dataset("pinkmooncake/rico-screen2words", split="train", streaming=True)
-    evidence_engine = EvidenceEngine(default_dpi=440)
+    evidence_engine = EvidenceEngine()
 
     manifest: list[dict] = []
     count = 0

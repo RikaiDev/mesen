@@ -64,7 +64,7 @@ def measure_ground_truth(path):
     """Objective UI measurements from real pixels. No labels involved."""
     from mesen.engine.evidence import EvidenceEngine
 
-    engine = EvidenceEngine(default_dpi=440)
+    engine = EvidenceEngine()
     elements = engine.extract_and_measure_elements(path)
     if not elements:
         return None

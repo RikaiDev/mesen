@@ -91,9 +91,7 @@ def judge(state, images, model, remote):
         raise click.ClickException("At least one readable --images file is required")
     if witness.context.modality in ("desktop_web", "mobile_touch"):
         if not witness.route or not witness.viewport_facts:
-            raise click.ClickException(
-                "Web witness requires a route and measured viewportFacts"
-            )
+            raise click.ClickException("Web witness requires a route and measured viewportFacts")
         screenshots = {fact.screenshot for fact in witness.viewport_facts if fact.screenshot}
         if screenshots and os.path.basename(image_path) not in screenshots:
             raise click.ClickException(

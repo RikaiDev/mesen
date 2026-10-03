@@ -35,7 +35,7 @@ def extract_real_mobile_dataset(
     total_in_table = table.num_rows
     print(f"Total available rows in table: {total_in_table}")
 
-    evidence_engine = EvidenceEngine(default_dpi=440)
+    evidence_engine = EvidenceEngine()
     manifest: list[dict] = []
     num_to_process = min(max_samples, total_in_table)
 
@@ -57,7 +57,7 @@ def extract_real_mobile_dataset(
             pil_img.save(img_path)
 
             aspect_ratio = round(w / float(h), 2)
-            elements = evidence_engine.extract_and_measure_elements(img_path, dpi=440)
+            elements = evidence_engine.extract_and_measure_elements(img_path)
 
             rule_vec = [0.0] * len(RULE_ID_LIST)
             active_rules: list[str] = []

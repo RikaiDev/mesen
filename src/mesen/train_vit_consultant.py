@@ -52,18 +52,10 @@ class RealScreenshotDataset(Dataset):
             "primary_action_reachable": torch.tensor(
                 CHOICE_MAP[labels["primary_action_reachable"]]
             ),
-            "visual_integrity": torch.tensor(
-                CHOICE_MAP[labels["visual_integrity"]]
-            ),
-            "responsive_consistency": torch.tensor(
-                CHOICE_MAP[labels["responsive_consistency"]]
-            ),
-            "evidence_consistency": torch.tensor(
-                CHOICE_MAP[labels["evidence_consistency"]]
-            ),
-            "operator_clarity": torch.tensor(
-                CHOICE_MAP[labels["operator_clarity"]]
-            ),
+            "visual_integrity": torch.tensor(CHOICE_MAP[labels["visual_integrity"]]),
+            "responsive_consistency": torch.tensor(CHOICE_MAP[labels["responsive_consistency"]]),
+            "evidence_consistency": torch.tensor(CHOICE_MAP[labels["evidence_consistency"]]),
+            "operator_clarity": torch.tensor(CHOICE_MAP[labels["operator_clarity"]]),
             "overall_quality": torch.tensor(int(labels["overall_quality"])),
         }
 
