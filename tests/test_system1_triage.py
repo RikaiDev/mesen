@@ -163,3 +163,52 @@ def test_threshold_is_above_chance_not_above_nothing(page, tmp_path, monkeypatch
     monkeypatch.setattr(head, "score", lambda f: (probs, np.ones(9, dtype=np.float32)))
     result = triage_page(page, StubSession(), head)
     assert result["flagged_tiles"] == []
+
+
+def test_wiring_reports_no_signal_when_nothing_is_installed(tmp_path):
+    from mesen.engine.triage_wiring import triage_for_image
+
+    result = triage_for_image("/nonexistent.png", str(tmp_path))
+    assert result["signal"] is False
+    assert "hidden_states" in result["reason"]
+
+
+def test_wiring_tolerates_a_missing_models_dir():
+    from mesen.engine.triage_wiring import triage_for_image
+
+    result = triage_for_image("/nonexistent.png", None)
+    assert result["signal"] is False
+
+
+def test_triage_is_the_only_registered_calibrated_head():
+    from mesen.engine.head_calibration import CALIBRATION, is_calibrated
+    from mesen.engine.triage_wiring import is_triage_calibrated
+
+    assert is_calibrated("triage")
+    assert is_triage_calibrated()
+    calibrated = {h for h, c in CALIBRATION.items() if c.calibrated}
+    # evidence_consistency is derived, not neural; triage is the only fitted head.
+    assert calibrated == {"evidence_consistency", "triage"}
+
+
+def test_payload_is_json_serialisable(tmp_path, monkeypatch):
+    from mesen.engine.triage_wiring import describe_triage, triage_to_payload
+
+    payload = triage_to_payload(
+        {
+        "signal": True,
+        "tiles": [],
+        "flagged_tiles": [],
+        "receipt": {"val_auc_has_failing_text": 0.7454},
+    }
+    )
+    assert json.loads(json.dumps(payload))["signal"] is True
+    assert "held-out AUC 0.7454" in describe_triage(payload)
+
+
+def test_describe_states_absence_as_absence_of_opinion():
+    from mesen.engine.triage_wiring import describe_triage
+
+    line = describe_triage({"signal": False, "reason": "no graph"})
+    assert "no signal" in line
+    assert "clean" not in line
