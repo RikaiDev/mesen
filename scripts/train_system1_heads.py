@@ -234,7 +234,7 @@ def stage_train(args):
         model.train()
         perm = torch.from_numpy(rng.permutation(train_idx))
         for start in range(0, len(perm), 64):
-            batch = perm[start : start + 64].to(device)
+            batch = perm[start : start + 64]
             optimizer.zero_grad()
             out = model(x[batch].to(device))
             loss = criterion(out["atomic_logits"]["overall_quality"], y_t[batch].to(device))
