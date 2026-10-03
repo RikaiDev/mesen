@@ -69,3 +69,47 @@ representation can actually do: fast triage of *where* a page has
 measurable trouble, at nine tiles instead of one squashed frame.
 
 Gate stays report-only until a human-labeled set exists.
+## What was fixed, verified on production
+
+`http://45.32.56.160`, 8 viewports, gate `report-only`:
+
+| | before | after |
+|---|---|---|
+| violations | 283 | 184 |
+| font-size violations (DPI artifact) | 108 | 9 |
+| locators that were OCR strings | 175 | 0 |
+| criticals citing a wrong string | 40 | 0 |
+| icons judged by the 4.5:1 text rule | 3 | 0 |
+
+The 9 remaining font findings are genuine 12sp caption text under the 14sp
+mobile floor. Three graphic regions moved to `1.4.11` at 3:1, which is the
+criterion that governs them.
+
+## What System 1 does now
+
+It abstains. All five choice heads, the score head, the rule classifier and
+the bbox regressor lack a calibration receipt, so each returns `unknown`,
+confidence 0.0, naming the receipt it waits for. The gate reads:
+
+```
+system1_vi=unknown system1_q=1 system2_verdict=conditional_pass system2_score=1
+```
+
+System 2's measurement is the quality answer, unopposed. Three fixes made
+that true rather than nominal:
+
+- the dual bound was `min(System1, System2)`, which only means something when
+  System 1 scored the page; an untrained head emitting 0 pinned every page to
+  0 and discarded the measurement
+- the rule classifier was thresholded at 0.4 to emit a critical affordance
+  finding — a probability from untrained weights is not evidence
+- `evidence_consistency` stays registered as derived, since it is the
+  cross-system check and not a neural prediction
+
+## Still missing: a System 1 that is useful, not merely honest
+
+The representation works (AUC 0.810 label-free, R² 0.400 with nine tiles vs
+0.224 squashed). What is not built yet is a head trained on those
+label-free targets — per-tile contrast and font-size risk — served from a
+nine-tile forward pass instead of one squashed 224px frame. That is the
+remaining work, and it needs no human labels.
