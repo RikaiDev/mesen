@@ -18,7 +18,7 @@ from mesen.engine.dual_judge import (
     derive_system_two,
     document_overflow_measurements,
 )
-from mesen.engine.evidence import EvidenceEngine
+from mesen.engine.evidence import DEFAULT_DEVICE_PIXEL_RATIO, EvidenceEngine
 from mesen.engine.jev_evaluator import JevEvaluator
 from mesen.schema import (
     ChoiceAnswer,
@@ -37,7 +37,7 @@ class JevVlmEngine:
     def __init__(
         self,
         models_dir: str | None = None,
-        default_dpi: int = 440,
+        default_dpr: float = DEFAULT_DEVICE_PIXEL_RATIO,
         onnx_model_path: str | None = None,
     ):
         if models_dir is None:
@@ -61,9 +61,9 @@ class JevVlmEngine:
         self.session = ort.InferenceSession(
             self.vlm_model_path, opts, providers=["CPUExecutionProvider"]
         )
-        self.evidence_engine = EvidenceEngine(default_dpi=default_dpi, models_dir=models_dir)
+        self.evidence_engine = EvidenceEngine(default_dpr=default_dpr, models_dir=models_dir)
         self.system_two = JevEvaluator(
-            default_dpi=default_dpi,
+            default_dpr=default_dpr,
             models_dir=models_dir,
             evidence_engine=self.evidence_engine,
         )
@@ -170,7 +170,7 @@ class JevVlmEngine:
         self,
         image_path: str,
         context: ContextSpec | None = None,
-        dpi: int | None = None,
+        dpr: float | None = None,
         mode: str = "dual",
         witness: WitnessState | None = None,
     ) -> tuple[ConsultantReport, JudgeAnswers]:
@@ -183,7 +183,7 @@ class JevVlmEngine:
             raise ValueError(f"Unknown judge mode: {mode}")
 
         if mode == "deep":
-            report = self.system_two.evaluate_screenshot(image_path, context, dpi, witness=witness)
+            report = self.system_two.evaluate_screenshot(image_path, context, dpr, witness=witness)
             return report, derive_system_two(report, witness=witness)
 
         answers, rule_probs, pred_bbox, pred_score = self.judge_system1(image_path, context)
@@ -198,7 +198,7 @@ class JevVlmEngine:
             )
             return report, answers
 
-        deep_report = self.system_two.evaluate_screenshot(image_path, context, dpi, witness=witness)
+        deep_report = self.system_two.evaluate_screenshot(image_path, context, dpr, witness=witness)
         all_violations = deep_report.violations + violations
         verdict, score = adjudicate_violation_verdict(all_violations)
         report = ConsultantReport(
@@ -231,9 +231,7 @@ class JevVlmEngine:
             answers.responsive_consistency = ChoiceAnswer(
                 choice="no", confidence=1.0, reasoning=measured
             )
-            answers.visual_integrity = ChoiceAnswer(
-                choice="no", confidence=1.0, reasoning=measured
-            )
+            answers.visual_integrity = ChoiceAnswer(choice="no", confidence=1.0, reasoning=measured)
             answers.overall_quality = ScoreAnswer(
                 score=min(answers.overall_quality.score, report.summary_score),
                 confidence=1.0,

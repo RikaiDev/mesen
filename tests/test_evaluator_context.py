@@ -7,7 +7,7 @@
   escalated: decorative Traditional Chinese routinely decodes as garbage.
 """
 
-from mesen.engine.evidence import MeasuredElement
+from mesen.engine.evidence import DEFAULT_DEVICE_PIXEL_RATIO, MeasuredElement
 from mesen.engine.jev_evaluator import JevEvaluator
 from mesen.schema import ContextSpec
 
@@ -36,8 +36,10 @@ def element(**overrides):
         "confidence": 0.97,
         "text_bbox": [0.46, 0.68, 0.47, 0.75],
         "pixel_bbox": (980, 414, 110, 12),
-        "pixel_height": 12,
-        "estimated_sp": 4.0,
+        # 11 CSS px caption text: below the 14sp mobile floor, which is what
+        # this branching test needs. Body copy at 16px must NOT trip it.
+        "pixel_height": 11,
+        "estimated_sp": 11.0,
         "fg_rgb": [238, 220, 204],
         "bg_rgb": [174, 92, 20],
         "contrast_ratio": 3.63,
@@ -52,7 +54,7 @@ class StubEvidence:
     def __init__(self, elements):
         self._elements = elements
 
-    def extract_and_measure_elements(self, image_path, dpi=None):
+    def extract_and_measure_elements(self, image_path, dpr=None):
         return self._elements
 
 
@@ -67,6 +69,7 @@ def evaluate(elements, context, tmp_path=None):
     cv2.imwrite(image_path, np.full((600, 800, 3), 255, dtype=np.uint8))
     evaluator = JevEvaluator.__new__(JevEvaluator)
     evaluator.evidence_engine = StubEvidence(elements)
+    evaluator.default_dpr = DEFAULT_DEVICE_PIXEL_RATIO
     return evaluator.evaluate_screenshot(image_path, context)
 
 
@@ -97,16 +100,20 @@ def test_contrast_checked_on_both_modalities():
         assert contrast, f"contrast is real pixels and applies to {context.modality}"
 
 
-def test_low_confidence_text_never_quoted_nor_escalated():
+def test_unrecognizable_string_never_reaches_a_violation():
+    # Decorative Traditional Chinese decodes as lookalike garbage (乖乖 as 乖汞).
+    # Below the hint threshold the string is dropped: a violation that cites a
+    # string nobody wrote is worse than no violation.
     els = [element(text="乖球吃航", confidence=0.41, contrast_ratio=2.5)]
     for context in (mobile_context(), desktop_context()):
         for violation in evaluate(els, context).violations:
             assert "乖球吃航" not in (violation.target_selector or "")
             assert "乖球吃航" not in violation.prescriptive_action
-            assert violation.severity == "info"
 
 
 def test_reliable_critical_contrast_still_critical():
+    # Severity comes from the measured ratio alone; the decoded string rides
+    # along only as a labelled hint, never as the identifier.
     els = [element(text="微醺起司", confidence=0.96, contrast_ratio=2.5)]
     critical = [
         v
@@ -115,3 +122,4 @@ def test_reliable_critical_contrast_still_critical():
     ]
     assert critical and critical[0].severity == "critical"
     assert "微醺起司" in critical[0].prescriptive_action
+    assert critical[0].target_selector.startswith("text_region[")

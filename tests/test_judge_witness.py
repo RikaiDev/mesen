@@ -142,9 +142,7 @@ def test_cli_rejects_invalid_state_and_passes_valid_witness(tmp_path, monkeypatc
         {"kind": "document-overflow", "viewportWidth": 375, "measured": "768px"}
     ]
     state_path.write_text(json.dumps(contradictory), encoding="utf-8")
-    conflict = runner.invoke(
-        cli, ["judge", "--state", str(state_path), "--images", str(image)]
-    )
+    conflict = runner.invoke(cli, ["judge", "--state", str(state_path), "--images", str(image)])
     assert conflict.exit_code != 0
     assert "contradicts viewportFacts" in conflict.output
 

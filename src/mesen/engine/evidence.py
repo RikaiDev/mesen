@@ -11,13 +11,20 @@ import numpy as np
 
 from mesen.engine.detector_onnx import OnnxTextDetector
 
+# A PNG screenshot carries no DPI metadata, so the only defensible default is
+# "one image pixel per CSS pixel", which is what a capture at
+# devicePixelRatio 1 produces. This was previously a hardcoded 440 DPI, i.e. an
+# assumed 2.75x upscale, which reported 16 CSS px text as 5.8sp and turned
+# ordinary body copy into 38% of a real page's violations.
+DEFAULT_DEVICE_PIXEL_RATIO = 1.0
+
 
 @dataclass
 class MeasuredElement:
     text: str
-    # Mean per-character recognition confidence from the OCR head.
-    # Low values mean the pixels were measured but the string itself is
-    # unreliable — downstream rules must not quote it or escalate on it.
+    # Mean per-character recognition confidence from the OCR head. It describes
+    # the decoded string only. Contrast ratio and text height are pixel facts
+    # and stay valid however confidently the recognizer was wrong.
     confidence: float
     text_bbox: list[float]  # [ymin, xmin, ymax, xmax] normalized
     pixel_bbox: tuple[int, int, int, int]  # (x, y, w, h)
@@ -52,8 +59,10 @@ def calculate_contrast_ratio(rgb1: np.ndarray, rgb2: np.ndarray) -> float:
 
 
 class EvidenceEngine:
-    def __init__(self, default_dpi: int = 440, models_dir: str | None = None):
-        self.default_dpi = default_dpi
+    def __init__(
+        self, default_dpr: float = DEFAULT_DEVICE_PIXEL_RATIO, models_dir: str | None = None
+    ):
+        self.default_dpr = default_dpr
         self.detector = OnnxTextDetector(models_dir=models_dir)
 
     def analyze_roi_contrast(
@@ -96,13 +105,19 @@ class EvidenceEngine:
         return fg_rgb, bg_rgb, cr
 
     def extract_and_measure_elements(
-        self, image_path: str, dpi: int | None = None
+        self, image_path: str, dpr: float | None = None
     ) -> list[MeasuredElement]:
+        """Measure every detected text element on real pixels.
+
+        `dpr` is the device pixel ratio the screenshot was captured at, supplied
+        by the witness. Dividing pixel height by it yields CSS pixels, which is
+        what font-size thresholds are written in; without it a retina capture
+        reports every glyph as half its real size.
+        """
         img_bgr = cv2.imread(image_path)
         img_h, img_w, _ = img_bgr.shape
 
-        effective_dpi = dpi or self.default_dpi
-        density_scale = effective_dpi / 160.0
+        effective_dpr = dpr if dpr else self.default_dpr
 
         # Step 1: Detect text lines and decode strings via local ONNX
         detected_items = self.detector.detect_and_recognize(img_bgr)
@@ -111,7 +126,7 @@ class EvidenceEngine:
         for item in detected_items:
             x, y, bw, bh = item.pixel_bbox
             fg_rgb, bg_rgb, cr = self.analyze_roi_contrast(img_bgr, x, y, bw, bh)
-            sp = round(bh / density_scale, 1)
+            sp = round(bh / effective_dpr, 1)
 
             results.append(
                 MeasuredElement(

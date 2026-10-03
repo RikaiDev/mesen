@@ -6,29 +6,73 @@ Produces verifiable, zero-fluff ConsultantReports with text recognition and affo
 import cv2
 
 from mesen.engine.dual_judge import adjudicate_violation_verdict, witness_violations
-from mesen.engine.evidence import EvidenceEngine
+from mesen.engine.evidence import DEFAULT_DEVICE_PIXEL_RATIO, EvidenceEngine
 from mesen.rules.registry import RULE_REGISTRY
 from mesen.schema import ConsultantReport, ContextSpec, ViolationItem, WitnessState
+
+# Mean per-character OCR confidence required before a decoded string may appear
+# in a violation message as a hint. The bundled recognizer is a Simplified model
+# and returns wrong Traditional characters at 0.99 confidence, so confidence
+# measures the decoder's certainty, not its correctness: it never promotes a
+# string to an identifier. The measured box is always the locator.
+OCR_HINT_CONFIDENCE_MIN = 0.85
+
+
+def resolve_device_pixel_ratio(
+    witness: WitnessState | None, screenshot: str | None, fallback: float
+) -> float:
+    """Device pixel ratio the screenshot was captured at.
+
+    The witness knows it; a bare screenshot file does not. Preference order is
+    the viewport whose screenshot matches this image, then the single recorded
+    viewport, then the engine default. Returns a value > 0 in every path.
+    """
+    if witness is not None and witness.viewport_facts:
+        if screenshot:
+            for fact in witness.viewport_facts:
+                if fact.screenshot == screenshot and fact.dpr > 0:
+                    return fact.dpr
+        if len(witness.viewport_facts) == 1 and witness.viewport_facts[0].dpr > 0:
+            return witness.viewport_facts[0].dpr
+    return fallback
+
+
+def box_locator(element) -> str:
+    """Locator built from measured geometry. Always valid, never a guess."""
+    ymin, xmin, ymax, xmax = element.text_bbox
+    return f"text_region[ymin={ymin:.4f},xmin={xmin:.4f},ymax={ymax:.4f},xmax={xmax:.4f}]"
+
+
+def describe_element(element, hint: str | None) -> str:
+    """Human-readable subject for a violation message.
+
+    A decoded string is prefixed with "decoded" so no reader mistakes it for the
+    element's actual content; the measured box stays the authority.
+    """
+    if hint:
+        return f"{box_locator(element)}（OCR 辨識為「{hint}」）"
+    return box_locator(element)
 
 
 class JevEvaluator:
     def __init__(
         self,
-        default_dpi: int = 440,
+        default_dpr: float = DEFAULT_DEVICE_PIXEL_RATIO,
         models_dir: str | None = None,
         evidence_engine: EvidenceEngine | None = None,
     ):
+        self.default_dpr = default_dpr
         self.evidence_engine = (
             evidence_engine
             if evidence_engine is not None
-            else EvidenceEngine(default_dpi=default_dpi, models_dir=models_dir)
+            else EvidenceEngine(default_dpr=default_dpr, models_dir=models_dir)
         )
 
     def evaluate_screenshot(
         self,
         image_path: str,
         context: ContextSpec | None = None,
-        dpi: int | None = None,
+        dpr: float | None = None,
         witness: WitnessState | None = None,
     ) -> ConsultantReport:
         if context is None:
@@ -38,7 +82,18 @@ class JevEvaluator:
                 interaction_mode="touch",
             )
 
-        measured_elements = self.evidence_engine.extract_and_measure_elements(image_path, dpi=dpi)
+        effective_dpr = (
+            dpr
+            if dpr
+            else resolve_device_pixel_ratio(
+                witness,
+                witness.image_order[0] if witness and witness.image_order else None,
+                self.default_dpr,
+            )
+        )
+        measured_elements = self.evidence_engine.extract_and_measure_elements(
+            image_path, dpr=effective_dpr
+        )
         violations: list[ViolationItem] = []
 
         # Thresholds based on context
@@ -50,16 +105,20 @@ class JevEvaluator:
         has_action_prompt = False
 
         for el in measured_elements:
-            # The pixels were measured, but the string is only as good as the
-            # recognizer. Below this line nothing may quote the text or
-            # escalate on it: decorative Traditional Chinese routinely decodes
-            # as lookalike garbage (e.g. 乖乖 as 乖汞), and a violation citing
-            # a string that never existed is worse than no violation.
-            text_reliable = el.confidence >= 0.85
-            quoted = el.text if text_reliable and el.text else "unrecognized text"
+            # The contrast ratio and the text height were measured off real
+            # pixels; what the recognizer decoded is a separate, weaker claim
+            # about a string. The bundled recognizer is a Simplified model, so
+            # on a Traditional page it returns wrong characters while
+            # remaining certain ("商品介紹規格" reads back as "商品介绍规格",
+            # confidence 0.99). Certainty is not correctness, so a decoded
+            # string is never allowed to identify the element: the locator is
+            # the measured box, and the string is a labelled hint at best.
+            # Severity is a function of the measurement alone.
+            hint = el.text if el.confidence >= OCR_HINT_CONFIDENCE_MIN and el.text else None
+            locator = box_locator(el)
 
             # Check for action trigger keywords in Chinese / English
-            if text_reliable and any(
+            if hint and any(
                 kw in el.text for kw in ["按住", "點擊", "点击", "按一下", "hold", "tap", "press"]
             ):
                 has_action_prompt = True
@@ -67,23 +126,21 @@ class JevEvaluator:
             # Check 1: Contrast Ratio Insufficient (real pixels, every modality)
             if el.contrast_ratio < min_contrast:
                 rule_id = "accessibility/contrast-ratio-insufficient"
-                if not text_reliable:
-                    severity = "info"
-                else:
-                    severity = "critical" if el.contrast_ratio < 3.0 else "warning"
+                severity = "critical" if el.contrast_ratio < 3.0 else "warning"
                 fg_hex = f"#{el.fg_rgb[0]:02x}{el.fg_rgb[1]:02x}{el.fg_rgb[2]:02x}".upper()
                 bg_hex = f"#{el.bg_rgb[0]:02x}{el.bg_rgb[1]:02x}{el.bg_rgb[2]:02x}".upper()
+                subject = describe_element(el, hint)
 
                 violations.append(
                     ViolationItem(
                         rule_id=rule_id,
                         severity=severity,
-                        target_selector=f'text("{quoted}")' if el.text else None,
+                        target_selector=locator,
                         bounding_box=el.text_bbox,
                         measured=f"{el.contrast_ratio}:1",
                         threshold=f"{min_contrast}:1",
                         prescriptive_action=(
-                            f"文字「{quoted}」對比度 ({el.contrast_ratio}:1) 低於安全門檻 ({min_contrast}:1)。"
+                            f"{subject}對比度 ({el.contrast_ratio}:1) 低於安全門檻 ({min_contrast}:1)。"
                             f"前景色 {fg_hex} 與底色 {bg_hex} 過度接近，請調深前景色或提高底色亮度。"
                         ),
                     )
@@ -99,20 +156,18 @@ class JevEvaluator:
                     if "accessibility/font-size-insufficient" in RULE_REGISTRY
                     else "accessibility/text-reflow-overflow"
                 )
-                if not text_reliable:
-                    severity = "info"
-                else:
-                    severity = "warning" if el.estimated_sp < 10.0 else "info"
+                severity = "warning" if el.estimated_sp < 10.0 else "info"
+                subject = describe_element(el, hint)
                 violations.append(
                     ViolationItem(
                         rule_id=rule_id,
                         severity=severity,
-                        target_selector=f'text("{quoted}")' if el.text else None,
+                        target_selector=locator,
                         bounding_box=el.text_bbox,
                         measured=f"{el.estimated_sp}sp",
                         threshold=f"{min_font_sp}sp",
                         prescriptive_action=(
-                            f"文字「{quoted}」實體高度 ({el.estimated_sp}sp) 低於行動端可讀下限 ({min_font_sp}sp)。"
+                            f"{subject}實體高度 ({el.estimated_sp}sp) 低於行動端可讀下限 ({min_font_sp}sp)。"
                             f"在行動裝置高密度螢幕上易造成閱讀困難，請在佈局中調升該文字級別。"
                         ),
                     )

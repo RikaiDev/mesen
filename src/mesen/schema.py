@@ -129,6 +129,15 @@ class ViewportFact(BaseModel):
     width: int = Field(gt=0)
     doc_scroll_width: int = Field(gt=0, alias="docScrollWidth")
     screenshot: str | None = None
+    dpr: float = Field(
+        default=1.0,
+        gt=0,
+        description=(
+            "devicePixelRatio the screenshot was captured at. Font-size math is "
+            "pixel height / dpr, so a capture without this reads every glyph at "
+            "the wrong size."
+        ),
+    )
 
 
 class WitnessState(BaseModel):

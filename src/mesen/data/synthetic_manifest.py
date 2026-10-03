@@ -36,7 +36,9 @@ def load_all_screenshot_pairs(
         if not isinstance(records, list):
             raise ValueError(f"Manifest must contain a list: {path}")
         records_read += len(records)
-        manifests.append({"path": str(path), "sha256": sha256(source_bytes).hexdigest(), "records": len(records)})
+        manifests.append(
+            {"path": str(path), "sha256": sha256(source_bytes).hexdigest(), "records": len(records)}
+        )
         for record in records:
             image_paths = record.get("image_paths", record.get("screenshots"))
             if not isinstance(image_paths, list) or not image_paths:
@@ -47,7 +49,10 @@ def load_all_screenshot_pairs(
                 raise ValueError(f"Record {record.get('id')} has incomplete labels")
             if any(labels[field] not in CHOICE_MAP for field in CHOICE_MAP_FIELDS):
                 raise ValueError(f"Record {record.get('id')} has an invalid choice label")
-            if type(labels["overall_quality"]) is not int or not 0 <= labels["overall_quality"] <= 3:
+            if (
+                type(labels["overall_quality"]) is not int
+                or not 0 <= labels["overall_quality"] <= 3
+            ):
                 raise ValueError(f"Record {record.get('id')} has an invalid quality label")
             state = record.get("state") or {}
             group_key = state.get("route") or state.get("product") or record.get("id")
@@ -57,7 +62,9 @@ def load_all_screenshot_pairs(
             for image_path in image_paths:
                 screenshot = Path(image_path)
                 if not screenshot.is_file():
-                    raise FileNotFoundError(f"Missing screenshot for {record.get('id')}: {screenshot}")
+                    raise FileNotFoundError(
+                        f"Missing screenshot for {record.get('id')}: {screenshot}"
+                    )
                 grouped.setdefault(group_key, []).append((str(screenshot), mutation, labels))
 
     if len(grouped) < 2:

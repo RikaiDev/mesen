@@ -30,7 +30,7 @@ class TestJevVlmEngine(unittest.TestCase):
             )
             cls.models_dir = "/home/gloomcheng/Workspace/RikaiDev/mesen/models/onnx"
 
-        cls.engine = JevVlmEngine(models_dir=cls.models_dir, default_dpi=440)
+        cls.engine = JevVlmEngine(models_dir=cls.models_dir)
         cls.real_pixel_image = "/tmp/fansee-pixel10-ui-review.png"
 
         # Create a synthetic test image for positive baseline
@@ -104,7 +104,7 @@ class TestJevVlmEngine(unittest.TestCase):
         )
 
         start = time.perf_counter()
-        report, judge = self.engine.evaluate(self.real_pixel_image, context=context, dpi=440)
+        report, judge = self.engine.evaluate(self.real_pixel_image, context=context)
         total_time = (time.perf_counter() - start) * 1000
 
         # Latency budget: single forward pass must stay interactive on CPU.
@@ -139,7 +139,7 @@ class TestJevVlmEngine(unittest.TestCase):
         context = ContextSpec(
             cohort="general_mobile", modality="mobile_app", interaction_mode="touch"
         )
-        report, judge = self.engine.evaluate(self.clean_test_image, context=context, dpi=440)
+        report, judge = self.engine.evaluate(self.clean_test_image, context=context)
 
         # High contrast white on black should not have contrast violation
         contrast_violations = [
