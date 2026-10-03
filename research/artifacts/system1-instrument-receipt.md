@@ -113,3 +113,48 @@ The representation works (AUC 0.810 label-free, R² 0.400 with nine tiles vs
 label-free targets — per-tile contrast and font-size risk — served from a
 nine-tile forward pass instead of one squashed 224px frame. That is the
 remaining work, and it needs no human labels.
+
+## System 1 v2: calibrated, and validated out of distribution
+
+One head now has a receipt. It predicts, per tile of nine, whether that tile
+contains text failing 4.5:1 and what its mean measured contrast is. The
+targets are EvidenceEngine measurements on each tile's own pixels, so no human
+label is involved.
+
+Training set: 2397 tiles from 385 RICO pages, split by page so no tile of a
+validation page appears in training. Held out (593 tiles):
+
+| | triage head | baseline |
+|---|---|---|
+| per-tile AUC | **0.745** | 0.500 |
+| accuracy | **0.675** | 0.528 (majority) |
+| Spearman vs measured contrast | **+0.687** | 0 |
+
+The number that matters is the next one. On yana's own production pages, which
+this head never saw, scored against System 2's independent pixel
+measurements:
+
+| | value |
+|---|---|
+| tiles compared | 57 (49 measured failing) |
+| per-tile AUC | **0.663** |
+| precision of a flagged tile | **0.925** (TP 37, FP 3) |
+| recall | 0.755 (FN 12) |
+
+AUC drops from 0.745 in-distribution to 0.663 on a different domain, which is
+the expected cost. Precision holds at 0.925, so when System 1 says a tile is
+worth measuring it is right nine times in ten.
+
+It is a pointer. `system1_triage` is its own field in the verdict payload and
+changes nothing System 2 measured; `head_calibration` still denies the score
+head, the rule classifier and the bbox regressor a voice.
+
+## Two defects the export caught
+
+- Tracing with batch 1 lets ONNX specialize the ViT's internal token reshape,
+  after which the graph rejects every other batch with
+  `input_shape_size == requested_shape_size was false`. Tracing at batch 2 and
+  verifying batches 1 and 9 before declaring the export good.
+- `hidden_states` came back as `[batch, 1536]` from one exporter and
+  `[batch, 1, 1536]` from another, so the consumer accepts both rather than
+  pinning the shape that happened to be produced first.
