@@ -29,6 +29,22 @@ RULE_DEFINITIONS: list[UXRule] = [
         prescriptive_template="Increase font luminance or darken background to achieve at least 4.5:1 (7.0:1 for geriatric cohorts).",
     ),
     UXRule(
+        id="accessibility/non-text-contrast-insufficient",
+        dimension="accessibility",
+        name="Insufficient Non-Text Contrast",
+        standard="WCAG 2.1 - 1.4.11",
+        default_severity="warning",
+        description=(
+            "A graphic or UI component required to understand the content sits below "
+            "the 3:1 minimum. Applies to icons, logos and control boundaries, which "
+            "the 4.5:1 text threshold does not govern."
+        ),
+        prescriptive_template=(
+            "Darken or lighten the graphic until it reaches 3:1 against its "
+            "background, or give the control a visible boundary of that contrast."
+        ),
+    ),
+    UXRule(
         id="accessibility/text-reflow-overflow",
         dimension="accessibility",
         name="Text Reflow & Container Overflow",
