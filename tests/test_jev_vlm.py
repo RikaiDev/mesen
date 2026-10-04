@@ -22,13 +22,11 @@ class TestJevVlmEngine(unittest.TestCase):
         base_dir = os.path.dirname(os.path.dirname(__file__))
         cls.models_dir = os.path.join(base_dir, "models", "onnx")
         cls.vlm_model_path = os.path.join(cls.models_dir, "mesen_jev_vlm.onnx")
-
-        # Fallback path if running in remote dev environment
         if not os.path.exists(cls.vlm_model_path):
-            cls.vlm_model_path = (
-                "/home/gloomcheng/Workspace/RikaiDev/mesen/models/onnx/mesen_jev_vlm.onnx"
+            raise unittest.SkipTest(
+                f"model artifact not staged: {cls.vlm_model_path} "
+                "(run: bash scripts/fetch_models.sh)"
             )
-            cls.models_dir = "/home/gloomcheng/Workspace/RikaiDev/mesen/models/onnx"
 
         cls.engine = JevVlmEngine(models_dir=cls.models_dir)
         cls.real_pixel_image = "/tmp/fansee-pixel10-ui-review.png"

@@ -26,6 +26,10 @@ DEFAULT_DEVICE_PIXEL_RATIO = 1.0
 # several (median confidence 0.88).
 MIN_TEXT_GLYPHS = 2
 
+# Fraction of the darkest (or lightest) pixels read as glyph stroke core.
+# Held by tests/test_contrast_estimation.py against known CSS text colours.
+GLYPH_CORE_FRACTION = 0.10
+
 
 @dataclass
 class MeasuredElement:
@@ -77,6 +81,32 @@ def calculate_contrast_ratio(rgb1: np.ndarray, rgb2: np.ndarray) -> float:
     return float((l_high + 0.05) / (l_low + 0.05))
 
 
+def glyph_core_color(gray_roi, rgb_roi, bg_is_light, core_fraction=GLYPH_CORE_FRACTION):
+    """Mean colour of the `core_fraction` darkest pixels, or lightest on a dark surface.
+
+    Stroke interiors only: antialiased edges sit between the text colour and the
+    surface, so including them lightens the foreground and shrinks the measured
+    ratio. WCAG contrast is a property of the text colour, so it has to be
+    estimated where that colour is actually rendered.
+
+    With no saturated core — a hairline stroke at small size — this
+    under-reports. That is the safe direction: a missed warning rather than an
+    invented violation.
+    """
+    flat_gray = gray_roi.reshape(-1)
+    flat_rgb = rgb_roi.reshape(-1, 3)
+    count = max(1, int(len(flat_gray) * core_fraction))
+    if bg_is_light:
+        threshold = np.partition(flat_gray, count - 1)[count - 1]
+        core = flat_rgb[flat_gray <= threshold]
+    else:
+        threshold = np.partition(flat_gray, -count)[-count]
+        core = flat_rgb[flat_gray >= threshold]
+    if core.size == 0:
+        return np.array([0, 0, 0])
+    return np.clip(core.mean(axis=0), 0, 255)
+
+
 class EvidenceEngine:
     def __init__(
         self, default_dpr: float = DEFAULT_DEVICE_PIXEL_RATIO, models_dir: str | None = None
@@ -101,21 +131,11 @@ class EvidenceEngine:
         border_pixels = np.concatenate([gray[0, :], gray[-1, :], gray[:, 0], gray[:, -1]])
         bg_is_light = bool(np.median(border_pixels) >= mean_val)
 
-        if bg_is_light:
-            text_mask = gray < mean_val
-            bg_mask = gray >= mean_val
-        else:
-            text_mask = gray > mean_val
-            bg_mask = gray <= mean_val
-
-        fg_color = (
-            np.median(roi_rgb[text_mask], axis=0)
-            if np.any(text_mask)
-            else np.median(roi_rgb, axis=(0, 1))
-        )
-        bg_color = (
-            np.median(roi_rgb[bg_mask], axis=0) if np.any(bg_mask) else np.median(border_pixels)
-        )
+        # Background is the surface the text sits on, so it comes from the
+        # ring around the glyphs. Taking it from inside the box folds stroke
+        # pixels into the surface colour and darkens the denominator.
+        bg_color = np.median(roi_rgb[0, :], axis=0) * 0.5 + np.median(roi_rgb[-1, :], axis=0) * 0.5
+        fg_color = glyph_core_color(gray, roi_rgb, bg_is_light)
 
         fg_rgb = np.clip(np.array(fg_color[:3]), 0, 255)
         bg_rgb = np.clip(np.array(bg_color[:3]), 0, 255)

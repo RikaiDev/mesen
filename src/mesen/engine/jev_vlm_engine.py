@@ -46,14 +46,10 @@ class JevVlmEngine:
             models_dir = os.path.join(base_dir, "models", "onnx")
 
         # An explicit model file always wins; otherwise resolve the bundled default.
+        # The artifact is gitignored; scripts/fetch_models.sh stages it and owns its hash.
         self.vlm_model_path = (
             onnx_model_path if onnx_model_path else os.path.join(models_dir, "mesen_jev_vlm.onnx")
         )
-        if not os.path.exists(self.vlm_model_path):
-            alt_path = "/home/gloomcheng/Workspace/RikaiDev/mesen/models/onnx/mesen_jev_vlm.onnx"
-            if os.path.exists(alt_path):
-                self.vlm_model_path = alt_path
-
         self.models_dir = models_dir
 
         # Initialize ONNX inference session
