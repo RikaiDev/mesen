@@ -30,14 +30,6 @@ class OnnxTextDetector:
         self.rec_model_path = os.path.join(models_dir, "ch_PP-OCRv4_rec.onnx")
         self.keys_path = os.path.join(models_dir, "ppocr_keys_v1.txt")
 
-        # Fallback to internal path if not present
-        if not os.path.exists(self.det_model_path):
-            alt_path = "/home/gloomcheng/Workspace/RikaiDev/mesen/models/onnx"
-            if os.path.exists(alt_path):
-                self.det_model_path = os.path.join(alt_path, "ch_PP-OCRv4_det.onnx")
-                self.rec_model_path = os.path.join(alt_path, "ch_PP-OCRv4_rec.onnx")
-                self.keys_path = os.path.join(alt_path, "ppocr_keys_v1.txt")
-
         # Initialize ONNX runtime sessions
         opts = ort.SessionOptions()
         opts.intra_op_num_threads = 2
