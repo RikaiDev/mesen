@@ -241,6 +241,57 @@ def stage_validate(args):
 
     teacher = np.asarray([r["teacher_says_failing"] for r in rows], dtype=int)
     truth = np.asarray([r["measured_has_failing"] for r in rows], dtype=int)
+    severity = np.asarray([r["measured_min_contrast"] for r in rows], dtype=float)
+    pos, neg = int(truth.sum()), int(len(truth) - truth.sum())
+    if pos == 0 or neg == 0:
+        raise SystemExit("degenerate ground truth: every page measured the same way")
+
+    agreement = float((teacher == truth).mean())
+    tp = int(((teacher == 1) & (truth == 1)).sum())
+    fp = int(((teacher == 1) & (truth == 0)).sum())
+    fn = int(((teacher == 0) & (truth == 1)).sum())
+    precision = tp / (tp + fp) if tp + fp else 0.0
+    recall = tp / (tp + fn) if tp + fn else 0.0
+    base_rate = pos / len(truth)
+    majority_agreement = max(base_rate, 1 - base_rate)
+
+    # Agreement is the wrong yardstick when one class dominates: 84% of these
+    # pages measured failing, so "always yes" already scores 0.84 agreement. The
+    # question is whether the teacher beats that trivial predictor, tested by
+    # shuffling its answers to get the chance distribution of its own precision.
+    rng = np.random.default_rng(0)
+    trials, at_least = 2000, 0
+    for _ in range(trials):
+        shuffled = rng.permutation(teacher)
+        flagged = int((shuffled == 1).sum())
+        if not flagged:
+            continue
+        if float(((shuffled == 1) & (truth == 1)).sum()) / flagged >= precision:
+            at_least += 1
+    p_value = (at_least + 1) / (trials + 1)
+
+    # Whether the answer tracks measured severity, not just the label.
+    severity_corr = float(np.corrcoef(teacher, severity)[0, 1]) if severity.std() > 0 else 0.0
+
+    beats_trivial = bool(precision > base_rate and agreement >= majority_agreement - 0.02)
+    verdict = {
+        "pages_compared": len(rows),
+        "measured_failing": pos,
+        "measured_failing_base_rate": round(base_rate, 4),
+        "teacher_says_failing": int(teacher.sum()),
+        "agreement": round(agreement, 4),
+        "majority_class_agreement": round(majority_agreement, 4),
+        "random_guess_agreement": round((pos * pos + neg * neg) / (len(rows) ** 2), 4),
+        "precision": round(precision, 4),
+        "precision_lift_over_base_rate": round(precision - base_rate, 4),
+        "recall": round(recall, 4),
+        "precision_permutation_p": round(p_value, 5),
+        "teacher_vs_measured_min_contrast_r": round(severity_corr, 4),
+        "beats_trivial_predictor": beats_trivial,
+    }
+
+    teacher = np.asarray([r["teacher_says_failing"] for r in rows], dtype=int)
+    truth = np.asarray([r["measured_has_failing"] for r in rows], dtype=int)
     order = np.argsort([r["measured_min_contrast"] for r in rows])
     ranks = np.empty(len(rows), float)
     ranks[order] = np.arange(1, len(rows) + 1)
@@ -250,29 +301,48 @@ def stage_validate(args):
 
     agreement = float((teacher == truth).mean())
     tp = int(((teacher == 1) & (truth == 1)).sum())
-    fp = int(((teacher == 1) & (truth == 0)).sum())
-    fn = int(((teacher == 0) & (truth == 1)).sum())
-    # Rank correlation between the teacher's binary answer and measured severity.
-    rank_corr = float(np.corrcoef(ranks, truth)[0, 1])
+    # The defect prompt was validated above. The ordinal grade is what would
+    # actually be distilled, so it gets its own test: do higher grades go with
+    # better measured pixels, or is the grade a constant with noise on top?
+    graded = [r for r in rows if r["grade"] is not None]
+    grade_values = [r["grade"] for r in graded]
+    verdict["grade_distribution"] = (
+        np.bincount(grade_values, minlength=4).tolist() if grade_values else []
+    )
+    if len(set(grade_values)) > 1 and len({r["measured_min_contrast"] for r in graded}) > 1:
 
-    verdict = {
-        "pages_compared": len(rows),
-        "measured_failing": int(pos),
-        "teacher_says_failing": int(teacher.sum()),
-        "agreement": round(agreement, 4),
-        "chance_agreement": round((pos * pos + neg * neg) / (len(rows) ** 2), 4),
-        "precision": round(tp / (tp + fp), 4) if tp + fp else 0.0,
-        "recall": round(tp / (tp + fn), 4) if tp + fn else 0.0,
-        "severity_rank_correlation": round(rank_corr, 4),
-        "beats_chance": bool(agreement > (pos * pos + neg * neg) / (len(rows) ** 2) + 0.05),
-    }
-    grades = [r["grade"] for r in rows if r["grade"] is not None]
-    verdict["grade_distribution"] = np.bincount(grades, minlength=4).tolist() if grades else []
+        def _rank(values):
+            order = np.argsort(values, kind="mergesort")
+            out = np.empty(len(values), float)
+            i = 0
+            while i < len(values):
+                j = i
+                while j + 1 < len(values) and values[order[j + 1]] == values[order[i]]:
+                    j += 1
+                out[order[i : j + 1]] = (i + j) / 2.0 + 1.0
+                i = j + 1
+            return out
+
+        g = _rank(np.asarray(grade_values, dtype=float))
+        c = _rank(np.asarray([r["measured_min_contrast"] for r in graded], dtype=float))
+        g = g - g.mean()
+        c = c - c.mean()
+        denom = np.sqrt((g * g).sum() * (c * c).sum())
+        rho = float((g * c).sum() / denom) if denom else 0.0
+        verdict["grade_vs_measured_contrast_spearman"] = round(rho, 4)
+        by_grade = {}
+        for row in graded:
+            by_grade.setdefault(row["grade"], []).append(row["measured_min_contrast"])
+        verdict["mean_measured_contrast_by_grade"] = {
+            str(k): round(float(np.mean(v)), 2) for k, v in sorted(by_grade.items())
+        }
+        verdict["grade_carries_signal"] = bool(abs(rho) > 0.15)
     verdict["teacher_revision"] = REVISION
     verdict["verdict"] = (
-        "teacher is usable as a labeler"
-        if verdict["beats_chance"]
-        else "teacher disagrees with measured pixels; its grades may not be distilled"
+        "teacher carries signal beyond the base rate; its grades may be distilled"
+        if beats_trivial
+        else "teacher does not beat a trivial predictor on measured pixels; "
+        "its grades may not be distilled"
     )
 
     out = os.path.splitext(args.labels)[0] + ".validation.json"
