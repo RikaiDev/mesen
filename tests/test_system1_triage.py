@@ -196,11 +196,11 @@ def test_payload_is_json_serialisable(tmp_path, monkeypatch):
 
     payload = triage_to_payload(
         {
-        "signal": True,
-        "tiles": [],
-        "flagged_tiles": [],
-        "receipt": {"val_auc_has_failing_text": 0.7454},
-    }
+            "signal": True,
+            "tiles": [],
+            "flagged_tiles": [],
+            "receipt": {"val_auc_has_failing_text": 0.7454},
+        }
     )
     assert json.loads(json.dumps(payload))["signal"] is True
     assert "held-out AUC 0.7454" in describe_triage(payload)
