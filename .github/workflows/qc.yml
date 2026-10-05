@@ -15,4 +15,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: uv sync --extra dev
+      # The ONNX artifacts are gitignored; stage them before the gate so the
+      # judge-backed tests actually run instead of skipping.
+      - run: bash scripts/fetch_models.sh
       - run: bash scripts/qc.sh

@@ -23,7 +23,7 @@ class TestJevVlmEngine(unittest.TestCase):
         cls.models_dir = os.path.join(base_dir, "models", "onnx")
         cls.vlm_model_path = os.path.join(cls.models_dir, "mesen_jev_vlm.onnx")
         if not os.path.exists(cls.vlm_model_path):
-            raise unittest.SkipTest(
+            raise AssertionError(
                 f"model artifact not staged: {cls.vlm_model_path} "
                 "(run: bash scripts/fetch_models.sh)"
             )
@@ -73,13 +73,20 @@ class TestJevVlmEngine(unittest.TestCase):
     def test_02_pure_onnx_inference_stability(self):
         """Verify numerical stability (no NaNs, bounded coordinates, valid logits)."""
         dummy_input = np.random.randn(1, 3, 224, 224).astype(np.float32)
-        sess = ort.InferenceSession(self.vlm_model_path, providers=["CPUExecutionProvider"])
+        # Pin threads like the engine does. An unpinned session grabs every core,
+        # so the number below would measure the host's load, not this graph.
+        opts = ort.SessionOptions()
+        opts.intra_op_num_threads = 2
+        sess = ort.InferenceSession(self.vlm_model_path, opts, providers=["CPUExecutionProvider"])
 
         start = time.perf_counter()
         outputs = sess.run(None, {"screenshot": dummy_input})
         latency = (time.perf_counter() - start) * 1000
 
-        self.assertLess(latency, 1500, f"Inference took too long: {latency:.2f}ms")
+        # Latency is recorded, not asserted: this gate runs on shared CI runners
+        # where a wall-clock bound measures contention, not correctness. A
+        # regression budget belongs with the numbers, not in a unit test.
+        print(f"\ninference latency: {latency:.0f} ms")
 
         # Verify no NaN or Inf
         for val in outputs:
