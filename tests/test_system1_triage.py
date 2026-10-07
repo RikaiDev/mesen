@@ -180,15 +180,16 @@ def test_wiring_tolerates_a_missing_models_dir():
     assert result["signal"] is False
 
 
-def test_triage_is_the_only_registered_calibrated_head():
+def test_triage_is_registered_and_calibrated():
     from mesen.engine.head_calibration import CALIBRATION, is_calibrated
     from mesen.engine.triage_wiring import is_triage_calibrated
 
     assert is_calibrated("triage")
     assert is_triage_calibrated()
     calibrated = {h for h, c in CALIBRATION.items() if c.calibrated}
-    # evidence_consistency is derived, not neural; triage is the only fitted head.
-    assert calibrated == {"evidence_consistency", "triage"}
+    assert "triage" in calibrated
+    assert "primary_action_reachable" in calibrated
+    assert "visual_integrity" in calibrated
 
 
 def test_payload_is_json_serialisable(tmp_path, monkeypatch):

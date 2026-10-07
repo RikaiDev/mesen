@@ -61,7 +61,7 @@ class TestJevVlmEngine(unittest.TestCase):
             "logits_evidence_consistency": [1, 3],
             "logits_operator_clarity": [1, 3],
             "logits_overall_quality": [1, 4],
-            "rule_logits": [1, 17],
+            "rule_logits": [1, 20],
             "pred_bboxes": [1, 4],
         }
 

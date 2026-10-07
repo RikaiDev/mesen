@@ -1,0 +1,16 @@
+{
+  "baseline_auc": 0.5,
+  "beats_baseline": true,
+  "best_epoch": 21,
+  "discriminates": true,
+  "input_dim": 1536,
+  "majority_baseline_accuracy": 0.5277,
+  "n_tiles": 2397,
+  "n_train_tiles": 1804,
+  "n_val_tiles": 593,
+  "split": "by page, so no tile of a val page appears in training",
+  "targets": "label-free EvidenceEngine measurements",
+  "val_accuracy": 0.6745,
+  "val_auc_has_failing_text": 0.7454,
+  "val_spearman_mean_contrast": 0.6866
+}

@@ -83,10 +83,10 @@ def test_confident_logits_from_an_uncalibrated_head_become_unknown():
 
 
 def test_abstention_reason_names_the_missing_receipt():
-    reason = abstention_reason("visual_integrity")
-    assert "visual_integrity" in reason
+    reason = abstention_reason("rule_classifier")
+    assert "rule_classifier" in reason
     assert "calibration receipt" in reason
-    assert "synthetic" in reason
+    assert "none" in reason
 
 
 def test_evidence_consistency_is_registered_as_derived_not_neural():
@@ -134,7 +134,8 @@ def test_calibration_record_is_serializable_for_the_verdict_file():
         head: {"calibrated": entry.calibrated, "metric": entry.metric, "receipt": entry.receipt}
         for head, entry in CALIBRATION.items()
     }
-    assert json.loads(json.dumps(payload))["visual_integrity"]["calibrated"] is False
+    assert json.loads(json.dumps(payload))["rule_classifier"]["calibrated"] is False
+    assert json.loads(json.dumps(payload))["visual_integrity"]["calibrated"] is True
 
 
 def test_answer_shape_survives_abstention():
@@ -147,14 +148,18 @@ def test_answer_shape_survives_abstention():
     assert answers.visual_integrity.choice == "unknown"
 
 
-def test_uncalibrated_head_cannot_veto_a_clean_measurement():
+def test_uncalibrated_head_cannot_veto_a_clean_measurement(monkeypatch):
     """The dual bound is min(System1, System2) only when System 1 is calibrated.
 
     With an untrained head that scores 0, min() would pin every page to 0 and
     discard System 2's measurement entirely. When System 1 abstains, System 2's
     verdict must stand on its own.
     """
+    from mesen.engine import head_calibration, jev_vlm_engine
     from mesen.schema import ConsultantReport
+
+    monkeypatch.setattr(head_calibration, "is_calibrated", lambda head: False)
+    monkeypatch.setattr(jev_vlm_engine, "is_calibrated", lambda head: False)
 
     engine = _engine_with_random_logits()
     engine.system_two = type(
