@@ -64,7 +64,8 @@ def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
         ("train", "data/synthetic/train.json"),
         ("val", "data/synthetic/val.json"),
         ("mirror", "data/synthetic/mirror_samples.json"),
-        ("real_clinical", "data/synthetic/real_clinical_samples.json"),
+        ("real_clinical_train", "data/synthetic/real_clinical_train.json"),
+        ("real_clinical_val", "data/synthetic/real_clinical_val.json"),
     ]
 
     records = {split: [] for split, _ in datasets}
@@ -92,8 +93,8 @@ def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
         pending = []
         extracted_map = {}
         for item_id, p, targets in item_imgs:
-            stat = os.stat(p)
-            cache_key = hashlib.md5(f"{p}_{stat.st_mtime}_{stat.st_size}".encode()).hexdigest()
+            with open(p, "rb") as img_f:
+                cache_key = hashlib.sha256(img_f.read()).hexdigest()
             cache_file = os.path.join(cache_dir, f"{cache_key}.npy")
             if os.path.exists(cache_file):
                 feat = np.load(cache_file)
@@ -160,23 +161,34 @@ def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
 
     train_pack = pack("train")
     mirror_pack = pack("mirror")
-    real_pack = pack("real_clinical")
+    real_train_pack = pack("real_clinical_train")
+    if len(real_train_pack["features"]) == 0 and "real_clinical" in records:
+        real_train_pack = pack("real_clinical")
     val_pack = pack("val")
+    real_val_pack = pack("real_clinical_val")
 
     # Replicate real clinical samples so they are not drowned out by synthetic toy screens
-    if len(real_pack["features"]) > 0:
+    if len(real_train_pack["features"]) > 0:
         multiplier = 20
-        for k in real_pack:
-            real_pack[k] = np.repeat(real_pack[k], multiplier, axis=0)
+        for k in real_train_pack:
+            real_train_pack[k] = np.repeat(real_train_pack[k], multiplier, axis=0)
         print(
-            f"Replicated real clinical samples {multiplier}x -> {len(real_pack['features'])} samples.",
+            f"Replicated real clinical train samples {multiplier}x -> {len(real_train_pack['features'])} samples.",
             flush=True,
         )
 
-    # Combine train + mirror + real_clinical for training set
+    # Combine train + mirror + real_clinical_train for training set
     combined_train = {}
     for k in train_pack:
-        combined_train[k] = np.concatenate([train_pack[k], mirror_pack[k], real_pack[k]], axis=0)
+        combined_train[k] = np.concatenate([train_pack[k], mirror_pack[k], real_train_pack[k]], axis=0)
+
+    # Combine val + real_clinical_val for validation set
+    combined_val = {}
+    for k in val_pack:
+        if len(real_val_pack["features"]) > 0:
+            combined_val[k] = np.concatenate([val_pack[k], real_val_pack[k]], axis=0)
+        else:
+            combined_val[k] = val_pack[k]
 
     os.makedirs(os.path.dirname(os.path.abspath(out_npz)), exist_ok=True)
     np.savez_compressed(
@@ -188,16 +200,16 @@ def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
         train_evidence_consistency=combined_train["evidence_consistency"],
         train_operator_clarity=combined_train["operator_clarity"],
         train_overall_quality=combined_train["overall_quality"],
-        val_features=val_pack["features"],
-        val_primary_action=val_pack["primary_action_reachable"],
-        val_visual_integrity=val_pack["visual_integrity"],
-        val_responsive_consistency=val_pack["responsive_consistency"],
-        val_evidence_consistency=val_pack["evidence_consistency"],
-        val_operator_clarity=val_pack["operator_clarity"],
-        val_overall_quality=val_pack["overall_quality"],
+        val_features=combined_val["features"],
+        val_primary_action=combined_val["primary_action_reachable"],
+        val_visual_integrity=combined_val["visual_integrity"],
+        val_responsive_consistency=combined_val["responsive_consistency"],
+        val_evidence_consistency=combined_val["evidence_consistency"],
+        val_operator_clarity=combined_val["operator_clarity"],
+        val_overall_quality=combined_val["overall_quality"],
     )
     print(
-        f"Successfully cached features to {out_npz} ({len(combined_train['features'])} train, {len(val_pack['features'])} val)",
+        f"Successfully cached features to {out_npz} ({len(combined_train['features'])} train, {len(combined_val['features'])} val)",
         flush=True,
     )
 
@@ -264,11 +276,8 @@ def stage_train(
                     w[idx] = float(median_cnt / counts[idx])
         head_weights[h] = torch.tensor(w)
 
-    q_counts = np.bincount(train_targets["overall_quality"].numpy(), minlength=4).astype(np.float32)
-    q_weights = torch.tensor(
-        [float(np.median(q_counts[q_counts > 0]) / max(c, 1)) for c in q_counts]
-    )
-    head_weights["overall_quality"] = q_weights
+    # Use uniform weights for overall_quality to prevent downweighting class 1
+    head_weights["overall_quality"] = torch.ones(4, dtype=torch.float32)
 
     best_score = -1.0
     best_receipt = None
@@ -349,8 +358,24 @@ def stage_train(
 
     best_receipt["n_train"] = n_train
     best_receipt["n_val"] = n_val
-    best_receipt["beats_baseline"] = True
+
+    # Honest baseline comparison against prior baseline
+    baseline_f1 = 0.6229
+    baseline_oq_acc = 0.95
     receipt_path = os.path.join(out_dir, "consultant_receipt.json")
+    if os.path.exists(receipt_path):
+        try:
+            with open(receipt_path, encoding="utf-8") as f:
+                prior = json.load(f)
+                baseline_f1 = max(baseline_f1, float(prior.get("val_mean_f1", baseline_f1)))
+                baseline_oq_acc = max(baseline_oq_acc, float(prior.get("overall_quality_acc", baseline_oq_acc)))
+        except Exception:
+            pass
+
+    beats_baseline = (best_receipt["val_mean_f1"] >= baseline_f1) and (
+        best_receipt["overall_quality_acc"] >= baseline_oq_acc
+    )
+    best_receipt["beats_baseline"] = bool(beats_baseline)
     with open(receipt_path, "w", encoding="utf-8") as f:
         json.dump(best_receipt, f, indent=2, sort_keys=True)
 
@@ -429,7 +454,13 @@ def main():
         print(f"Using existing cached features at {args.features}")
 
     state_dict, receipt = stage_train(args.features, args.out_dir, epochs=args.epochs)
-    update_head_calibration_py(receipt)
+    if receipt.get("beats_baseline", False):
+        update_head_calibration_py(receipt)
+    else:
+        print(
+            f"NOTICE: Model metrics (F1={receipt.get('val_mean_f1')}, OQ_acc={receipt.get('overall_quality_acc')}) "
+            "did not beat baseline benchmarks. Skipping head_calibration.py update."
+        )
 
     # Inject into mesen_jev_vlm_v3.onnx (prefix: 'model.consultant_heads.')
     if os.path.exists(args.v3_onnx):

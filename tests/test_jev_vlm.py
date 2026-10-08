@@ -45,7 +45,12 @@ class TestJevVlmEngine(unittest.TestCase):
         self.assertTrue(
             os.path.exists(self.vlm_model_path), f"Missing ONNX model: {self.vlm_model_path}"
         )
-        sess = ort.InferenceSession(self.vlm_model_path, providers=["CPUExecutionProvider"])
+        opts = ort.SessionOptions()
+        opts.intra_op_num_threads = 2
+        opts.inter_op_num_threads = 1
+        opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+        opts.enable_mem_pattern = False
+        sess = ort.InferenceSession(self.vlm_model_path, opts, providers=["CPUExecutionProvider"])
 
         # Inputs
         inputs = sess.get_inputs()

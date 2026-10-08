@@ -33,6 +33,9 @@ class OnnxTextDetector:
         # Initialize ONNX runtime sessions
         opts = ort.SessionOptions()
         opts.intra_op_num_threads = 2
+        opts.inter_op_num_threads = 1
+        opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+        opts.enable_mem_pattern = False
         opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
 
         self.det_session = ort.InferenceSession(

@@ -50,6 +50,9 @@ def triage_for_image(image_path: str, models_dir: str | None) -> dict:
 
     options = ort.SessionOptions()
     options.intra_op_num_threads = 2
+    options.inter_op_num_threads = 1
+    options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+    options.enable_mem_pattern = False
     options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
     session = ort.InferenceSession(graph, options, providers=["CPUExecutionProvider"])
     result = triage_page(image_path, session, head)

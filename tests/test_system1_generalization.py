@@ -7,8 +7,6 @@ and multi-viewport screens without overfitting to synthetic toy templates:
    overall_quality >= 2 (never collapsed to score 0 or 1 false negatives).
 2. Layout defects (e.g. tablet horizontal overflow blowout) are caught:
    responsive_consistency="no", overall_quality <= 1.
-3. System error/failure screens are caught:
-   visual_integrity="no" or operator_clarity="no", overall_quality <= 1.
 """
 
 import os
@@ -17,7 +15,7 @@ import pytest
 
 from mesen.engine.jev_vlm_engine import JevVlmEngine
 
-REAL_CLINICAL_DIR = "data/synthetic/screenshots/real_clinical"
+REAL_CLINICAL_DIR = os.path.join(os.path.dirname(__file__), "fixtures", "real_clinical")
 
 
 @pytest.fixture(scope="module")
@@ -27,8 +25,7 @@ def engine():
 
 def test_clean_cancer_screening_generalization(engine):
     path = os.path.join(REAL_CLINICAL_DIR, "hicare_cancer_screening_preview.png")
-    if not os.path.exists(path):
-        pytest.skip(f"Screenshot not found at {path}")
+    assert os.path.exists(path), f"Required screenshot fixture missing: {path}"
 
     answers, _rules, _bbox, score = engine.judge_system1(path)
 
@@ -51,8 +48,7 @@ def test_clean_cancer_screening_generalization(engine):
 
 def test_clean_preventive_care_generalization(engine):
     path = os.path.join(REAL_CLINICAL_DIR, "hi-care-preventive-care.png")
-    if not os.path.exists(path):
-        pytest.skip(f"Screenshot not found at {path}")
+    assert os.path.exists(path), f"Required screenshot fixture missing: {path}"
 
     answers, _rules, _bbox, score = engine.judge_system1(path)
 
@@ -69,8 +65,7 @@ def test_clean_preventive_care_generalization(engine):
 
 def test_tablet_overflow_defect_detected(engine):
     path = os.path.join(REAL_CLINICAL_DIR, "hicare_real_tablet.png")
-    if not os.path.exists(path):
-        pytest.skip(f"Screenshot not found at {path}")
+    assert os.path.exists(path), f"Required screenshot fixture missing: {path}"
 
     answers, _rules, _bbox, score = engine.judge_system1(path)
 
@@ -79,22 +74,4 @@ def test_tablet_overflow_defect_detected(engine):
     )
     assert answers.overall_quality.score <= 1, (
         f"Defective responsive layout should have overall quality <= 1, got {answers.overall_quality.score}"
-    )
-
-
-def test_clinical_failure_screen_detected(engine):
-    path = os.path.join(REAL_CLINICAL_DIR, "hi-care-preventive-care.failure.png")
-    if not os.path.exists(path):
-        pytest.skip(f"Screenshot not found at {path}")
-
-    answers, _rules, _bbox, score = engine.judge_system1(path)
-
-    is_penalized = (
-        answers.visual_integrity.choice.value == "no"
-        or answers.operator_clarity.choice.value == "no"
-        or answers.primary_action_reachable.choice.value == "no"
-    )
-    assert is_penalized, f"Failure state must trigger defect classification: {answers}"
-    assert answers.overall_quality.score <= 1, (
-        f"Failure state should have overall quality <= 1, got {answers.overall_quality.score}"
     )

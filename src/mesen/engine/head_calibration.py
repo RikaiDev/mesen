@@ -35,13 +35,13 @@ CALIBRATION: dict[str, Calibration] = {
         calibrated=True,
     ),
     "visual_integrity": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 0.955, macro F1 0.637 on 112 held-out images",
-        metric="val accuracy 0.955, macro F1 0.637",
+        receipt="heads_v1/consultant_receipt.json: val acc 0.964, macro F1 0.643 on 112 held-out images",
+        metric="val accuracy 0.964, macro F1 0.643",
         calibrated=True,
     ),
     "responsive_consistency": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 0.973, macro F1 0.633 on 112 held-out images",
-        metric="val accuracy 0.973, macro F1 0.633",
+        receipt="heads_v1/consultant_receipt.json: val acc 0.991, macro F1 0.655 on 112 held-out images",
+        metric="val accuracy 0.991, macro F1 0.655",
         calibrated=True,
     ),
     "evidence_consistency": Calibration(
@@ -55,8 +55,8 @@ CALIBRATION: dict[str, Calibration] = {
         calibrated=True,
     ),
     "overall_quality": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 0.750, macro F1 0.659 on 112 held-out images",
-        metric="val accuracy 0.750, macro F1 0.659",
+        receipt="heads_v1/consultant_receipt.json: val acc 0.777, macro F1 0.659 on 112 held-out images",
+        metric="val accuracy 0.777, macro F1 0.659",
         calibrated=True,
     ),
     # The 17-way rule classifier and the bbox regressor share the untrained head

@@ -38,7 +38,15 @@ def load_model(checkpoint_path: str = "models/mesen_consultant.onnx"):
         import onnxruntime as ort
 
         print(f"Loading Mesen Consultant ONNX session from {checkpoint_path}...")
-        _ort_session = ort.InferenceSession(checkpoint_path)
+        opts = ort.SessionOptions()
+        opts.intra_op_num_threads = 2
+        opts.inter_op_num_threads = 1
+        opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+        opts.enable_mem_pattern = False
+        opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+        _ort_session = ort.InferenceSession(
+            checkpoint_path, opts, providers=["CPUExecutionProvider"]
+        )
         # Inspect input shape
         input_meta = _ort_session.get_inputs()[0]
         if len(input_meta.shape) > 1 and isinstance(input_meta.shape[1], int):

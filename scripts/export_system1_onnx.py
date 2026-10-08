@@ -104,7 +104,12 @@ def main():
     # per page is the whole point. Verify a non-traced batch before declaring it.
     import numpy as np
 
-    probe = ort.InferenceSession(args.out, providers=["CPUExecutionProvider"])
+    opts = ort.SessionOptions()
+    opts.intra_op_num_threads = 2
+    opts.inter_op_num_threads = 1
+    opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+    opts.enable_mem_pattern = False
+    probe = ort.InferenceSession(args.out, opts, providers=["CPUExecutionProvider"])
     for batch in (1, 9):
         out = probe.run(None, {"screenshot": np.zeros((batch, 3, 224, 224), dtype=np.float32)})
         shape = {o.name: list(v.shape) for o, v in zip(probe.get_outputs(), out, strict=True)}
