@@ -10,10 +10,20 @@ from mesen.engine.triage_wiring import triage_for_image, triage_to_payload
 
 
 @click.group()
-@click.version_option(version="0.1.0", prog_name="mesen")
+@click.version_option(version="0.2.0", prog_name="mesen")
 def cli():
     """mesen (vlm-jev) — On-premises typed VLM UI decision engine."""
     pass
+
+
+@cli.command("fetch-models")
+@click.option("--models-dir", default=None, help="Target directory for ONNX models")
+def fetch_models(models_dir):
+    """Download and verify all required ONNX models and dictionary files."""
+    from mesen.hub import ensure_models
+
+    target = ensure_models(models_dir=models_dir, verbose=True)
+    click.echo(f"All models staged and verified in {target}")
 
 
 @cli.command()
@@ -51,9 +61,11 @@ def train(train_data, val_data, output_dir, epochs):
 @click.option("--output", default="vlm_jev.onnx", help="Output ONNX filename")
 @click.option("--quantize/--no-quantize", default=True, help="Quantize to INT8")
 def export(checkpoint, output, quantize):
-    """Export checkpoint to single forward-pass ONNX graph."""
-    click.echo(f"Exporting checkpoint {checkpoint} to ONNX {output}...")
-    # Export logic
+    """NOT IMPLEMENTED. Use scripts/export_system1_onnx.py to produce an ONNX graph."""
+    raise click.ClickException(
+        "mesen export is not implemented and writes nothing. "
+        "Use scripts/export_system1_onnx.py to export an ONNX graph."
+    )
 
 
 @cli.command()

@@ -10,6 +10,8 @@ import cv2
 import numpy as np
 import onnxruntime as ort
 
+from mesen.hub import ensure_keys_dict, fetch_artifact, get_default_models_dir
+
 
 @dataclass
 class DetectedTextItem:
@@ -22,13 +24,19 @@ class DetectedTextItem:
 class OnnxTextDetector:
     def __init__(self, models_dir: str | None = None):
         if models_dir is None:
-            # Default to repo models/onnx directory
-            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-            models_dir = os.path.join(base_dir, "models", "onnx")
+            models_dir = get_default_models_dir()
 
         self.det_model_path = os.path.join(models_dir, "ch_PP-OCRv4_det.onnx")
         self.rec_model_path = os.path.join(models_dir, "ch_PP-OCRv4_rec.onnx")
         self.keys_path = os.path.join(models_dir, "ppocr_keys_v1.txt")
+
+        # Auto-fetch OCR models & keys if absent
+        if not os.path.exists(self.det_model_path):
+            fetch_artifact("ch_PP-OCRv4_det.onnx", models_dir)
+        if not os.path.exists(self.rec_model_path):
+            fetch_artifact("ch_PP-OCRv4_rec.onnx", models_dir)
+        if not os.path.exists(self.keys_path):
+            ensure_keys_dict(models_dir)
 
         # Initialize ONNX runtime sessions
         opts = ort.SessionOptions()

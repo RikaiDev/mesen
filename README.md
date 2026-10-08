@@ -62,15 +62,37 @@ The repository contains Qwen3.5-2B training/export code and names `afx-team/UI-U
 ### Option A: Experimental GPU server
 The server code exists, but `mesen judge --remote` is not implemented. Use a separately validated server client before treating this as a release gate:
 ```bash
-mesen serve --host 0.0.0.0 --port 8088 --checkpoint /mnt/model-cache/vlm-jev/latest.safetensors
+mesen serve --host 0.0.0.0 --port 8088 --checkpoint models/onnx/mesen_jev_vlm.onnx
 ```
-The local CLI rejects `--remote` explicitly.
+`--checkpoint` is a path to an ONNX graph, not a safetensors file; the judge and the two PP-OCR models are read from that graph's own directory. The local CLI rejects `--remote` explicitly. `mesen serve` runs the judge on CPU — measured 0.3–1s per 224px screenshot on a 2-thread session, not sub-millisecond. `mesen export` is not implemented and writes nothing; use `scripts/export_system1_onnx.py`.
 
 ### Option B: Local ONNX Runtime (CPU)
 Use the bundled ONNX checkpoint with a captured witness and screenshot:
 ```bash
-mesen judge --images 375.png --state state.json
+mesen judge --state state.json --images 375.png
 ```
+`--state` is required; `--images` is repeatable and takes the first readable file.
+
+---
+
+## Setup
+
+The ONNX artifacts are gitignored, so a fresh clone has no judge and the CLI
+cannot run. Stage them once:
+
+```bash
+uv sync --extra dev
+bash scripts/fetch_models.sh   # downloads models/onnx/*.onnx from the models-v1 release
+```
+
+`scripts/fetch_models.sh` is the only place that knows which artifacts exist
+and what they must hash to. It resumes an interrupted transfer, skips a file
+that already matches its pin, and exits non-zero rather than proceeding with a
+file whose SHA-256 does not match. Override the destination with
+`MESEN_MODELS_DIR`.
+
+Staging is also what CI does before the gate, so the judge-backed tests run
+there for real. If the artifact is missing, those tests fail rather than skip.
 
 ---
 

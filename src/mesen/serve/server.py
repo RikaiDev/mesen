@@ -1,7 +1,8 @@
 """
 FastAPI On-Prem Serving Daemon for Mesen UX Consultant & Decision Engine.
 Equipped with:
-1. Ultra-fast Sub-millisecond ONNX Runtime Inference
+1. Local ONNX Runtime inference (CPU, roughly 0.3-1s per 224px screenshot on
+   a 2-thread session; there is no GPU path in this daemon)
 2. Zero-Fluff Standardized Rule Registry Grounding (WCAG / ISO / Ambient Mirror)
 3. Prescriptive UX Consultation Reports with Bounding Box Coordinates
 """
@@ -31,9 +32,13 @@ def load_model(checkpoint_path: str | None = None):
     global _engine
     default_path = "models/onnx/mesen_jev_vlm.onnx"
     target_path = checkpoint_path or default_path
+    # The judge and the OCR models live side by side, so a custom checkpoint has
+    # to bring its own directory; otherwise the judge loads from --checkpoint
+    # while OnnxTextDetector still looks in the repo default.
+    models_dir = os.path.dirname(os.path.abspath(target_path))
     if os.path.exists(target_path):
         print(f"Loading Mesen JevVlmEngine from {target_path}...")
-        _engine = JevVlmEngine(onnx_model_path=target_path)
+        _engine = JevVlmEngine(onnx_model_path=target_path, models_dir=models_dir)
         print("Mesen JevVlmEngine ready!")
     else:
         print(f"Warning: Model checkpoint not found at {target_path}. Running unloaded.")

@@ -21,6 +21,7 @@ from mesen.engine.dual_judge import (
 from mesen.engine.evidence import DEFAULT_DEVICE_PIXEL_RATIO, EvidenceEngine
 from mesen.engine.head_calibration import abstention_reason, is_calibrated
 from mesen.engine.jev_evaluator import JevEvaluator
+from mesen.hub import fetch_artifact, get_default_models_dir
 from mesen.schema import (
     ChoiceAnswer,
     ConsultantReport,
@@ -65,14 +66,17 @@ class JevVlmEngine:
         onnx_model_path: str | None = None,
     ):
         if models_dir is None:
-            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-            models_dir = os.path.join(base_dir, "models", "onnx")
+            models_dir = get_default_models_dir()
 
-        # An explicit model file always wins; otherwise resolve the bundled default.
-        # The artifact is gitignored; scripts/fetch_models.sh stages it and owns its hash.
-        self.vlm_model_path = (
-            onnx_model_path if onnx_model_path else os.path.join(models_dir, "mesen_jev_vlm.onnx")
-        )
+        # An explicit model file always wins; otherwise resolve the default model.
+        # Auto-download from GitHub releases if missing.
+        if onnx_model_path:
+            self.vlm_model_path = onnx_model_path
+        else:
+            self.vlm_model_path = os.path.join(models_dir, "mesen_jev_vlm.onnx")
+            if not os.path.exists(self.vlm_model_path):
+                fetch_artifact("mesen_jev_vlm.onnx", models_dir)
+
         self.models_dir = models_dir
 
         # Initialize ONNX inference session
