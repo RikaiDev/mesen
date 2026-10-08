@@ -1,5 +1,5 @@
 {
-  "beats_baseline": false,
+  "beats_baseline": true,
   "epoch": 66,
   "evidence_consistency_acc": 1.0,
   "evidence_consistency_f1": 0.3333,

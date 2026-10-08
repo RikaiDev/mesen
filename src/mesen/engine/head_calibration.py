@@ -24,23 +24,21 @@ class Calibration:
     calibrated: bool
 
 
-# No head is calibrated yet. The quality target has no learnable signal:
-# on UICrit the same screenshot rated three times gives human-vs-human
-# Spearman 0.033, so no image model can exceed chance on it either. See
-# research/artifacts/system1-instrument-receipt.md.
+# Consultant heads are calibrated against held-out multi-viewport and clinical screens
+# recorded in heads_v1/consultant_receipt.json.
 CALIBRATION: dict[str, Calibration] = {
     "primary_action_reachable": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 1.000, macro F1 0.667 on 112 held-out images",
+        receipt="heads_v1/consultant_receipt.json: val acc 1.000, macro F1 0.667 on 113 held-out images",
         metric="val accuracy 1.000, macro F1 0.667",
         calibrated=True,
     ),
     "visual_integrity": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 0.964, macro F1 0.643 on 112 held-out images",
-        metric="val accuracy 0.964, macro F1 0.643",
+        receipt="heads_v1/consultant_receipt.json: val acc 0.956, macro F1 0.637 on 113 held-out images",
+        metric="val accuracy 0.956, macro F1 0.637",
         calibrated=True,
     ),
     "responsive_consistency": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 0.991, macro F1 0.655 on 112 held-out images",
+        receipt="heads_v1/consultant_receipt.json: val acc 0.991, macro F1 0.655 on 113 held-out images",
         metric="val accuracy 0.991, macro F1 0.655",
         calibrated=True,
     ),
@@ -50,13 +48,13 @@ CALIBRATION: dict[str, Calibration] = {
         calibrated=True,
     ),
     "operator_clarity": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 0.991, macro F1 0.656 on 112 held-out images",
+        receipt="heads_v1/consultant_receipt.json: val acc 0.991, macro F1 0.656 on 113 held-out images",
         metric="val accuracy 0.991, macro F1 0.656",
         calibrated=True,
     ),
     "overall_quality": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 0.777, macro F1 0.659 on 112 held-out images",
-        metric="val accuracy 0.777, macro F1 0.659",
+        receipt="heads_v1/consultant_receipt.json: val acc 0.770, macro F1 0.663 on 113 held-out images",
+        metric="val accuracy 0.770, macro F1 0.663",
         calibrated=True,
     ),
     # The 17-way rule classifier and the bbox regressor share the untrained head

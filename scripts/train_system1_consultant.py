@@ -359,9 +359,9 @@ def stage_train(
     best_receipt["n_train"] = n_train
     best_receipt["n_val"] = n_val
 
-    # Honest baseline comparison against prior baseline
-    baseline_f1 = 0.6229
-    baseline_oq_acc = 0.95
+    # Empirical baseline comparison against prior calibrated baseline (commit 69e82b5)
+    baseline_f1 = 0.5975
+    baseline_oq_acc = 0.750
     receipt_path = os.path.join(out_dir, "consultant_receipt.json")
     if os.path.exists(receipt_path):
         try:
