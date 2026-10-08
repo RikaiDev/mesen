@@ -179,3 +179,72 @@ def test_uncalibrated_head_cannot_veto_a_clean_measurement(monkeypatch):
     assert report.summary_score == 3
     assert answers.overall_quality.score == 3, "measurement stands when System 1 abstains"
     assert "no calibration receipt" in answers.overall_quality.reasoning
+
+
+def test_baseline_gate_provenance_monotonic_ratchet(tmp_path):
+    from scripts.train_system1_consultant import check_beats_baseline
+
+    receipt_file = str(tmp_path / "consultant_receipt.json")
+
+    # Degraded prior cannot lower the bar below 0.6018 / 0.7699
+    with open(receipt_file, "w", encoding="utf-8") as f:
+        json.dump({"n_val": 113, "val_mean_f1": 0.30, "overall_quality_acc": 0.30}, f)
+
+    assert not check_beats_baseline(
+        {"val_mean_f1": 0.35, "overall_quality_acc": 0.35},
+        n_val=113,
+        prior_receipt_path=receipt_file,
+    )
+    assert check_beats_baseline(
+        {"val_mean_f1": 0.6018, "overall_quality_acc": 0.7699},
+        n_val=113,
+        prior_receipt_path=receipt_file,
+    )
+
+    # Improved prior raises the bar
+    with open(receipt_file, "w", encoding="utf-8") as f:
+        json.dump({"n_val": 113, "val_mean_f1": 0.65, "overall_quality_acc": 0.80}, f)
+
+    assert not check_beats_baseline(
+        {"val_mean_f1": 0.62, "overall_quality_acc": 0.82},
+        n_val=113,
+        prior_receipt_path=receipt_file,
+    )
+    assert check_beats_baseline(
+        {"val_mean_f1": 0.65, "overall_quality_acc": 0.80},
+        n_val=113,
+        prior_receipt_path=receipt_file,
+    )
+
+
+def test_baseline_gate_foreign_n_val_fails_closed(tmp_path):
+    from scripts.train_system1_consultant import check_beats_baseline
+
+    receipt_file = str(tmp_path / "consultant_receipt.json")
+
+    # Foreign n_val with no matching prior MUST fail closed (never auto-approve)
+    assert not check_beats_baseline(
+        {"val_mean_f1": 0.10, "overall_quality_acc": 0.10},
+        n_val=150,
+        prior_receipt_path=receipt_file,
+    )
+    assert not check_beats_baseline(
+        {"val_mean_f1": 0.99, "overall_quality_acc": 0.99},
+        n_val=150,
+        prior_receipt_path=receipt_file,
+    )
+
+    # Once a ratified prior for foreign n_val exists, gate compares like-for-like
+    with open(receipt_file, "w", encoding="utf-8") as f:
+        json.dump({"n_val": 150, "val_mean_f1": 0.70, "overall_quality_acc": 0.80}, f)
+
+    assert not check_beats_baseline(
+        {"val_mean_f1": 0.65, "overall_quality_acc": 0.85},
+        n_val=150,
+        prior_receipt_path=receipt_file,
+    )
+    assert check_beats_baseline(
+        {"val_mean_f1": 0.70, "overall_quality_acc": 0.80},
+        n_val=150,
+        prior_receipt_path=receipt_file,
+    )

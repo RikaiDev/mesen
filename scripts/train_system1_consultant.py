@@ -91,7 +91,9 @@ def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
             targets["overall_quality"] = int(labels["overall_quality"])
             for p in img_paths:
                 if not os.path.exists(p):
-                    raise FileNotFoundError(f"Missing referenced screenshot in {split_name} manifest: {p}")
+                    raise FileNotFoundError(
+                        f"Missing referenced screenshot in {split_name} manifest: {p}"
+                    )
                 item_imgs.append((item_id, p, targets))
 
         # Check disk cache
@@ -193,7 +195,9 @@ def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
     # Combine train + mirror + real_clinical_train for training set
     combined_train = {}
     for k in train_pack:
-        combined_train[k] = np.concatenate([train_pack[k], mirror_pack[k], real_train_pack[k]], axis=0)
+        combined_train[k] = np.concatenate(
+            [train_pack[k], mirror_pack[k], real_train_pack[k]], axis=0
+        )
 
     # Combine val + real_clinical_val for validation set
     combined_val = {}
@@ -234,6 +238,59 @@ def macro_f1(truth, pred, n_classes):
         recall = tp / (tp + fn) if tp + fn else 0.0
         scores.append(2 * precision * recall / (precision + recall) if precision + recall else 0.0)
     return float(sum(scores) / n_classes)
+
+
+BASELINE_PROVENANCE_N_VAL = 113
+BASELINE_PROVENANCE_F1 = 0.6018
+BASELINE_PROVENANCE_OQ_ACC = 0.7699
+
+
+def check_beats_baseline(
+    candidate_receipt: dict,
+    n_val: int,
+    prior_receipt_path: str | None = None,
+) -> bool:
+    """Evaluate candidate metrics against empirical baseline or prior ratified receipt.
+
+    1. If n_val matches proven baseline (n_val=113):
+       Floor is established at 0.6018 mean F1 and 0.7699 OQ acc.
+       Monotonic ratchet: prior matching receipt can raise the bar, but never lower it.
+    2. If n_val differs:
+       Only compares if an existing prior receipt for that exact n_val exists.
+       If no prior exists for that n_val, fails closed (returns False) so unverified
+       weights are never automatically promoted without human ratification.
+    """
+    baseline_f1 = BASELINE_PROVENANCE_F1 if n_val == BASELINE_PROVENANCE_N_VAL else None
+    baseline_oq_acc = BASELINE_PROVENANCE_OQ_ACC if n_val == BASELINE_PROVENANCE_N_VAL else None
+
+    if prior_receipt_path and os.path.exists(prior_receipt_path):
+        try:
+            with open(prior_receipt_path, encoding="utf-8") as f:
+                prior = json.load(f)
+                if prior.get("n_val") == n_val:
+                    if "val_mean_f1" in prior and "overall_quality_acc" in prior:
+                        prior_f1 = float(prior["val_mean_f1"])
+                        prior_oq = float(prior["overall_quality_acc"])
+                        if baseline_f1 is not None:
+                            baseline_f1 = max(baseline_f1, prior_f1)
+                            baseline_oq_acc = max(baseline_oq_acc, prior_oq)
+                        else:
+                            baseline_f1 = prior_f1
+                            baseline_oq_acc = prior_oq
+        except Exception:
+            pass
+
+    if baseline_f1 is not None:
+        return (candidate_receipt.get("val_mean_f1", 0.0) >= baseline_f1) and (
+            candidate_receipt.get("overall_quality_acc", 0.0) >= baseline_oq_acc
+        )
+
+    print(
+        f"Notice: n_val ({n_val}) has no established baseline (provenance baseline is n_val={BASELINE_PROVENANCE_N_VAL}). "
+        f"Saving candidate without promoting to active checkpoint.",
+        flush=True,
+    )
+    return False
 
 
 def stage_train(
@@ -377,40 +434,8 @@ def stage_train(
     best_receipt["n_train"] = n_train
     best_receipt["n_val"] = n_val
 
-    # Empirical baseline comparison against prior calibrated baseline on held-out n_val=113
-    # Provenance: Baseline constants were established on n_val=113 (bf44671/3959557/acd9ba0).
-    BASELINE_PROVENANCE_N_VAL = 113
-    baseline_f1 = None
-    baseline_oq_acc = None
-
     receipt_path = os.path.join(out_dir, "consultant_receipt.json")
-    if os.path.exists(receipt_path):
-        try:
-            with open(receipt_path, encoding="utf-8") as f:
-                prior = json.load(f)
-                if prior.get("n_val") == n_val:
-                    if "val_mean_f1" in prior and "overall_quality_acc" in prior:
-                        baseline_f1 = float(prior["val_mean_f1"])
-                        baseline_oq_acc = float(prior["overall_quality_acc"])
-        except Exception:
-            pass
-
-    if baseline_f1 is None and n_val == BASELINE_PROVENANCE_N_VAL:
-        baseline_f1 = 0.6018
-        baseline_oq_acc = 0.7699
-
-    if baseline_f1 is not None:
-        beats_baseline = (best_receipt["val_mean_f1"] >= baseline_f1) and (
-            best_receipt["overall_quality_acc"] >= baseline_oq_acc
-        )
-    else:
-        # If n_val changed, prior baseline is invalid for like-for-like comparison; establish new baseline
-        print(
-            f"Notice: n_val ({n_val}) differs from baseline provenance ({BASELINE_PROVENANCE_N_VAL}); establishing new baseline.",
-            flush=True,
-        )
-        beats_baseline = True
-
+    beats_baseline = check_beats_baseline(best_receipt, n_val, receipt_path)
     best_receipt["beats_baseline"] = bool(beats_baseline)
 
     ckpt_path = os.path.join(out_dir, "consultant_heads.pt")
