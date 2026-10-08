@@ -29,7 +29,11 @@ def fetch_models(models_dir):
 @cli.command()
 @click.option("--host", default="0.0.0.0", help="Binding host")
 @click.option("--port", default=8088, type=int, help="Binding port")
-@click.option("--checkpoint", default=None, help="Path to checkpoint safetensors")
+@click.option(
+    "--checkpoint",
+    default=None,
+    help="Path to the ONNX judge graph (default: models/onnx/mesen_jev_vlm.onnx)",
+)
 def serve(host, port, checkpoint):
     """Start the on-premises GPU serving daemon."""
     from mesen.serve.server import run_server

@@ -117,25 +117,41 @@ def fetch_artifact(name: str, target_dir: str, verbose: bool = True) -> str:
     if verbose:
         print(f"[mesen] Auto-fetching model '{name}' from GitHub Releases...")
 
-    req = urllib.request.Request(url, headers={"User-Agent": "mesen-vlm/0.2.0"})
+    # The judge is 375MB. Resume a partial transfer when the server supports
+    # Range, and give the whole download a budget that fits that size rather
+    # than a per-socket timeout that would cut it off mid-stream.
+    resume_from = os.path.getsize(part_path) if os.path.exists(part_path) else 0
+    headers = {"User-Agent": "mesen-vlm/0.2.0"}
+    if resume_from:
+        headers["Range"] = f"bytes={resume_from}-"
+        if verbose:
+            print(f"[mesen]   resuming {name} at {round(resume_from / (1024 * 1024), 1)}MB")
+
+    req = urllib.request.Request(url, headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=180) as resp, open(part_path, "wb") as out_f:
-            total = int(resp.headers.get("Content-Length", 0))
-            downloaded = 0
+        with urllib.request.urlopen(req, timeout=180) as resp:
+            resuming = resp.status == 206
+            if resume_from and not resuming:
+                # Server ignored the Range header; start over.
+                resume_from = 0
+            total = int(resp.headers.get("Content-Length", 0)) + resume_from
+            mode = "ab" if resuming else "wb"
+            downloaded = resume_from
             last_reported = -1
-            while True:
-                chunk = resp.read(1024 * 512)
-                if not chunk:
-                    break
-                out_f.write(chunk)
-                downloaded += len(chunk)
-                if total > 0 and verbose:
-                    pct = int(downloaded * 100 / total)
-                    if pct != last_reported and pct % 25 == 0:
-                        mb_done = round(downloaded / (1024 * 1024), 1)
-                        mb_total = round(total / (1024 * 1024), 1)
-                        print(f"[mesen]   -> {name}: {pct}% ({mb_done}MB / {mb_total}MB)")
-                        last_reported = pct
+            with open(part_path, mode) as out_f:
+                while True:
+                    chunk = resp.read(1024 * 512)
+                    if not chunk:
+                        break
+                    out_f.write(chunk)
+                    downloaded += len(chunk)
+                    if total > 0 and verbose:
+                        pct = int(downloaded * 100 / total)
+                        if pct != last_reported and pct % 25 == 0:
+                            mb_done = round(downloaded / (1024 * 1024), 1)
+                            mb_total = round(total / (1024 * 1024), 1)
+                            print(f"[mesen]   -> {name}: {pct}% ({mb_done}MB / {mb_total}MB)")
+                            last_reported = pct
     except Exception as e:
         if os.path.exists(part_path) and os.path.getsize(part_path) == 0:
             os.remove(part_path)

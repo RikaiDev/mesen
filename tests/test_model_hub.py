@@ -2,7 +2,6 @@
 
 import os
 import tempfile
-from pathlib import Path
 
 from mesen.hub import (
     ARTIFACT_PINS,
@@ -12,13 +11,12 @@ from mesen.hub import (
 )
 
 
-def test_artifact_pins_match_fetch_script():
-    """Verify that Python hub and bash fetch_models.sh pin identical artifact hashes."""
-    fetch_script = Path(__file__).resolve().parent.parent / "scripts" / "fetch_models.sh"
-    assert fetch_script.exists(), "scripts/fetch_models.sh must exist"
-    content = fetch_script.read_text(encoding="utf-8")
+def test_artifact_pins_are_complete_and_well_formed():
+    """Every pin is a full SHA-256, and no artifact is pinned twice."""
     for name, expected_hash in ARTIFACT_PINS.items():
-        assert f"{name}:{expected_hash}" in content, f"{name} pin mismatch in fetch_models.sh"
+        assert name.endswith(".onnx"), f"{name} is not an ONNX artifact"
+        assert len(expected_hash) == 64, f"{name} pin is not a SHA-256"
+        int(expected_hash, 16)  # raises if it is not hex
 
 
 def test_get_default_models_dir_env_override(monkeypatch):

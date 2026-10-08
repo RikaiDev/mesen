@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: uv sync --extra dev
-      # The ONNX artifacts are gitignored; stage them before the gate so the
-      # judge-backed tests actually run instead of skipping.
-      - run: bash scripts/fetch_models.sh
+      # The ONNX artifacts are gitignored; stage them through the same hub the
+      # CLI uses, so CI and a developer resolve artifacts identically.
+      - run: uv run python -c "from mesen.hub import ensure_models; ensure_models()"
       - run: bash scripts/qc.sh

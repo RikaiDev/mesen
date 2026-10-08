@@ -15,9 +15,7 @@ def _require_artifact():
         os.path.dirname(os.path.dirname(__file__)), "models", "onnx", "mesen_jev_vlm.onnx"
     )
     if not os.path.exists(artifact):
-        raise AssertionError(
-            f"model artifact not staged: {artifact} (run: bash scripts/fetch_models.sh)"
-        )
+        raise AssertionError(f"model artifact not staged: {artifact} (run: mesen fetch-models)")
 
 
 def _white_png(path, w=800, h=600):

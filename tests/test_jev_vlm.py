@@ -24,8 +24,7 @@ class TestJevVlmEngine(unittest.TestCase):
         cls.vlm_model_path = os.path.join(cls.models_dir, "mesen_jev_vlm.onnx")
         if not os.path.exists(cls.vlm_model_path):
             raise AssertionError(
-                f"model artifact not staged: {cls.vlm_model_path} "
-                "(run: bash scripts/fetch_models.sh)"
+                f"model artifact not staged: {cls.vlm_model_path} (run: mesen fetch-models)"
             )
 
         cls.engine = JevVlmEngine(models_dir=cls.models_dir)

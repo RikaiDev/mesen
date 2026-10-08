@@ -77,22 +77,25 @@ mesen judge --state state.json --images 375.png
 
 ## Setup
 
-The ONNX artifacts are gitignored, so a fresh clone has no judge and the CLI
-cannot run. Stage them once:
+The ONNX artifacts are gitignored, so a fresh clone has no judge. Any `mesen`
+command that loads the model will fetch and verify them on first use. To stage
+them ahead of time:
 
 ```bash
 uv sync --extra dev
-bash scripts/fetch_models.sh   # downloads models/onnx/*.onnx from the models-v1 release
+mesen fetch-models          # or: uv run python -c "from mesen.hub import ensure_models; ensure_models()"
 ```
 
-`scripts/fetch_models.sh` is the only place that knows which artifacts exist
-and what they must hash to. It resumes an interrupted transfer, skips a file
-that already matches its pin, and exits non-zero rather than proceeding with a
-file whose SHA-256 does not match. Override the destination with
-`MESEN_MODELS_DIR`.
+`src/mesen/hub.py` is the only place that knows which artifacts exist and what
+they must hash to. It resumes an interrupted transfer, skips a file that
+already matches its pin, and raises rather than proceeding with a file whose
+SHA-256 does not match. Artifacts are served from the `models-v1` release;
+override the destination with `MESEN_MODELS_DIR`. Without an override they land
+in `models/onnx` inside a checkout, and `~/.cache/mesen/models/onnx` otherwise.
 
-Staging is also what CI does before the gate, so the judge-backed tests run
-there for real. If the artifact is missing, those tests fail rather than skip.
+CI stages through the same hub, so a runner and a developer resolve artifacts
+identically. If the artifact is missing, the judge-backed tests fail rather
+than skip.
 
 ---
 
