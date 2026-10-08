@@ -81,6 +81,20 @@ uv sync --extra dev   # install ruff + pytest
 bash scripts/qc.sh    # ruff check + format check + pytest (CI runs the same)
 ```
 
+### System 1 Consultant Head Training
+
+```bash
+python scripts/train_system1_consultant.py
+```
+The training gate enforces monotonic improvement against the held-out validation baseline (`n_val=113`, floor `val_mean_f1 >= 0.6018`, `overall_quality_acc >= 0.7699`).
+- If validation metrics beat the baseline, the active checkpoint and receipt are updated.
+- If the validation dataset size changes (`n_val != 113`), the gate fails closed and writes candidate artifacts (`candidate_consultant_heads.pt` and `candidate_consultant_receipt.json`) without touching active artifacts.
+- To ratify a new baseline after modifying the validation set, inspect the candidate metrics and promote them:
+  ```bash
+  cp models/onnx/heads_v1/candidate_consultant_heads.pt models/onnx/heads_v1/consultant_heads.pt
+  cp models/onnx/heads_v1/candidate_consultant_receipt.json models/onnx/heads_v1/consultant_receipt.json
+  ```
+
 Ruff config lives in `pyproject.toml` (`[tool.ruff]`); pytest in `[tool.pytest.ini_options]`.
 Pydantic models stay snake_case — camelCase wire names survive only as field aliases.
 
