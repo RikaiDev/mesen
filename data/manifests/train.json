@@ -1,0 +1,4391 @@
+[
+  {
+    "id": "auth_login_var0_overflow_0019",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var0_overflow_0019_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var0_overflow_0019_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var0_overflow_0019_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var0_overflow_0019_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "order_checkout_var0_overflow_0037",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_overflow_0037_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_overflow_0037_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_overflow_0037_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_overflow_0037_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "modal_confirmation_var1_occlusion_0080",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var1_occlusion_0080_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_occlusion_0080_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_occlusion_0080_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_occlusion_0080_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "dashboard_analytics_var2_overflow_0013",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var2_overflow_0013_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_overflow_0013_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_overflow_0013_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_overflow_0013_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "dashboard_analytics_var0_empty_state_0008",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var0_empty_state_0008_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_empty_state_0008_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_empty_state_0008_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_empty_state_0008_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "modal_confirmation_var0_responsive_break_0043",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var0_responsive_break_0043_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_responsive_break_0043_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_responsive_break_0043_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_responsive_break_0043_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "patient_records_var2_occlusion_0068",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var2_occlusion_0068_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var2_occlusion_0068_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var2_occlusion_0068_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var2_occlusion_0068_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "order_checkout_var1_responsive_break_0046",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var1_responsive_break_0046_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var1_responsive_break_0046_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var1_responsive_break_0046_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var1_responsive_break_0046_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "modal_confirmation_var1_empty_state_0083",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var1_empty_state_0083_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_empty_state_0083_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_empty_state_0083_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_empty_state_0083_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "modal_confirmation_var0_overflow_0073",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var0_overflow_0073_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_overflow_0073_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_overflow_0073_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_overflow_0073_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "patient_records_var2_responsive_break_0070",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var2_responsive_break_0070_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var2_responsive_break_0070_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var2_responsive_break_0070_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var2_responsive_break_0070_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "order_checkout_var0_clean_0018",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_clean_0018_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_clean_0018_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_clean_0018_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_clean_0018_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "patient_records_var0_occlusion_0056",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var0_occlusion_0056_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var0_occlusion_0056_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var0_occlusion_0056_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var0_occlusion_0056_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "order_checkout_var2_low_contrast_0051",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var2_low_contrast_0051_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var2_low_contrast_0051_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var2_low_contrast_0051_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var2_low_contrast_0051_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "clinical_cancer_screening_var0_responsive_break_0052",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "clinical_screening",
+      "route": "/clinical_screening/clinical_cancer_screening",
+      "contract": {
+        "title": "癌症篩檢追蹤個案平台",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_responsive_break_0052_mobile_375x812.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_responsive_break_0052_tablet_768x1024.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_responsive_break_0052_laptop_1024x768.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_responsive_break_0052_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "order_checkout_var0_occlusion_0038",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_occlusion_0038_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_occlusion_0038_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_occlusion_0038_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_occlusion_0038_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "auth_login_var2_responsive_break_0034",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var2_responsive_break_0034_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var2_responsive_break_0034_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var2_responsive_break_0034_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var2_responsive_break_0034_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "patient_records_var2_overflow_0067",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var2_overflow_0067_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var2_overflow_0067_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var2_overflow_0067_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var2_overflow_0067_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "auth_login_var1_clean_excellent_0012",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "clean_excellent",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var1_clean_excellent_0012_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var1_clean_excellent_0012_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var1_clean_excellent_0012_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var1_clean_excellent_0012_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "mutation_type": "clean_excellent"
+  },
+  {
+    "id": "modal_confirmation_var0_low_contrast_0042",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var0_low_contrast_0042_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_low_contrast_0042_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_low_contrast_0042_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_low_contrast_0042_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "dashboard_analytics_var0_clean_0000",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var0_clean_0000_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_clean_0000_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_clean_0000_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_clean_0000_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "order_checkout_var0_overflow_0022",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_overflow_0022_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_overflow_0022_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_overflow_0022_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_overflow_0022_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "order_checkout_var1_clean_0019",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var1_clean_0019_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var1_clean_0019_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var1_clean_0019_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var1_clean_0019_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "auth_login_var1_clean_0024",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var1_clean_0024_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var1_clean_0024_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var1_clean_0024_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var1_clean_0024_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "patient_records_var1_low_contrast_0063",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var1_low_contrast_0063_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var1_low_contrast_0063_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var1_low_contrast_0063_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var1_low_contrast_0063_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "clinical_patient_profile_var0_clean_0054",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "clinical_ehr",
+      "route": "/clinical_ehr/clinical_patient_profile",
+      "contract": {
+        "title": "臨床生理數值與長期照護歷程",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/clinical_patient_profile_var0_clean_0054_mobile_375x812.png",
+      "data/synthetic/screenshots/clinical_patient_profile_var0_clean_0054_tablet_768x1024.png",
+      "data/synthetic/screenshots/clinical_patient_profile_var0_clean_0054_laptop_1024x768.png",
+      "data/synthetic/screenshots/clinical_patient_profile_var0_clean_0054_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "patient_records_var1_empty_state_0065",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var1_empty_state_0065_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var1_empty_state_0065_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var1_empty_state_0065_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var1_empty_state_0065_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "dashboard_analytics_var2_responsive_break_0016",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var2_responsive_break_0016_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_responsive_break_0016_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_responsive_break_0016_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_responsive_break_0016_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "auth_login_var0_overflow_0013",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var0_overflow_0013_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var0_overflow_0013_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var0_overflow_0013_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var0_overflow_0013_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "modal_confirmation_var2_responsive_break_0088",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var2_responsive_break_0088_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_responsive_break_0088_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_responsive_break_0088_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_responsive_break_0088_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "dashboard_analytics_var1_occlusion_0008",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var1_occlusion_0008_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_occlusion_0008_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_occlusion_0008_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_occlusion_0008_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "patient_records_var2_clean_0066",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var2_clean_0066_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var2_clean_0066_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var2_clean_0066_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var2_clean_0066_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "modal_confirmation_var1_clean_excellent_0039",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "clean_excellent",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_excellent_0039_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_excellent_0039_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_excellent_0039_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_excellent_0039_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "mutation_type": "clean_excellent"
+  },
+  {
+    "id": "patient_records_var1_clean_0060",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var1_clean_0060_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var1_clean_0060_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var1_clean_0060_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var1_clean_0060_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "auth_login_var0_low_contrast_0015",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var0_low_contrast_0015_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var0_low_contrast_0015_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var0_low_contrast_0015_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var0_low_contrast_0015_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "modal_confirmation_var1_overflow_0079",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var1_overflow_0079_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_overflow_0079_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_overflow_0079_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_overflow_0079_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "patient_records_var0_overflow_0031",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var0_overflow_0031_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var0_overflow_0031_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var0_overflow_0031_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var0_overflow_0031_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "order_checkout_var0_empty_state_0026",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_empty_state_0026_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_empty_state_0026_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_empty_state_0026_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_empty_state_0026_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "order_checkout_var0_low_contrast_0039",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_low_contrast_0039_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_low_contrast_0039_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_low_contrast_0039_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_low_contrast_0039_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "order_checkout_var1_low_contrast_0045",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var1_low_contrast_0045_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var1_low_contrast_0045_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var1_low_contrast_0045_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var1_low_contrast_0045_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "auth_login_var1_empty_state_0029",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var1_empty_state_0029_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var1_empty_state_0029_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var1_empty_state_0029_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var1_empty_state_0029_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "auth_login_var2_overflow_0031",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var2_overflow_0031_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var2_overflow_0031_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var2_overflow_0031_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var2_overflow_0031_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "modal_confirmation_var1_clean_0037",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_0037_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_0037_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_0037_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_0037_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "order_checkout_var1_clean_0042",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var1_clean_0042_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var1_clean_0042_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var1_clean_0042_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var1_clean_0042_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "modal_confirmation_var2_occlusion_0086",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var2_occlusion_0086_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_occlusion_0086_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_occlusion_0086_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_occlusion_0086_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "order_checkout_var2_clean_0048",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var2_clean_0048_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var2_clean_0048_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var2_clean_0048_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var2_clean_0048_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "dashboard_analytics_var2_occlusion_0014",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var2_occlusion_0014_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_occlusion_0014_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_occlusion_0014_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_occlusion_0014_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "auth_login_var0_clean_0018",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var0_clean_0018_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var0_clean_0018_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var0_clean_0018_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var0_clean_0018_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "auth_login_var1_clean_0010",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var1_clean_0010_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var1_clean_0010_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var1_clean_0010_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var1_clean_0010_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "dashboard_analytics_var1_clean_0001",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_0001_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_0001_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_0001_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_0001_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "dashboard_analytics_var1_low_contrast_0009",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var1_low_contrast_0009_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_low_contrast_0009_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_low_contrast_0009_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_low_contrast_0009_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "dashboard_analytics_var2_empty_state_0017",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var2_empty_state_0017_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_empty_state_0017_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_empty_state_0017_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_empty_state_0017_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "dashboard_analytics_var1_clean_excellent_0003",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "clean_excellent",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_excellent_0003_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_excellent_0003_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_excellent_0003_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_excellent_0003_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "mutation_type": "clean_excellent"
+  },
+  {
+    "id": "modal_confirmation_var1_clean_0078",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_0078_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_0078_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_0078_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_clean_0078_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "order_checkout_var0_low_contrast_0024",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_low_contrast_0024_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_low_contrast_0024_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_low_contrast_0024_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_low_contrast_0024_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "modal_confirmation_var0_clean_0036",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var0_clean_0036_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_clean_0036_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_clean_0036_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_clean_0036_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "dashboard_analytics_var0_occlusion_0005",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var0_occlusion_0005_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_occlusion_0005_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_occlusion_0005_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_occlusion_0005_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "dashboard_analytics_var0_occlusion_0002",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var0_occlusion_0002_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_occlusion_0002_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_occlusion_0002_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_occlusion_0002_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "modal_confirmation_var1_responsive_break_0082",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var1_responsive_break_0082_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_responsive_break_0082_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_responsive_break_0082_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_responsive_break_0082_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "patient_records_var0_clean_0027",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var0_clean_0027_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var0_clean_0027_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var0_clean_0027_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var0_clean_0027_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "order_checkout_var0_occlusion_0023",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_occlusion_0023_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_occlusion_0023_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_occlusion_0023_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_occlusion_0023_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "auth_login_var0_occlusion_0020",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var0_occlusion_0020_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var0_occlusion_0020_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var0_occlusion_0020_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var0_occlusion_0020_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "order_checkout_var0_empty_state_0041",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_empty_state_0041_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_empty_state_0041_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_empty_state_0041_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_empty_state_0041_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "modal_confirmation_var0_low_contrast_0075",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var0_low_contrast_0075_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_low_contrast_0075_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_low_contrast_0075_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_low_contrast_0075_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "order_checkout_var1_empty_state_0047",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var1_empty_state_0047_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var1_empty_state_0047_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var1_empty_state_0047_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var1_empty_state_0047_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "auth_login_var2_empty_state_0035",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var2_empty_state_0035_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var2_empty_state_0035_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var2_empty_state_0035_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var2_empty_state_0035_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "auth_login_var1_low_contrast_0027",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var1_low_contrast_0027_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var1_low_contrast_0027_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var1_low_contrast_0027_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var1_low_contrast_0027_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "clinical_cancer_screening_var0_overflow_0049",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "clinical_screening",
+      "route": "/clinical_screening/clinical_cancer_screening",
+      "contract": {
+        "title": "癌症篩檢追蹤個案平台",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_overflow_0049_mobile_375x812.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_overflow_0049_tablet_768x1024.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_overflow_0049_laptop_1024x768.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_overflow_0049_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "dashboard_analytics_var0_overflow_0001",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var0_overflow_0001_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_overflow_0001_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_overflow_0001_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_overflow_0001_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "patient_records_var1_clean_0028",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var1_clean_0028_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var1_clean_0028_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var1_clean_0028_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var1_clean_0028_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "auth_login_var1_overflow_0025",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var1_overflow_0025_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var1_overflow_0025_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var1_overflow_0025_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var1_overflow_0025_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "modal_confirmation_var2_empty_state_0089",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var2_empty_state_0089_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_empty_state_0089_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_empty_state_0089_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_empty_state_0089_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "patient_records_var1_occlusion_0062",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var1_occlusion_0062_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var1_occlusion_0062_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var1_occlusion_0062_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var1_occlusion_0062_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "patient_records_var0_responsive_break_0058",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var0_responsive_break_0058_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var0_responsive_break_0058_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var0_responsive_break_0058_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var0_responsive_break_0058_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "order_checkout_var2_occlusion_0050",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var2_occlusion_0050_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var2_occlusion_0050_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var2_occlusion_0050_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var2_occlusion_0050_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "auth_login_var0_empty_state_0017",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var0_empty_state_0017_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var0_empty_state_0017_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var0_empty_state_0017_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var0_empty_state_0017_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "dashboard_analytics_var2_low_contrast_0015",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var2_low_contrast_0015_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_low_contrast_0015_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_low_contrast_0015_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var2_low_contrast_0015_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "dashboard_analytics_var0_low_contrast_0006",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var0_low_contrast_0006_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_low_contrast_0006_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_low_contrast_0006_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_low_contrast_0006_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "auth_login_var0_responsive_break_0016",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var0_responsive_break_0016_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var0_responsive_break_0016_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var0_responsive_break_0016_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var0_responsive_break_0016_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "modal_confirmation_var2_low_contrast_0087",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var2_low_contrast_0087_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_low_contrast_0087_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_low_contrast_0087_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_low_contrast_0087_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "patient_records_var2_low_contrast_0069",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var2_low_contrast_0069_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var2_low_contrast_0069_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var2_low_contrast_0069_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var2_low_contrast_0069_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "modal_confirmation_var1_low_contrast_0081",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var1_low_contrast_0081_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_low_contrast_0081_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_low_contrast_0081_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var1_low_contrast_0081_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "order_checkout_var0_responsive_break_0025",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_responsive_break_0025_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_responsive_break_0025_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_responsive_break_0025_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_responsive_break_0025_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "patient_records_var0_clean_0054",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var0_clean_0054_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var0_clean_0054_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var0_clean_0054_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var0_clean_0054_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "modal_confirmation_var0_clean_excellent_0038",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "clean_excellent",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var0_clean_excellent_0038_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_clean_excellent_0038_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_clean_excellent_0038_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_clean_excellent_0038_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "mutation_type": "clean_excellent"
+  },
+  {
+    "id": "patient_records_var0_responsive_break_0034",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var0_responsive_break_0034_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var0_responsive_break_0034_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var0_responsive_break_0034_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var0_responsive_break_0034_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "auth_login_var0_low_contrast_0021",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var0_low_contrast_0021_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var0_low_contrast_0021_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var0_low_contrast_0021_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var0_low_contrast_0021_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "auth_login_var0_clean_0009",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var0_clean_0009_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var0_clean_0009_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var0_clean_0009_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var0_clean_0009_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "patient_records_var1_responsive_break_0064",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var1_responsive_break_0064_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var1_responsive_break_0064_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var1_responsive_break_0064_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var1_responsive_break_0064_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "clinical_cancer_screening_var0_occlusion_0050",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "clinical_screening",
+      "route": "/clinical_screening/clinical_cancer_screening",
+      "contract": {
+        "title": "癌症篩檢追蹤個案平台",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_occlusion_0050_mobile_375x812.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_occlusion_0050_tablet_768x1024.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_occlusion_0050_laptop_1024x768.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_occlusion_0050_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "dashboard_analytics_var1_responsive_break_0010",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var1_responsive_break_0010_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_responsive_break_0010_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_responsive_break_0010_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_responsive_break_0010_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "order_checkout_var0_clean_excellent_0020",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "clean_excellent",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_clean_excellent_0020_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_clean_excellent_0020_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_clean_excellent_0020_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_clean_excellent_0020_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "mutation_type": "clean_excellent"
+  },
+  {
+    "id": "dashboard_analytics_var0_clean_excellent_0002",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "clean_excellent",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var0_clean_excellent_0002_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_clean_excellent_0002_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_clean_excellent_0002_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_clean_excellent_0002_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "mutation_type": "clean_excellent"
+  },
+  {
+    "id": "order_checkout_var2_empty_state_0053",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var2_empty_state_0053_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var2_empty_state_0053_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var2_empty_state_0053_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var2_empty_state_0053_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "patient_records_var2_empty_state_0071",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var2_empty_state_0071_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var2_empty_state_0071_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var2_empty_state_0071_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var2_empty_state_0071_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "auth_login_var1_occlusion_0026",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var1_occlusion_0026_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var1_occlusion_0026_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var1_occlusion_0026_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var1_occlusion_0026_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "auth_login_var1_responsive_break_0028",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var1_responsive_break_0028_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var1_responsive_break_0028_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var1_responsive_break_0028_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var1_responsive_break_0028_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "modal_confirmation_var2_clean_0084",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var2_clean_0084_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_clean_0084_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_clean_0084_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var2_clean_0084_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "patient_records_var1_clean_excellent_0030",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "clean_excellent",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var1_clean_excellent_0030_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var1_clean_excellent_0030_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var1_clean_excellent_0030_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var1_clean_excellent_0030_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "mutation_type": "clean_excellent"
+  },
+  {
+    "id": "patient_records_var0_low_contrast_0033",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var0_low_contrast_0033_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var0_low_contrast_0033_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var0_low_contrast_0033_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var0_low_contrast_0033_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "patient_records_var0_empty_state_0059",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var0_empty_state_0059_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var0_empty_state_0059_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var0_empty_state_0059_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var0_empty_state_0059_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "modal_confirmation_var0_empty_state_0077",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var0_empty_state_0077_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_empty_state_0077_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_empty_state_0077_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_empty_state_0077_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "order_checkout_var0_responsive_break_0040",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_responsive_break_0040_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_responsive_break_0040_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_responsive_break_0040_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_responsive_break_0040_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "auth_login_var2_occlusion_0032",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var2_occlusion_0032_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var2_occlusion_0032_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var2_occlusion_0032_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var2_occlusion_0032_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "order_checkout_var1_overflow_0043",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "overflow",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var1_overflow_0043_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var1_overflow_0043_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var1_overflow_0043_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var1_overflow_0043_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "overflow"
+  },
+  {
+    "id": "auth_login_var0_empty_state_0023",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "authentication",
+      "route": "/authentication/auth_login",
+      "contract": {
+        "title": "Account Sign In",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/auth_login_var0_empty_state_0023_mobile_375x812.png",
+      "data/synthetic/screenshots/auth_login_var0_empty_state_0023_tablet_768x1024.png",
+      "data/synthetic/screenshots/auth_login_var0_empty_state_0023_laptop_1024x768.png",
+      "data/synthetic/screenshots/auth_login_var0_empty_state_0023_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "patient_records_var0_empty_state_0035",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "healthcare",
+      "route": "/healthcare/patient_records",
+      "contract": {
+        "title": "Clinical Patient Records",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/patient_records_var0_empty_state_0035_mobile_375x812.png",
+      "data/synthetic/screenshots/patient_records_var0_empty_state_0035_tablet_768x1024.png",
+      "data/synthetic/screenshots/patient_records_var0_empty_state_0035_laptop_1024x768.png",
+      "data/synthetic/screenshots/patient_records_var0_empty_state_0035_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "dashboard_analytics_var0_low_contrast_0003",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "low_contrast",
+        "is_clean": false
+      },
+      "accessibilityViolations": [
+        {
+          "rule": "color-contrast",
+          "severity": "serious"
+        }
+      ],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var0_low_contrast_0003_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_low_contrast_0003_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_low_contrast_0003_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var0_low_contrast_0003_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "low_contrast"
+  },
+  {
+    "id": "clinical_cancer_screening_var0_empty_state_0053",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "clinical_screening",
+      "route": "/clinical_screening/clinical_cancer_screening",
+      "contract": {
+        "title": "癌症篩檢追蹤個案平台",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_empty_state_0053_mobile_375x812.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_empty_state_0053_tablet_768x1024.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_empty_state_0053_laptop_1024x768.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_empty_state_0053_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "modal_confirmation_var0_responsive_break_0076",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dialog",
+      "route": "/dialog/modal_confirmation",
+      "contract": {
+        "title": "Action Confirmation Dialog",
+        "mutation": "responsive_break",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [
+        {
+          "type": "horizontal-overflow",
+          "viewport": "mobile"
+        }
+      ],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/modal_confirmation_var0_responsive_break_0076_mobile_375x812.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_responsive_break_0076_tablet_768x1024.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_responsive_break_0076_laptop_1024x768.png",
+      "data/synthetic/screenshots/modal_confirmation_var0_responsive_break_0076_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "no",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 1
+    },
+    "mutation_type": "responsive_break"
+  },
+  {
+    "id": "dashboard_analytics_var1_empty_state_0011",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "empty_state",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": [
+        "Fatal error rendering view"
+      ]
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var1_empty_state_0011_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_empty_state_0011_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_empty_state_0011_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_empty_state_0011_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "mutation_type": "empty_state"
+  },
+  {
+    "id": "order_checkout_var1_occlusion_0044",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "occlusion",
+        "is_clean": false
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var1_occlusion_0044_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var1_occlusion_0044_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var1_occlusion_0044_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var1_occlusion_0044_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "no",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 0
+    },
+    "mutation_type": "occlusion"
+  },
+  {
+    "id": "dashboard_analytics_var1_clean_0006",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "dashboard",
+      "route": "/dashboard/dashboard_analytics",
+      "contract": {
+        "title": "Analytics Dashboard",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_0006_mobile_375x812.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_0006_tablet_768x1024.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_0006_laptop_1024x768.png",
+      "data/synthetic/screenshots/dashboard_analytics_var1_clean_0006_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "clinical_cancer_screening_var0_clean_0045",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "clinical_screening",
+      "route": "/clinical_screening/clinical_cancer_screening",
+      "contract": {
+        "title": "癌症篩檢追蹤個案平台",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_clean_0045_mobile_375x812.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_clean_0045_tablet_768x1024.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_clean_0045_laptop_1024x768.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_clean_0045_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "order_checkout_var0_clean_0036",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "ecommerce",
+      "route": "/ecommerce/order_checkout",
+      "contract": {
+        "title": "Order Checkout",
+        "mutation": "clean",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/order_checkout_var0_clean_0036_mobile_375x812.png",
+      "data/synthetic/screenshots/order_checkout_var0_clean_0036_tablet_768x1024.png",
+      "data/synthetic/screenshots/order_checkout_var0_clean_0036_laptop_1024x768.png",
+      "data/synthetic/screenshots/order_checkout_var0_clean_0036_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 2
+    },
+    "mutation_type": "clean"
+  },
+  {
+    "id": "clinical_cancer_screening_var0_clean_excellent_0047",
+    "state": {
+      "imageOrder": [
+        "mobile_375x812",
+        "tablet_768x1024",
+        "laptop_1024x768",
+        "desktop_1440x900"
+      ],
+      "product": "clinical_screening",
+      "route": "/clinical_screening/clinical_cancer_screening",
+      "contract": {
+        "title": "癌症篩檢追蹤個案平台",
+        "mutation": "clean_excellent",
+        "is_clean": true
+      },
+      "accessibilityViolations": [],
+      "geometryAnomalies": [],
+      "consoleErrors": []
+    },
+    "image_paths": [
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_clean_excellent_0047_mobile_375x812.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_clean_excellent_0047_tablet_768x1024.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_clean_excellent_0047_laptop_1024x768.png",
+      "data/synthetic/screenshots/clinical_cancer_screening_var0_clean_excellent_0047_desktop_1440x900.png"
+    ],
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "mutation_type": "clean_excellent"
+  }
+]

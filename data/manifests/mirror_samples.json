@@ -1,0 +1,407 @@
+[
+  {
+    "id": "mirror_clean_var0",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_clean_var0_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_clean_var0_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_clean_var0_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_clean_var0_desktop_1440x900.png"
+    ],
+    "mutation_type": "clean",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_clean_var1",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_clean_var1_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_clean_var1_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_clean_var1_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_clean_var1_desktop_1440x900.png"
+    ],
+    "mutation_type": "clean",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_clean_var2",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_clean_var2_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_clean_var2_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_clean_var2_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_clean_var2_desktop_1440x900.png"
+    ],
+    "mutation_type": "clean",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_clean_var3",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_clean_var3_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_clean_var3_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_clean_var3_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_clean_var3_desktop_1440x900.png"
+    ],
+    "mutation_type": "clean",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_clean_var4",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_clean_var4_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_clean_var4_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_clean_var4_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_clean_var4_desktop_1440x900.png"
+    ],
+    "mutation_type": "clean",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "yes",
+      "overall_quality": 3
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_center_intrusion_var0",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_center_intrusion_var0_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var0_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var0_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var0_desktop_1440x900.png"
+    ],
+    "mutation_type": "mirror_center_obstruction",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 0
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_center_intrusion_var1",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_center_intrusion_var1_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var1_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var1_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var1_desktop_1440x900.png"
+    ],
+    "mutation_type": "mirror_center_obstruction",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 0
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_center_intrusion_var2",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_center_intrusion_var2_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var2_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var2_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var2_desktop_1440x900.png"
+    ],
+    "mutation_type": "mirror_center_obstruction",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 0
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_center_intrusion_var3",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_center_intrusion_var3_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var3_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var3_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var3_desktop_1440x900.png"
+    ],
+    "mutation_type": "mirror_center_obstruction",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 0
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_center_intrusion_var4",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_center_intrusion_var4_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var4_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var4_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_center_intrusion_var4_desktop_1440x900.png"
+    ],
+    "mutation_type": "mirror_center_obstruction",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "no",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 0
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_low_luminance_var0",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_low_luminance_var0_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var0_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var0_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var0_desktop_1440x900.png"
+    ],
+    "mutation_type": "low_contrast",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_low_luminance_var1",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_low_luminance_var1_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var1_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var1_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var1_desktop_1440x900.png"
+    ],
+    "mutation_type": "low_contrast",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_low_luminance_var2",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_low_luminance_var2_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var2_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var2_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var2_desktop_1440x900.png"
+    ],
+    "mutation_type": "low_contrast",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_low_luminance_var3",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_low_luminance_var3_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var3_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var3_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var3_desktop_1440x900.png"
+    ],
+    "mutation_type": "low_contrast",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  },
+  {
+    "id": "mirror_low_luminance_var4",
+    "screenshots": [
+      "data/synthetic/screenshots/mirror_low_luminance_var4_mobile_375x812.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var4_tablet_768x1024.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var4_laptop_1024x768.png",
+      "data/synthetic/screenshots/mirror_low_luminance_var4_desktop_1440x900.png"
+    ],
+    "mutation_type": "low_contrast",
+    "labels": {
+      "primary_action_reachable": "yes",
+      "visual_integrity": "yes",
+      "responsive_consistency": "yes",
+      "evidence_consistency": "yes",
+      "operator_clarity": "no",
+      "overall_quality": 1
+    },
+    "state": {
+      "product": "the-mirror",
+      "route": "/mirror-kiosk",
+      "context": {
+        "cohort": "older_adult_65plus",
+        "modality": "ambient_mirror",
+        "interaction_mode": "zero_touch_vision_voice"
+      }
+    }
+  }
+]

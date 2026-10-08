@@ -36,7 +36,8 @@ logs/
 model_cache/
 
 # Datasets & local caches
-/data/
+/data/*
+!/data/manifests/
 /datasets/
 cache/
 .cache/

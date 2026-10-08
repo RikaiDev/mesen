@@ -61,18 +61,22 @@ def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
     os.makedirs(cache_dir, exist_ok=True)
 
     datasets = [
-        ("train", "data/synthetic/train.json"),
-        ("val", "data/synthetic/val.json"),
-        ("mirror", "data/synthetic/mirror_samples.json"),
-        ("real_clinical_train", "data/synthetic/real_clinical_train.json"),
-        ("real_clinical_val", "data/synthetic/real_clinical_val.json"),
+        ("train", "data/manifests/train.json"),
+        ("val", "data/manifests/val.json"),
+        ("mirror", "data/manifests/mirror_samples.json"),
+        ("real_clinical_train", "data/manifests/real_clinical_train.json"),
+        ("real_clinical_val", "data/manifests/real_clinical_val.json"),
     ]
 
     records = {split: [] for split, _ in datasets}
 
     for split_name, json_path in datasets:
         if not os.path.exists(json_path):
-            continue
+            alt_path = json_path.replace("data/manifests/", "data/synthetic/")
+            if os.path.exists(alt_path):
+                json_path = alt_path
+            else:
+                raise FileNotFoundError(f"Required dataset manifest not found: {json_path}")
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
 
@@ -162,20 +166,22 @@ def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
     train_pack = pack("train")
     mirror_pack = pack("mirror")
     real_train_pack = pack("real_clinical_train")
-    if len(real_train_pack["features"]) == 0 and "real_clinical" in records:
-        real_train_pack = pack("real_clinical")
     val_pack = pack("val")
     real_val_pack = pack("real_clinical_val")
 
+    if len(real_train_pack["features"]) == 0:
+        raise ValueError("No real clinical training samples found in real_clinical_train manifest.")
+    if len(real_val_pack["features"]) == 0:
+        raise ValueError("No real clinical validation samples found in real_clinical_val manifest.")
+
     # Replicate real clinical samples so they are not drowned out by synthetic toy screens
-    if len(real_train_pack["features"]) > 0:
-        multiplier = 20
-        for k in real_train_pack:
-            real_train_pack[k] = np.repeat(real_train_pack[k], multiplier, axis=0)
-        print(
-            f"Replicated real clinical train samples {multiplier}x -> {len(real_train_pack['features'])} samples.",
-            flush=True,
-        )
+    multiplier = 20
+    for k in real_train_pack:
+        real_train_pack[k] = np.repeat(real_train_pack[k], multiplier, axis=0)
+    print(
+        f"Replicated real clinical train samples {multiplier}x -> {len(real_train_pack['features'])} samples.",
+        flush=True,
+    )
 
     # Combine train + mirror + real_clinical_train for training set
     combined_train = {}
@@ -185,10 +191,7 @@ def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
     # Combine val + real_clinical_val for validation set
     combined_val = {}
     for k in val_pack:
-        if len(real_val_pack["features"]) > 0:
-            combined_val[k] = np.concatenate([val_pack[k], real_val_pack[k]], axis=0)
-        else:
-            combined_val[k] = val_pack[k]
+        combined_val[k] = np.concatenate([val_pack[k], real_val_pack[k]], axis=0)
 
     os.makedirs(os.path.dirname(os.path.abspath(out_npz)), exist_ok=True)
     np.savez_compressed(
@@ -338,6 +341,12 @@ def stage_train(
         mean_f1 /= 6.0
         receipt["val_mean_f1"] = round(mean_f1, 4)
 
+        # Active mean F1 excludes degenerate evidence_consistency (which has no negative samples)
+        active_heads = [h for h in HEAD_NAMES if h != "evidence_consistency"]
+        active_f1_sum = sum(receipt[f"{h}_f1"] for h in active_heads) + q_f1
+        receipt["val_active_mean_f1"] = round(active_f1_sum / 5.0, 4)
+        receipt["evidence_consistency_is_degenerate"] = True
+
         if mean_f1 > best_score:
             best_score = mean_f1
             best_receipt = receipt
@@ -353,13 +362,10 @@ def stage_train(
             )
 
     os.makedirs(out_dir, exist_ok=True)
-    ckpt_path = os.path.join(out_dir, "consultant_heads.pt")
-    torch.save(best_state, ckpt_path)
-
     best_receipt["n_train"] = n_train
     best_receipt["n_val"] = n_val
 
-    # Empirical baseline comparison against prior calibrated baseline (commit 69e82b5)
+    # Empirical baseline comparison against prior calibrated baseline on held-out n_val=113
     baseline_f1 = 0.5975
     baseline_oq_acc = 0.750
     receipt_path = os.path.join(out_dir, "consultant_receipt.json")
@@ -367,8 +373,10 @@ def stage_train(
         try:
             with open(receipt_path, encoding="utf-8") as f:
                 prior = json.load(f)
-                baseline_f1 = max(baseline_f1, float(prior.get("val_mean_f1", baseline_f1)))
-                baseline_oq_acc = max(baseline_oq_acc, float(prior.get("overall_quality_acc", baseline_oq_acc)))
+                # Only compare against prior if n_val matches (honest like-for-like comparison)
+                if prior.get("n_val") == n_val:
+                    baseline_f1 = max(baseline_f1, float(prior.get("val_mean_f1", baseline_f1)))
+                    baseline_oq_acc = max(baseline_oq_acc, float(prior.get("overall_quality_acc", baseline_oq_acc)))
         except Exception:
             pass
 
@@ -376,11 +384,24 @@ def stage_train(
         best_receipt["overall_quality_acc"] >= baseline_oq_acc
     )
     best_receipt["beats_baseline"] = bool(beats_baseline)
-    with open(receipt_path, "w", encoding="utf-8") as f:
-        json.dump(best_receipt, f, indent=2, sort_keys=True)
+
+    ckpt_path = os.path.join(out_dir, "consultant_heads.pt")
+    if beats_baseline:
+        torch.save(best_state, ckpt_path)
+        with open(receipt_path, "w", encoding="utf-8") as f:
+            json.dump(best_receipt, f, indent=2, sort_keys=True)
+        print(f"Saved active checkpoint to {ckpt_path}")
+    else:
+        candidate_ckpt = os.path.join(out_dir, "candidate_consultant_heads.pt")
+        candidate_receipt = os.path.join(out_dir, "candidate_consultant_receipt.json")
+        torch.save(best_state, candidate_ckpt)
+        with open(candidate_receipt, "w", encoding="utf-8") as f:
+            json.dump(best_receipt, f, indent=2, sort_keys=True)
+        print(
+            f"Metrics did not beat baseline. Saved candidate to {candidate_ckpt} without touching active checkpoint."
+        )
 
     print("\n=== Training Complete ===")
-    print(f"Saved checkpoint to {ckpt_path}")
     print(f"Receipt: {json.dumps(best_receipt, indent=2)}")
     return best_state, best_receipt
 
@@ -454,13 +475,17 @@ def main():
         print(f"Using existing cached features at {args.features}")
 
     state_dict, receipt = stage_train(args.features, args.out_dir, epochs=args.epochs)
-    if receipt.get("beats_baseline", False):
-        update_head_calibration_py(receipt)
-    else:
+    if not receipt.get("beats_baseline", False):
         print(
-            f"NOTICE: Model metrics (F1={receipt.get('val_mean_f1')}, OQ_acc={receipt.get('overall_quality_acc')}) "
-            "did not beat baseline benchmarks. Skipping head_calibration.py update."
+            f"REJECTED: Model metrics (mean_F1={receipt.get('val_mean_f1')}, "
+            f"active_F1={receipt.get('val_active_mean_f1')}, "
+            f"OQ_acc={receipt.get('overall_quality_acc')}) did not beat baseline benchmarks. "
+            "Aborting ONNX weight injection and calibration receipt update.",
+            file=sys.stderr,
         )
+        sys.exit(1)
+
+    update_head_calibration_py(receipt)
 
     # Inject into mesen_jev_vlm_v3.onnx (prefix: 'model.consultant_heads.')
     if os.path.exists(args.v3_onnx):

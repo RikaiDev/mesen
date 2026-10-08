@@ -14,7 +14,7 @@ BASE_URL="https://github.com/RikaiDev/mesen/releases/download/models-v1"
 
 # name:sha256 — the pin is the contract, not the file name.
 ARTIFACTS=(
-	"mesen_jev_vlm.onnx:8325223078a0e442a654a5d3d0c67db826d9aa4e14b10f1ae8b1f4d59444f1b6"
+	"mesen_jev_vlm.onnx:2fe3cd2b75637aaaf816e430f722b7755be1403e8df3b84ddcfa68177765699f"
 	"ch_PP-OCRv4_det.onnx:c255248806ccdf52d6af1e45e362e6b27dcb770c6e2b92707459ee9a20f54587"
 	"ch_PP-OCRv4_rec.onnx:8cd07d8689f3a0ba58741c97eea1bc4964bc60f005ef1802ba54c8cd4abd28c3"
 )
