@@ -14,6 +14,8 @@
   "responsive_consistency_acc": 0.9912,
   "responsive_consistency_f1": 0.6548,
   "val_mean_f1": 0.6018,
+  "val_active_mean_f1": 0.6555,
+  "evidence_consistency_is_degenerate": true,
   "visual_integrity_acc": 0.9558,
   "visual_integrity_f1": 0.6372
 }

@@ -160,3 +160,40 @@ def test_judge_with_base64_image_cleans_tempfile():
     assert captured_temp_path is not None
     # Verify temporary file was deleted after request completion
     assert not os.path.exists(captured_temp_path)
+
+
+def test_load_model_wiring():
+    onnx_path = "models/onnx/mesen_jev_vlm.onnx"
+    if not os.path.exists(onnx_path):
+        pytest.skip("mesen_jev_vlm.onnx not present")
+    server_module.load_model(onnx_path)
+    assert server_module._engine is not None
+    assert isinstance(server_module._engine, JevVlmEngine)
+
+
+def test_judge_preserves_preadjudication_disagreement():
+    onnx_path = "models/onnx/mesen_jev_vlm.onnx"
+    if not os.path.exists(onnx_path):
+        pytest.skip("mesen_jev_vlm.onnx not present")
+
+    server_module.load_model(onnx_path)
+    client = TestClient(server_module.app)
+    img = "tests/fixtures/real_clinical/hicare_real_tablet.png"
+
+    req = {
+        "state": {
+            "route": "/dashboard",
+            "viewport_facts": [
+                {"width": 390, "docScrollWidth": 980, "screenshot": None, "dpr": 2.0}
+            ],
+        },
+        "image_paths": [img],
+    }
+    resp = client.post("/v1/judge", json=req)
+    assert resp.status_code == 200
+    data = resp.json()
+
+    # Adjudication forces visual_integrity to "no" due to measured document overflow defect
+    assert data["answers"]["visual_integrity"]["choice"] == "no"
+    # Authentic pre-adjudication disagreement must be preserved and NOT circular/masked as True
+    assert data["agreement"]["visual_integrity"] is False

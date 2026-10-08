@@ -34,6 +34,29 @@ from mesen.schema import (
 CHOICE_LABELS = ["yes", "no", "unknown"]
 
 
+class EvaluationResult(tuple):
+    """Backwards-compatible (report, answers) 2-tuple preserving pre-adjudication diagnostic state."""
+
+    report: ConsultantReport
+    answers: JudgeAnswers
+    agreement: dict[str, bool]
+    system_two: JudgeAnswers | None
+
+    def __new__(
+        cls,
+        report: ConsultantReport,
+        answers: JudgeAnswers,
+        agreement: dict[str, bool] | None = None,
+        system_two: JudgeAnswers | None = None,
+    ):
+        inst = super().__new__(cls, (report, answers))
+        inst.report = report
+        inst.answers = answers
+        inst.agreement = agreement or {}
+        inst.system_two = system_two
+        return inst
+
+
 class JevVlmEngine:
     def __init__(
         self,
@@ -195,7 +218,9 @@ class JevVlmEngine:
 
         if mode == "deep":
             report = self.system_two.evaluate_screenshot(image_path, context, dpr, witness=witness)
-            return report, derive_system_two(report, witness=witness)
+            s2 = derive_system_two(report, witness=witness)
+            agreement = compute_agreement(s2, s2)
+            return EvaluationResult(report, s2, agreement, s2)
 
         answers, rule_probs, pred_bbox, pred_score = self.judge_system1(image_path, context)
         violations = self._neural_rule_violations(rule_probs, pred_bbox)
@@ -207,7 +232,7 @@ class JevVlmEngine:
                 verdict=self._score_verdict(pred_score),
                 summary_score=pred_score,
             )
-            return report, answers
+            return EvaluationResult(report, answers, {}, None)
 
         deep_report = self.system_two.evaluate_screenshot(image_path, context, dpr, witness=witness)
         all_violations = deep_report.violations + violations
@@ -270,7 +295,12 @@ class JevVlmEngine:
                 confidence=1.0,
                 reasoning="A single screenshot cannot establish semantic consistency across viewports.",
             )
-        return report, answers
+        return EvaluationResult(
+            report=report,
+            answers=answers,
+            agreement=agreement,
+            system_two=system_two_answers,
+        )
 
     @staticmethod
     def _score_verdict(pred_score: int) -> str:

@@ -90,8 +90,9 @@ def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
             targets = {h: CHOICE_MAP[labels[h]] for h in HEAD_NAMES}
             targets["overall_quality"] = int(labels["overall_quality"])
             for p in img_paths:
-                if os.path.exists(p):
-                    item_imgs.append((item_id, p, targets))
+                if not os.path.exists(p):
+                    raise FileNotFoundError(f"Missing referenced screenshot in {split_name} manifest: {p}")
+                item_imgs.append((item_id, p, targets))
 
         # Check disk cache
         pending = []
@@ -169,6 +170,12 @@ def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
     val_pack = pack("val")
     real_val_pack = pack("real_clinical_val")
 
+    if len(train_pack["features"]) == 0:
+        raise ValueError("No training samples found in train manifest.")
+    if len(val_pack["features"]) == 0:
+        raise ValueError("No validation samples found in val manifest.")
+    if len(mirror_pack["features"]) == 0:
+        raise ValueError("No mirror samples found in mirror manifest.")
     if len(real_train_pack["features"]) == 0:
         raise ValueError("No real clinical training samples found in real_clinical_train manifest.")
     if len(real_val_pack["features"]) == 0:
@@ -341,11 +348,16 @@ def stage_train(
         mean_f1 /= 6.0
         receipt["val_mean_f1"] = round(mean_f1, 4)
 
-        # Active mean F1 excludes degenerate evidence_consistency (which has no negative samples)
-        active_heads = [h for h in HEAD_NAMES if h != "evidence_consistency"]
-        active_f1_sum = sum(receipt[f"{h}_f1"] for h in active_heads) + q_f1
-        receipt["val_active_mean_f1"] = round(active_f1_sum / 5.0, 4)
-        receipt["evidence_consistency_is_degenerate"] = True
+        # Determine dynamically if evidence_consistency validation distribution is degenerate
+        is_ec_degenerate = bool(len(np.unique(val_targets["evidence_consistency"])) < 2)
+        receipt["evidence_consistency_is_degenerate"] = is_ec_degenerate
+
+        if is_ec_degenerate:
+            active_heads = [h for h in HEAD_NAMES if h != "evidence_consistency"]
+            active_f1_sum = sum(receipt[f"{h}_f1"] for h in active_heads) + q_f1
+            receipt["val_active_mean_f1"] = round(active_f1_sum / 5.0, 4)
+        else:
+            receipt["val_active_mean_f1"] = receipt["val_mean_f1"]
 
         if mean_f1 > best_score:
             best_score = mean_f1

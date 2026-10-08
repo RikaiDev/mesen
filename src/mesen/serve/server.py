@@ -110,13 +110,19 @@ def judge_ui(request: JudgeRequest):
     image_path, is_temp = _resolve_image_path(request)
     try:
         context = request.state.context or ContextSpec()
-        report, answers = _engine.evaluate(
+        result = _engine.evaluate(
             image_path=image_path,
             context=context,
             witness=request.state,
         )
-        system_two = derive_system_two(report, witness=request.state)
-        agreement = compute_agreement(answers, system_two)
+        report = getattr(result, "report", result[0])
+        answers = getattr(result, "answers", result[1])
+        system_two = getattr(result, "system_two", None)
+        if system_two is None:
+            system_two = derive_system_two(report, witness=request.state)
+        agreement = getattr(result, "agreement", None)
+        if agreement is None:
+            agreement = compute_agreement(answers, system_two)
 
         return JudgeResponse(
             answers=answers,
