@@ -197,3 +197,29 @@ def test_judge_preserves_preadjudication_disagreement():
     assert data["answers"]["visual_integrity"]["choice"] == "no"
     # Authentic pre-adjudication disagreement must be preserved and NOT circular/masked as True
     assert data["agreement"]["visual_integrity"] is False
+
+
+def test_engine_evaluate_modes_agreement_contract():
+    onnx_path = "models/onnx/mesen_jev_vlm.onnx"
+    if not os.path.exists(onnx_path):
+        pytest.skip("mesen_jev_vlm.onnx not present")
+
+    engine = JevVlmEngine(onnx_model_path=onnx_path)
+    img = "tests/fixtures/real_clinical/hicare_real_tablet.png"
+
+    # Fast mode: single system only, agreement and system_two must be None
+    res_fast = engine.evaluate(img, mode="fast")
+    assert res_fast.agreement is None
+    assert res_fast.system_two is None
+
+    # Deep mode: single system only, agreement must be None (no vacuous self-comparison)
+    res_deep = engine.evaluate(img, mode="deep")
+    assert res_deep.agreement is None
+    assert res_deep.system_two is not None
+
+    # Dual mode: two systems, agreement map must be computed
+    res_dual = engine.evaluate(img, mode="dual")
+    assert isinstance(res_dual.agreement, dict)
+    assert "visual_integrity" in res_dual.agreement
+    assert "overall_quality" in res_dual.agreement
+    assert res_dual.system_two is not None

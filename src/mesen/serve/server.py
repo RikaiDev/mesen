@@ -121,7 +121,7 @@ def judge_ui(request: JudgeRequest):
         if system_two is None:
             system_two = derive_system_two(report, witness=request.state)
         agreement = getattr(result, "agreement", None)
-        if agreement is None:
+        if agreement is None and system_two is not None and answers is not system_two:
             agreement = compute_agreement(answers, system_two)
 
         return JudgeResponse(

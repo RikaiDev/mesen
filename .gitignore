@@ -41,6 +41,7 @@ model_cache/
 !/data/synthetic/
 /data/synthetic/*
 !/data/synthetic/screenshots/
+/data/synthetic/screenshots/real_clinical/
 /datasets/
 cache/
 .cache/

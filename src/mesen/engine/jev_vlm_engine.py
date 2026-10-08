@@ -39,7 +39,7 @@ class EvaluationResult(tuple):
 
     report: ConsultantReport
     answers: JudgeAnswers
-    agreement: dict[str, bool]
+    agreement: dict[str, bool] | None
     system_two: JudgeAnswers | None
 
     def __new__(
@@ -52,7 +52,7 @@ class EvaluationResult(tuple):
         inst = super().__new__(cls, (report, answers))
         inst.report = report
         inst.answers = answers
-        inst.agreement = agreement or {}
+        inst.agreement = agreement
         inst.system_two = system_two
         return inst
 
@@ -219,8 +219,7 @@ class JevVlmEngine:
         if mode == "deep":
             report = self.system_two.evaluate_screenshot(image_path, context, dpr, witness=witness)
             s2 = derive_system_two(report, witness=witness)
-            agreement = compute_agreement(s2, s2)
-            return EvaluationResult(report, s2, agreement, s2)
+            return EvaluationResult(report, s2, None, s2)
 
         answers, rule_probs, pred_bbox, pred_score = self.judge_system1(image_path, context)
         violations = self._neural_rule_violations(rule_probs, pred_bbox)
@@ -232,7 +231,7 @@ class JevVlmEngine:
                 verdict=self._score_verdict(pred_score),
                 summary_score=pred_score,
             )
-            return EvaluationResult(report, answers, {}, None)
+            return EvaluationResult(report, answers, None, None)
 
         deep_report = self.system_two.evaluate_screenshot(image_path, context, dpr, witness=witness)
         all_violations = deep_report.violations + violations
