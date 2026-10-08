@@ -42,8 +42,11 @@ def generate_synthetic_dataset(
         category = tpl_info["category"]
         title = tpl_info["title"]
 
-        for var_idx in range(num_variations):
-            for mut_type in mutation_types:
+        for mut_type in mutation_types:
+            is_clean_type = mut_type in (MutationType.CLEAN, MutationType.CLEAN_EXCELLENT)
+            # Give clean types at least 2 variations to maintain balance against defect types
+            variations = num_variations if not is_clean_type else max(num_variations, 2)
+            for var_idx in range(variations):
                 sample_id = f"{template_key}_var{var_idx}_{mut_type.value}_{sample_idx:04d}"
                 mutated_html, labels, score = mutate_html(base_html, mut_type)
 
@@ -73,7 +76,7 @@ def generate_synthetic_dataset(
                     "contract": {
                         "title": title,
                         "mutation": mut_type.value,
-                        "is_clean": mut_type == MutationType.CLEAN,
+                        "is_clean": mut_type in (MutationType.CLEAN, MutationType.CLEAN_EXCELLENT),
                     },
                     "accessibilityViolations": (
                         [{"rule": "color-contrast", "severity": "serious"}]

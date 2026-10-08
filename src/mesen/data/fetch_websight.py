@@ -74,7 +74,7 @@ def harvest_websight_mutations(
                         "contract": {
                             "idea": idea[:120],
                             "mutation": mut.value,
-                            "is_clean": mut == MutationType.CLEAN,
+                            "is_clean": mut in (MutationType.CLEAN, MutationType.CLEAN_EXCELLENT),
                         },
                         "accessibilityViolations": (
                             [{"rule": "color-contrast", "severity": "serious"}]
@@ -96,7 +96,9 @@ def harvest_websight_mutations(
                     record = {
                         "id": f"{site_id}_{mut.value}",
                         "state": witness_state,
-                        "original_image_url": orig_img_url if mut == MutationType.CLEAN else None,
+                        "original_image_url": orig_img_url
+                        if mut in (MutationType.CLEAN, MutationType.CLEAN_EXCELLENT)
+                        else None,
                         "labels": {
                             **labels,
                             "overall_quality": score,

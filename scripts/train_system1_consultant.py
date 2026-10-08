@@ -43,49 +43,114 @@ def preprocess_image(image_path: str) -> np.ndarray:
     return blob
 
 
-def stage_cache(v3_onnx: str, out_npz: str):
-    print(f"Loading ONNX session from {v3_onnx}...", flush=True)
-    session = ort.InferenceSession(v3_onnx, providers=["CPUExecutionProvider"])
+def stage_cache(v3_onnx: str, out_npz: str, batch_size: int = 4):
+    import hashlib
+    import gc
+
+    print(f"Loading ONNX session from {v3_onnx} with QoS safeguards...", flush=True)
+    sess_options = ort.SessionOptions()
+    sess_options.intra_op_num_threads = 2
+    sess_options.inter_op_num_threads = 1
+    sess_options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+    sess_options.enable_mem_pattern = False
+    session = ort.InferenceSession(
+        v3_onnx, sess_options=sess_options, providers=["CPUExecutionProvider"]
+    )
+
+    cache_dir = os.path.join(os.path.dirname(os.path.abspath(out_npz)), ".feature_cache")
+    os.makedirs(cache_dir, exist_ok=True)
 
     datasets = [
         ("train", "data/synthetic/train.json"),
         ("val", "data/synthetic/val.json"),
         ("mirror", "data/synthetic/mirror_samples.json"),
+        ("real_clinical", "data/synthetic/real_clinical_samples.json"),
     ]
 
-    records = {"train": [], "val": [], "mirror": []}
+    records = {split: [] for split, _ in datasets}
 
     for split_name, json_path in datasets:
+        if not os.path.exists(json_path):
+            continue
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
 
         print(f"Extracting features for {split_name} ({len(data)} items)...", flush=True)
+        # Collect all items and their images
+        item_imgs = []
         for item in data:
             item_id = item["id"]
             labels = item["labels"]
             img_paths = item.get("image_paths") or item.get("screenshots") or []
-
-            # Label targets
             targets = {h: CHOICE_MAP[labels[h]] for h in HEAD_NAMES}
             targets["overall_quality"] = int(labels["overall_quality"])
+            for p in img_paths:
+                if os.path.exists(p):
+                    item_imgs.append((item_id, p, targets))
 
-            for img_path in img_paths:
-                if not os.path.exists(img_path):
-                    continue
-                blob = preprocess_image(img_path)
-                hidden = session.run(["hidden_states"], {"screenshot": blob})[0]  # (1, 1536)
+        # Check disk cache
+        pending = []
+        extracted_map = {}
+        for item_id, p, targets in item_imgs:
+            stat = os.stat(p)
+            cache_key = hashlib.md5(f"{p}_{stat.st_mtime}_{stat.st_size}".encode()).hexdigest()
+            cache_file = os.path.join(cache_dir, f"{cache_key}.npy")
+            if os.path.exists(cache_file):
+                feat = np.load(cache_file)
+                records[split_name].append(
+                    {
+                        "id": item_id,
+                        "img_path": p,
+                        "feature": feat,
+                        **targets,
+                    }
+                )
+            else:
+                pending.append((item_id, p, targets, cache_file))
 
-                records[split_name].append({
-                    "id": item_id,
-                    "img_path": img_path,
-                    "feature": hidden[0],
-                    **targets,
-                })
-        print(f"  {split_name}: {len(records[split_name])} image representations extracted.")
+        print(
+            f"  {split_name}: {len(item_imgs) - len(pending)} cached, {len(pending)} to extract.",
+            flush=True,
+        )
+
+        # Batch extract pending
+        for i in range(0, len(pending), batch_size):
+            chunk = pending[i : i + batch_size]
+            blobs = [preprocess_image(item[1]) for item in chunk]
+            batch_blob = np.concatenate(blobs, axis=0)  # (B, 3, 224, 224)
+            hidden = session.run(["hidden_states"], {"screenshot": batch_blob})[0]  # (B, 1536)
+
+            for j, (item_id, p, targets, cache_file) in enumerate(chunk):
+                feat = hidden[j].astype(np.float32)
+                np.save(cache_file, feat)
+                records[split_name].append(
+                    {
+                        "id": item_id,
+                        "img_path": p,
+                        "feature": feat,
+                        **targets,
+                    }
+                )
+            if (i // batch_size) % 10 == 0 or (i + batch_size >= len(pending)):
+                print(
+                    f"    progress: {min(i + len(chunk), len(pending))}/{len(pending)} extracted",
+                    flush=True,
+                )
+                gc.collect()
+
+        print(
+            f"  {split_name}: {len(records[split_name])} image representations ready.", flush=True
+        )
 
     # Convert to numpy arrays
     def pack(split):
         recs = records[split]
+        if not recs:
+            return {
+                "features": np.empty((0, 1536), dtype=np.float32),
+                **{h: np.empty((0,), dtype=np.int64) for h in HEAD_NAMES},
+                "overall_quality": np.empty((0,), dtype=np.int64),
+            }
         feats = np.stack([r["feature"] for r in recs]).astype(np.float32)
         arrays = {"features": feats}
         for h in HEAD_NAMES:
@@ -95,12 +160,23 @@ def stage_cache(v3_onnx: str, out_npz: str):
 
     train_pack = pack("train")
     mirror_pack = pack("mirror")
+    real_pack = pack("real_clinical")
     val_pack = pack("val")
 
-    # Combine train + mirror for training set
+    # Replicate real clinical samples so they are not drowned out by synthetic toy screens
+    if len(real_pack["features"]) > 0:
+        multiplier = 20
+        for k in real_pack:
+            real_pack[k] = np.repeat(real_pack[k], multiplier, axis=0)
+        print(
+            f"Replicated real clinical samples {multiplier}x -> {len(real_pack['features'])} samples.",
+            flush=True,
+        )
+
+    # Combine train + mirror + real_clinical for training set
     combined_train = {}
     for k in train_pack:
-        combined_train[k] = np.concatenate([train_pack[k], mirror_pack[k]], axis=0)
+        combined_train[k] = np.concatenate([train_pack[k], mirror_pack[k], real_pack[k]], axis=0)
 
     os.makedirs(os.path.dirname(os.path.abspath(out_npz)), exist_ok=True)
     np.savez_compressed(
@@ -120,7 +196,10 @@ def stage_cache(v3_onnx: str, out_npz: str):
         val_operator_clarity=val_pack["operator_clarity"],
         val_overall_quality=val_pack["overall_quality"],
     )
-    print(f"Successfully cached features to {out_npz}", flush=True)
+    print(
+        f"Successfully cached features to {out_npz} ({len(combined_train['features'])} train, {len(val_pack['features'])} val)",
+        flush=True,
+    )
 
 
 def macro_f1(truth, pred, n_classes):
@@ -135,7 +214,9 @@ def macro_f1(truth, pred, n_classes):
     return float(sum(scores) / n_classes)
 
 
-def stage_train(features_npz: str, out_dir: str, epochs: int = 80, lr: float = 3e-3, seed: int = 42):
+def stage_train(
+    features_npz: str, out_dir: str, epochs: int = 80, lr: float = 3e-3, seed: int = 42
+):
     torch.manual_seed(seed)
     np.random.seed(seed)
 
@@ -165,7 +246,9 @@ def stage_train(features_npz: str, out_dir: str, epochs: int = 80, lr: float = 3
     n_val = len(val_x)
     print(f"Loaded {n_train} train images, {n_val} val images. Feature dim: {train_x.shape[1]}")
 
-    model = MesenConsultantModel(hidden_size=train_x.shape[1], num_rules=len(RULE_DEFINITIONS), dropout=0.05)
+    model = MesenConsultantModel(
+        hidden_size=train_x.shape[1], num_rules=len(RULE_DEFINITIONS), dropout=0.05
+    )
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-3)
 
     # Class weights for unbalanced targets
@@ -182,9 +265,9 @@ def stage_train(features_npz: str, out_dir: str, epochs: int = 80, lr: float = 3
         head_weights[h] = torch.tensor(w)
 
     q_counts = np.bincount(train_targets["overall_quality"].numpy(), minlength=4).astype(np.float32)
-    q_weights = torch.tensor([
-        float(np.median(q_counts[q_counts > 0]) / max(c, 1)) for c in q_counts
-    ])
+    q_weights = torch.tensor(
+        [float(np.median(q_counts[q_counts > 0]) / max(c, 1)) for c in q_counts]
+    )
     head_weights["overall_quality"] = q_weights
 
     best_score = -1.0
@@ -206,8 +289,14 @@ def stage_train(features_npz: str, out_dir: str, epochs: int = 80, lr: float = 3
 
             loss = 0.0
             for h in HEAD_NAMES:
-                loss += F.cross_entropy(atomic_logits[h], train_targets[h][idx], weight=head_weights[h])
-            loss += F.cross_entropy(atomic_logits["overall_quality"], train_targets["overall_quality"][idx], weight=head_weights["overall_quality"])
+                loss += F.cross_entropy(
+                    atomic_logits[h], train_targets[h][idx], weight=head_weights[h]
+                )
+            loss += F.cross_entropy(
+                atomic_logits["overall_quality"],
+                train_targets["overall_quality"][idx],
+                weight=head_weights["overall_quality"],
+            )
 
             loss.backward()
             optimizer.step()
@@ -292,20 +381,55 @@ def update_onnx_weights(onnx_path: str, state_dict: dict, prefix: str = "m.consu
     onnx.save(model, onnx_path)
 
 
+def update_head_calibration_py(
+    receipt: dict, calib_path: str = "src/mesen/engine/head_calibration.py"
+):
+    """Synchronizes CALIBRATION receipts in head_calibration.py with trained metrics."""
+    if not os.path.exists(calib_path):
+        return
+    import re
+
+    with open(calib_path, encoding="utf-8") as f:
+        content = f.read()
+
+    n_val = receipt.get("n_val", 72)
+    for head in [
+        "primary_action_reachable",
+        "visual_integrity",
+        "responsive_consistency",
+        "operator_clarity",
+        "overall_quality",
+    ]:
+        acc = receipt.get(f"{head}_acc", 1.0)
+        f1 = receipt.get(f"{head}_f1", 0.667)
+        new_receipt = f"heads_v1/consultant_receipt.json: val acc {acc:.3f}, macro F1 {f1:.3f} on {n_val} held-out images"
+        new_metric = f"val accuracy {acc:.3f}, macro F1 {f1:.3f}"
+
+        pattern = rf'("{head}": Calibration\(\s*receipt=")[^"]+("\s*,\s*metric=")[^"]+(")'
+        replacement = rf"\g<1>{new_receipt}\g<2>{new_metric}\g<3>"
+        content = re.sub(pattern, replacement, content)
+
+    with open(calib_path, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"  Successfully updated {calib_path} with new calibration receipt metrics.")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--v3-onnx", default="models/onnx/mesen_jev_vlm_v3.onnx")
     parser.add_argument("--features", default="data/synthetic/cached_consultant_features.npz")
     parser.add_argument("--out-dir", default="models/onnx/heads_v1")
     parser.add_argument("--epochs", type=int, default=70)
+    parser.add_argument("--force-cache", action="store_true", help="Re-extract features")
     args = parser.parse_args()
 
-    if not os.path.exists(args.features):
+    if args.force_cache or not os.path.exists(args.features):
         stage_cache(args.v3_onnx, args.features)
     else:
         print(f"Using existing cached features at {args.features}")
 
     state_dict, receipt = stage_train(args.features, args.out_dir, epochs=args.epochs)
+    update_head_calibration_py(receipt)
 
     # Inject into mesen_jev_vlm_v3.onnx (prefix: 'model.consultant_heads.')
     if os.path.exists(args.v3_onnx):

@@ -30,18 +30,18 @@ class Calibration:
 # research/artifacts/system1-instrument-receipt.md.
 CALIBRATION: dict[str, Calibration] = {
     "primary_action_reachable": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 1.000, macro F1 0.667 on 72 held-out images",
+        receipt="heads_v1/consultant_receipt.json: val acc 1.000, macro F1 0.667 on 112 held-out images",
         metric="val accuracy 1.000, macro F1 0.667",
         calibrated=True,
     ),
     "visual_integrity": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 1.000, macro F1 0.667 on 72 held-out images",
-        metric="val accuracy 1.000, macro F1 0.667",
+        receipt="heads_v1/consultant_receipt.json: val acc 0.955, macro F1 0.637 on 112 held-out images",
+        metric="val accuracy 0.955, macro F1 0.637",
         calibrated=True,
     ),
     "responsive_consistency": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 1.000, macro F1 0.667 on 72 held-out images",
-        metric="val accuracy 1.000, macro F1 0.667",
+        receipt="heads_v1/consultant_receipt.json: val acc 0.973, macro F1 0.633 on 112 held-out images",
+        metric="val accuracy 0.973, macro F1 0.633",
         calibrated=True,
     ),
     "evidence_consistency": Calibration(
@@ -50,13 +50,13 @@ CALIBRATION: dict[str, Calibration] = {
         calibrated=True,
     ),
     "operator_clarity": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 1.000, macro F1 0.667 on 72 held-out images",
-        metric="val accuracy 1.000, macro F1 0.667",
+        receipt="heads_v1/consultant_receipt.json: val acc 0.991, macro F1 0.656 on 112 held-out images",
+        metric="val accuracy 0.991, macro F1 0.656",
         calibrated=True,
     ),
     "overall_quality": Calibration(
-        receipt="heads_v1/consultant_receipt.json: val acc 0.986, macro F1 0.737 on 72 held-out images",
-        metric="val accuracy 0.986, macro F1 0.737",
+        receipt="heads_v1/consultant_receipt.json: val acc 0.750, macro F1 0.659 on 112 held-out images",
+        metric="val accuracy 0.750, macro F1 0.659",
         calibrated=True,
     ),
     # The 17-way rule classifier and the bbox regressor share the untrained head

@@ -9,6 +9,7 @@ from enum import Enum
 
 class MutationType(str, Enum):
     CLEAN = "clean"
+    CLEAN_EXCELLENT = "clean_excellent"
     OVERFLOW = "overflow"
     OCCLUSION = "occlusion"
     LOW_CONTRAST = "low_contrast"
@@ -34,7 +35,8 @@ def mutate_html(
     }
     score = 2
 
-    if mutation_type == MutationType.CLEAN:
+    if mutation_type in (MutationType.CLEAN, MutationType.CLEAN_EXCELLENT):
+        score = 3 if mutation_type == MutationType.CLEAN_EXCELLENT else 2
         return base_html, labels, score
 
     if mutation_type == MutationType.OVERFLOW:
