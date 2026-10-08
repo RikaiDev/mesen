@@ -307,13 +307,24 @@ def main():
 
     state_dict, receipt = stage_train(args.features, args.out_dir, epochs=args.epochs)
 
-    # Inject into mesen_jev_vlm.onnx (prefix: 'm.consultant_heads.')
-    if os.path.exists("models/onnx/mesen_jev_vlm.onnx"):
-        update_onnx_weights("models/onnx/mesen_jev_vlm.onnx", state_dict, prefix="m.consultant_heads.")
-
     # Inject into mesen_jev_vlm_v3.onnx (prefix: 'model.consultant_heads.')
-    if os.path.exists("models/onnx/mesen_jev_vlm_v3.onnx"):
-        update_onnx_weights("models/onnx/mesen_jev_vlm_v3.onnx", state_dict, prefix="model.consultant_heads.")
+    if os.path.exists(args.v3_onnx):
+        update_onnx_weights(args.v3_onnx, state_dict, prefix="model.consultant_heads.")
+
+        # Export standard mesen_jev_vlm.onnx from the updated v3 model:
+        # Exclude hidden_states from graph outputs and pin batch dimension to 1
+        print("Synchronizing models/onnx/mesen_jev_vlm.onnx from updated v3 graph...", flush=True)
+        m_v3 = onnx.load(args.v3_onnx)
+        std_outputs = [o for o in m_v3.graph.output if o.name != "hidden_states"]
+        m_v3.graph.ClearField("output")
+        m_v3.graph.output.extend(std_outputs)
+        for o in m_v3.graph.output:
+            dim0 = o.type.tensor_type.shape.dim[0]
+            dim0.ClearField("dim_param")
+            dim0.dim_value = 1
+        std_onnx_path = "models/onnx/mesen_jev_vlm.onnx"
+        onnx.save(m_v3, std_onnx_path)
+        print(f"  Successfully exported standard {std_onnx_path}.")
 
 
 if __name__ == "__main__":
