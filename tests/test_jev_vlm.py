@@ -19,8 +19,11 @@ from mesen.schema import ConsultantReport, ContextSpec, JudgeAnswers
 class TestJevVlmEngine(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        base_dir = os.path.dirname(os.path.dirname(__file__))
-        cls.models_dir = os.path.join(base_dir, "models", "onnx")
+        # Ask the hub where it staged the artifacts rather than guessing a repo
+        # path: on a fresh machine they land in the user cache, not models/onnx.
+        from mesen.hub import get_default_models_dir
+
+        cls.models_dir = get_default_models_dir()
         cls.vlm_model_path = os.path.join(cls.models_dir, "mesen_jev_vlm.onnx")
         if not os.path.exists(cls.vlm_model_path):
             raise AssertionError(

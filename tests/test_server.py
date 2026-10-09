@@ -141,9 +141,11 @@ def test_judge_with_base64_image_cleans_tempfile():
 
 
 def test_load_model_wiring():
-    onnx_path = "models/onnx/mesen_jev_vlm.onnx"
+    from mesen.hub import get_default_models_dir
+
+    onnx_path = os.path.join(get_default_models_dir(), "mesen_jev_vlm.onnx")
     if not os.path.exists(onnx_path):
-        pytest.skip("mesen_jev_vlm.onnx not present")
+        pytest.skip("mesen_jev_vlm.onnx not staged")
     server_module.load_model(onnx_path)
     assert server_module._engine is not None
     assert isinstance(server_module._engine, JevVlmEngine)

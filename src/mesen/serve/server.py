@@ -30,7 +30,11 @@ _engine: JevVlmEngine | None = None
 
 def load_model(checkpoint_path: str | None = None):
     global _engine
-    default_path = "models/onnx/mesen_jev_vlm.onnx"
+    # Ask the hub where artifacts live instead of assuming models/onnx: on a
+    # fresh machine they are staged into the user cache.
+    from mesen.hub import get_default_models_dir
+
+    default_path = os.path.join(get_default_models_dir(), "mesen_jev_vlm.onnx")
     target_path = checkpoint_path or default_path
     # The judge and the OCR models live side by side, so a custom checkpoint has
     # to bring its own directory; otherwise the judge loads from --checkpoint

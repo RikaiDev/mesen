@@ -11,9 +11,9 @@ from mesen.schema import ContextSpec
 def _require_artifact():
     import os
 
-    artifact = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "models", "onnx", "mesen_jev_vlm.onnx"
-    )
+    from mesen.hub import get_default_models_dir
+
+    artifact = os.path.join(get_default_models_dir(), "mesen_jev_vlm.onnx")
     if not os.path.exists(artifact):
         raise AssertionError(f"model artifact not staged: {artifact} (run: mesen fetch-models)")
 
